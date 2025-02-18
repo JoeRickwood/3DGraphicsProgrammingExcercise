@@ -1,10 +1,16 @@
 #include "ShaderLoader.h"
 
+//Window Width And Height Of The Application (Pixels)
 static int windowWidth = 800;
 static int windowHeight = 800;
 
 GLFWwindow* Window;
 GLuint Program_FixedTri = NULL;
+
+float sinX;
+float sinY;
+float sinZ;
+float timer;
 
 void InitialSetup();
 void Update();
@@ -52,6 +58,8 @@ int main()
 		Update();
 
 		Render();
+
+		glfwPollEvents();
 	}
 
 
@@ -61,27 +69,33 @@ int main()
 
 void InitialSetup() 
 {
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(sinX, sinY, sinZ, 1.0f);
 
 	glViewport(0, 0, windowWidth, windowHeight);
 
 
-	//Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert",
+	Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert",
 													"Resources/Shaders/FixedColor.frag");
 }
 
 void Update() 
 {
+	timer += (1.f / 60.f);
 
+	sinX = (std::sin(timer) + 1.f) / 2.f;
+	sinY = (std::sin(timer + 2317) + 1.f) / 2.f;
+	sinZ = (std::sin(timer - 83213) + 1.f) / 2.f;
+
+	glClearColor(sinX, sinY, sinZ, 1.0f);
 }
 
 void Render() 
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//glUseProgram(Program_FixedTri);
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	//glUseProgram(0); 
+	glUseProgram(Program_FixedTri);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glUseProgram(0); 
 
 	glfwSwapBuffers(Window);
 }

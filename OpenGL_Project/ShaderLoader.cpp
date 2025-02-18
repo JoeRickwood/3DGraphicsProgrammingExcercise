@@ -9,11 +9,15 @@ ShaderLoader::~ShaderLoader(void) {}
 GLuint ShaderLoader::CreateProgram(const char* vertexShaderFilename, const char* fragmentShaderFilename)
 {
 	// Create the shaders from the filepath
-
+	GLuint vertShader = CreateShader(GL_VERTEX_SHADER, vertexShaderFilename);
+	GLuint fragShader = CreateShader(GL_FRAGMENT_SHADER, fragmentShaderFilename);
 
 	// Create the program handle, attach the shaders and link it
-	GLuint program = 0;
-	// ...
+	GLuint program = glCreateProgram();
+	glAttachShader(program, vertShader); //Attach Vertex Shader To The Program
+	glAttachShader(program, fragShader); //Attach Fragment Shader To The Program
+
+	glLinkProgram(program);
 
 
 	// Check for link errors
@@ -31,15 +35,21 @@ GLuint ShaderLoader::CreateProgram(const char* vertexShaderFilename, const char*
 GLuint ShaderLoader::CreateShader(GLenum shaderType, const char* shaderName)
 {
 	// Read the shader files and save the source code as strings
+	std::string shaderTxt = ReadShaderFile(shaderName).c_str();
 
 
 	// Create the shader ID and create pointers for source code string and length
-	GLuint shaderID = 0;
-	// ...
+	GLuint shaderID = glCreateShader(shaderType);
 
+
+	const char* shaderChars = shaderTxt.c_str();
+	int shaderLength = shaderTxt.size();
+	
 	// Populate the Shader Object (ID) and compile
+	glShaderSource(shaderID, 1, &shaderChars, &shaderLength);
 
 
+	glCompileShader(shaderID);
 
 	// Check for errors
 	int compile_result = 0;
