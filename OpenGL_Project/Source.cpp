@@ -15,6 +15,7 @@ float timer;
 void InitialSetup();
 void Update();
 void Render();
+void OnWindowResized();
 
 int main() 
 {
@@ -76,6 +77,15 @@ void InitialSetup()
 
 	Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert",
 													"Resources/Shaders/FixedColor.frag");
+
+	glfwSetWindowSizeCallback(Window, OnWindowResized);
+
+
+	//glPolygonMode(GL_FRONT, GL_POINT);
+	//glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_FRONT, GL_FILL);
+
+	//glfwSetWindowOpacity(Window, 0.5f);
 }
 
 void Update() 
@@ -98,4 +108,9 @@ void Render()
 	glUseProgram(0); 
 
 	glfwSwapBuffers(Window);
+}
+
+void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height) 
+{
+	glViewport(0, 0, _Width, _Height);
 }
