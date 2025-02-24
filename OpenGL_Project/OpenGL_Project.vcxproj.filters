@@ -34,5 +34,17 @@
     <None Include="Resources\Shaders\FixedTriangle.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="PositionOnly.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VertexColor.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\VertexColor.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\VertexColorFade.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

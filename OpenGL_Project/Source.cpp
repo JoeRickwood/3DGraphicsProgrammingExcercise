@@ -4,25 +4,36 @@
 static int windowWidth = 800;
 static int windowHeight = 800;
 
-GLFWwindow* Window;
-GLuint Program_FixedTri = NULL;
+float CurrentTime;
 
-float sinX;
-float sinY;
-float sinZ;
-float timer;
+GLFWwindow* Window;
+GLuint Program_VertexColorFade = NULL;
+
+GLfloat Vertices_Tri[] = {
+	//Position          // Color
+	-0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,
+	0.5f, 0.5f, 0.0f,	0.0f, 0.0f, 1.0f,
+	-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
+	0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,
+	0.5f, 0.5f, 0.0f,	0.0f, 0.0f, 1.0f,
+};
+
+GLuint VBO_Tri;
+GLuint VAO_Tri;
+
 
 void InitialSetup();
 void Update();
 void Render();
-void OnWindowResized();
+void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height);
 
 int main() 
 {
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
 
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
@@ -59,8 +70,6 @@ int main()
 		Update();
 
 		Render();
-
-		glfwPollEvents();
 	}
 
 
@@ -70,41 +79,63 @@ int main()
 
 void InitialSetup() 
 {
-	glClearColor(sinX, sinY, sinZ, 1.0f);
+	glClearColor(1.f, 1.f, 1.f, 1.0f);
 
 	glViewport(0, 0, windowWidth, windowHeight);
 
 
-	Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert",
-													"Resources/Shaders/FixedColor.frag");
+	Program_VertexColorFade = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert",
+												"Resources/Shaders/VertexColorFade.frag");
 
-	glfwSetWindowSizeCallback(Window, OnWindowResized);
+	//Generate The VAO For A Triangle
+	glGenVertexArrays(1, &VAO_Tri);
+	glBindVertexArray(VAO_Tri);
+
+	//Generate The VBO For A Triangle
+	glGenBuffers(1, &VBO_Tri);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices_Tri), Vertices_Tri, GL_STATIC_DRAW);
+
+	//Set Vertex Attribute Info, This Is How To Interpret The Vertex Data
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 
+
+	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
+
+
+	//Change Polygon Modes To Show How Triangles Draw
 	//glPolygonMode(GL_FRONT, GL_POINT);
 	//glPolygonMode(GL_FRONT, GL_LINE);
 	//glPolygonMode(GL_FRONT, GL_FILL);
 
-	//glfwSetWindowOpacity(Window, 0.5f);
+	glfwSetWindowOpacity(Window, 1.0f);
 }
 
 void Update() 
 {
-	timer += (1.f / 60.f);
 
-	sinX = (std::sin(timer) + 1.f) / 2.f;
-	sinY = (std::sin(timer + 2317) + 1.f) / 2.f;
-	sinZ = (std::sin(timer - 83213) + 1.f) / 2.f;
+	CurrentTime = (float)glfwGetTime();
 
-	glClearColor(sinX, sinY, sinZ, 1.0f);
+	glfwPollEvents();
 }
 
 void Render() 
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(Program_FixedTri);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glUseProgram(Program_VertexColorFade);
+	glBindVertexArray(VAO_Tri);
+
+	GLint currentTimeLoc = glGetUniformLocation(Program_VertexColorFade, "CurrentTime");
+	glUniform1f(currentTimeLoc, CurrentTime);
+
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
 	glUseProgram(0); 
 
 	glfwSwapBuffers(Window);

@@ -149,8 +149,12 @@
     <ClInclude Include="ShaderLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="PositionOnly.vert" />
     <None Include="Resources\Shaders\FixedColor.frag" />
     <None Include="Resources\Shaders\FixedTriangle.vert" />
+    <None Include="Resources\Shaders\VertexColor.frag" />
+    <None Include="Resources\Shaders\VertexColorFade.frag" />
+    <None Include="VertexColor.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
