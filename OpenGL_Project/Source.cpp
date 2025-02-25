@@ -4,10 +4,7 @@
 static int windowWidth = 800;
 static int windowHeight = 800;
 
-float CurrentTime;
-
 GLFWwindow* Window;
-GLuint Program_VertexColorFade = NULL;
 
 GLfloat Vertices_Tri[] = {
 	//Position          // Color
@@ -19,7 +16,6 @@ GLfloat Vertices_Tri[] = {
 	0.5f, 0.5f, 0.0f,	0.0f, 0.0f, 1.0f,
 };
 
-GLuint VBO_Tri;
 GLuint VAO_Tri;
 
 
@@ -80,12 +76,11 @@ int main()
 void InitialSetup() 
 {
 	glClearColor(1.f, 1.f, 1.f, 1.0f);
-
 	glViewport(0, 0, windowWidth, windowHeight);
 
+	ShaderLoader::Instance().InitializeShaderPrograms();
 
-	Program_VertexColorFade = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert",
-												"Resources/Shaders/VertexColorFade.frag");
+	GLuint VBO_Tri;
 
 	//Generate The VAO For A Triangle
 	glGenVertexArrays(1, &VAO_Tri);
@@ -105,21 +100,10 @@ void InitialSetup()
 
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
-
-
-	//Change Polygon Modes To Show How Triangles Draw
-	//glPolygonMode(GL_FRONT, GL_POINT);
-	//glPolygonMode(GL_FRONT, GL_LINE);
-	//glPolygonMode(GL_FRONT, GL_FILL);
-
-	glfwSetWindowOpacity(Window, 1.0f);
 }
 
 void Update() 
 {
-
-	CurrentTime = (float)glfwGetTime();
-
 	glfwPollEvents();
 }
 
@@ -127,15 +111,12 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(Program_VertexColorFade);
+	glUseProgram(ShaderLoader::Instance().GetShaderProgram(0));
 	glBindVertexArray(VAO_Tri);
-
-	GLint currentTimeLoc = glGetUniformLocation(Program_VertexColorFade, "CurrentTime");
-	glUniform1f(currentTimeLoc, CurrentTime);
-
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
+
 	glUseProgram(0); 
 
 	glfwSwapBuffers(Window);

@@ -98,3 +98,13 @@ void ShaderLoader::PrintErrorDetails(bool isShader, GLuint id, const char* name)
 	std::cout << "Error compiling " << ((isShader == true) ? "shader" : "program") << ": " << name << std::endl;
 	std::cout << &log[0] << std::endl;
 }
+
+void ShaderLoader::InitializeShaderPrograms()
+{
+	shaderPrograms.push_back(ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColor.frag"));
+}
+
+GLuint ShaderLoader::GetShaderProgram(int _ID)
+{
+	return shaderPrograms[_ID];
+}

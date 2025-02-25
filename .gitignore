@@ -5,3 +5,5 @@
 /OpenGL_Project/x64
 *.tlog
 *.tlog
+*.pdb
+*.tlog
