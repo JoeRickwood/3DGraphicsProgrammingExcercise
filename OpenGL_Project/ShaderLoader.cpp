@@ -101,7 +101,7 @@ void ShaderLoader::PrintErrorDetails(bool isShader, GLuint id, const char* name)
 
 void ShaderLoader::InitializeShaderPrograms()
 {
-	shaderPrograms.push_back(ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColor.frag"));
+	shaderPrograms.push_back(ShaderLoader::CreateProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColor.frag"));
 }
 
 GLuint ShaderLoader::GetShaderProgram(int _ID)

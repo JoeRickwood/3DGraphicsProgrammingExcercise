@@ -1,4 +1,4 @@
-#include "ShaderLoader.h"
+#include "Renderable.h"
 
 //Window Width And Height Of The Application (Pixels)
 static int windowWidth = 800;
@@ -6,18 +6,7 @@ static int windowHeight = 800;
 
 GLFWwindow* Window;
 
-GLfloat Vertices_Tri[] = {
-	//Position          // Color
-	-0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,
-	0.5f, 0.5f, 0.0f,	0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
-	0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, 0.0f,	0.0f, 0.0f, 1.0f,
-};
-
-GLuint VAO_Tri;
-
+Renderable renderable;
 
 void InitialSetup();
 void Update();
@@ -48,7 +37,7 @@ int main()
 	glfwMakeContextCurrent(Window);
 
 
-	if (glewInit() != GLEW_OK) 
+	if (glewInit() != GLEW_OK)
 	{
 		std::cout << "GLFW Failed To Initialize, Terminating Program" << std::endl;
 		system("pause");
@@ -56,7 +45,6 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
-
 
 
 	InitialSetup();
@@ -75,35 +63,23 @@ int main()
 
 void InitialSetup() 
 {
-	glClearColor(1.f, 1.f, 1.f, 1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glViewport(0, 0, windowWidth, windowHeight);
 
 	ShaderLoader::Instance().InitializeShaderPrograms();
 
-	GLuint VBO_Tri;
-
-	//Generate The VAO For A Triangle
-	glGenVertexArrays(1, &VAO_Tri);
-	glBindVertexArray(VAO_Tri);
-
-	//Generate The VBO For A Triangle
-	glGenBuffers(1, &VBO_Tri);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices_Tri), Vertices_Tri, GL_STATIC_DRAW);
-
-	//Set Vertex Attribute Info, This Is How To Interpret The Vertex Data
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-
+	renderable.Init();
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
 }
 
 void Update() 
 {
+	renderable.translationMat = glm::translate(glm::mat4(1.0f), renderable.worldPosition);
+	renderable.rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(renderable.rotationAngle), glm::vec3(0.f, 0.f, 1.f));
+	renderable.scaleMat = glm::scale(glm::mat4(1.0f), renderable.scale);
+	renderable.modelMat = renderable.translationMat * renderable.rotationMat * renderable.scaleMat;
+
 	glfwPollEvents();
 }
 
@@ -111,13 +87,7 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(ShaderLoader::Instance().GetShaderProgram(0));
-	glBindVertexArray(VAO_Tri);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-
-	glUseProgram(0); 
+	renderable.Draw();
 
 	glfwSwapBuffers(Window);
 }
