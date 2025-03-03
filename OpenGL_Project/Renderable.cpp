@@ -15,10 +15,6 @@ Renderable::Renderable()
 		1, 2, 3  //Second Triangle
 	};
 
-	worldPosition = glm::vec3(0.5f, 0.5f, 0.0f);
-	rotationAngle = 45.f;
-	scale = glm::vec3(0.5f, 0.5f, 1.0f);
-
 	VAO = NULL;
 	VBO = NULL;
 	EBO = NULL;
@@ -65,20 +61,5 @@ void Renderable::Init()
 
 void Renderable::Draw()
 {
-	//Set The New Shader Program
-	glUseProgram(ShaderLoader::Instance().GetShaderProgram(0));
 
-	GLint ModelMatLoc = glGetUniformLocation(ShaderLoader::Instance().GetShaderProgram(0), "ModelMatrix");
-	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
-
-	//Draw Renderable
-	glBindVertexArray(VAO);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-
-	//Unbind The Shader Program
-	glUseProgram(0);
 }

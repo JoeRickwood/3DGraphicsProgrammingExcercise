@@ -1,4 +1,5 @@
-#include "Renderable.h"
+#include "RenderableInstance.h"
+#include "Components.h"
 
 //Window Width And Height Of The Application (Pixels)
 static int windowWidth = 800;
@@ -6,7 +7,7 @@ static int windowHeight = 800;
 
 GLFWwindow* Window;
 
-Renderable renderable;
+std::vector<RenderableInstance> renderableInstances;
 
 void InitialSetup();
 void Update();
@@ -15,6 +16,14 @@ void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height);
 
 int main() 
 {
+	renderableInstances = 
+	{
+		RenderableInstance(RenderableType::Quad, glm::vec3(0.5f, 0.5f, 0.f), 45.f, glm::vec3(0.5f, 0.5f, 1.f)),
+		RenderableInstance(RenderableType::Quad, glm::vec3(-0.5f, 0.5f, 0.f), 17.f, glm::vec3(0.5f, 0.5f, 1.f)),
+	};
+
+	renderableInstances[0].AddComponent<InputMove>();
+
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
 
@@ -66,19 +75,25 @@ void InitialSetup()
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glViewport(0, 0, windowWidth, windowHeight);
 
+	InputManager::Instance().Init();
+
 	ShaderLoader::Instance().InitializeShaderPrograms();
 
-	renderable.Init();
+	for (int i = 0; i < renderableInstances.size(); i++)
+	{
+		renderableInstances[i].Init();
+	}
+	
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
 }
 
 void Update() 
 {
-	renderable.translationMat = glm::translate(glm::mat4(1.0f), renderable.worldPosition);
-	renderable.rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(renderable.rotationAngle), glm::vec3(0.f, 0.f, 1.f));
-	renderable.scaleMat = glm::scale(glm::mat4(1.0f), renderable.scale);
-	renderable.modelMat = renderable.translationMat * renderable.rotationMat * renderable.scaleMat;
+	for (int i = 0; i < renderableInstances.size(); i++)
+	{
+		renderableInstances[i].Update();
+	}
 
 	glfwPollEvents();
 }
@@ -87,7 +102,10 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	renderable.Draw();
+	for (int i = 0; i < renderableInstances.size(); i++)
+	{
+		renderableInstances[i].Render();
+	}
 
 	glfwSwapBuffers(Window);
 }
