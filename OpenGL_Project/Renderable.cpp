@@ -28,6 +28,8 @@ Renderable::Renderable(std::vector<GLfloat> _data, std::vector<GLuint> _indices)
 	VAO = NULL;
 	VBO = NULL;
 	EBO = NULL;
+
+	initialized = false;
 }
 
 
@@ -37,6 +39,13 @@ Renderable::~Renderable()
 
 void Renderable::Init()
 {
+	if (initialized) 
+	{
+		return;
+	}
+
+	initialized = true;
+
 	//Generate The VAO 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -50,7 +59,6 @@ void Renderable::Init()
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), &data.front(), GL_STATIC_DRAW);
-
 
 	//Set Vertex Attribute Info, This Is How To Interpret The Vertex Data
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);

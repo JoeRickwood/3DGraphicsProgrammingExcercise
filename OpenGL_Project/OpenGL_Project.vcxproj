@@ -142,28 +142,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Components.cpp" />
-    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ObjectInstance.cpp" />
     <ClCompile Include="Renderable.cpp" />
-    <ClCompile Include="RenderableInstance.cpp" />
-    <ClCompile Include="ShaderLoader.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderableLoader.cpp" />
+    <ClCompile Include="GraphicsLoader.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Components.h" />
-    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="ObjectInstance.h" />
     <ClInclude Include="Renderable.h" />
-    <ClInclude Include="RenderableInstance.h" />
-    <ClInclude Include="ShaderLoader.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderableLoader.h" />
+    <ClInclude Include="GraphicsLoader.h" />
+    <ClInclude Include="Tests.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PositionOnly.vert" />
-    <None Include="Resources\Shaders\FixedColor.frag" />
-    <None Include="Resources\Shaders\FixedTriangle.vert" />
-    <None Include="Resources\Shaders\VertexColor.frag" />
     <None Include="Resources\Shaders\VertexColorFade.frag" />
     <None Include="Resources\Shaders\WorldSpace.vert" />
-    <None Include="VertexColor.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

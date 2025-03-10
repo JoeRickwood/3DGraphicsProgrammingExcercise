@@ -10,8 +10,7 @@ out vec3 FragColor;
 
 void main() 
 {
-
-	gl_Position = ModelMatrix * vec4(Position, 1.0f);
+	gl_Position = (ModelMatrix * vec4(Position, 1.0f));
 
 	FragColor = Color;
 

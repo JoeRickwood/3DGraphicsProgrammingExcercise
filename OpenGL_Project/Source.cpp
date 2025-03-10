@@ -1,28 +1,38 @@
-#include "RenderableInstance.h"
+#include "ObjectInstance.h"
 #include "Components.h"
 
 //Window Width And Height Of The Application (Pixels)
 static int windowWidth = 800;
 static int windowHeight = 800;
 
+//Global Variables To Use In Main, Update + Render Functions
 GLFWwindow* Window;
 
-std::vector<RenderableInstance> renderableInstances;
+std::vector<ObjectInstance*> objects;
 
+//Forward Declare Functions For Later
 void InitialSetup();
 void Update();
 void Render();
 void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height);
 
+void TestButton() {
+	std::cout << "Hello";
+}
+
 int main() 
 {
-	renderableInstances = 
+	//We Initialize The Renderable Loader BEFORE We Set Our Rendereable Instances On Screen
+	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
+	RenderableLoader::Instance().Init();
+
+	objects =
 	{
-		RenderableInstance(RenderableType::Quad, glm::vec3(0.5f, 0.5f, 0.f), 45.f, glm::vec3(0.5f, 0.5f, 1.f)),
-		RenderableInstance(RenderableType::Quad, glm::vec3(-0.5f, 0.5f, 0.f), 17.f, glm::vec3(0.5f, 0.5f, 1.f)),
+		new ObjectInstance("Hexagon 1")
 	};
 
-	renderableInstances[0].AddComponent<InputMove>();
+	objects[0]->AddComponent<Tests>(3.f, 0.5f, 45.f);
+	objects[0]->AddComponent<Renderer>(RenderableType::Hexagon);
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -43,8 +53,8 @@ int main()
 		return -1;
 	}
 
+	//Make The Window The Current Context Of GLFW
 	glfwMakeContextCurrent(Window);
-
 
 	if (glewInit() != GLEW_OK)
 	{
@@ -55,9 +65,11 @@ int main()
 		return -1;
 	}
 
-
+	//Setup All Objects In Project
 	InitialSetup();
+	RenderableLoader::Instance().LinkRenderables();
 
+	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(Window) == false) 
 	{
 		Update();
@@ -70,47 +82,43 @@ int main()
 	return 0;
 }
 
+//Sets Up Objects + Other GLFW Parameters
 void InitialSetup() 
 {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glViewport(0, 0, windowWidth, windowHeight);
 
-	InputManager::Instance().Init();
-
-	ShaderLoader::Instance().InitializeShaderPrograms();
-
-	for (int i = 0; i < renderableInstances.size(); i++)
-	{
-		renderableInstances[i].Init();
-	}
-	
+	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
 }
 
+//Update Is Called Once Every Frame BEFORE Render
 void Update() 
 {
-	for (int i = 0; i < renderableInstances.size(); i++)
+	for (int i = 0; i < objects.size(); i++)
 	{
-		renderableInstances[i].Update();
+		objects[i]->Update();
 	}
 
 	glfwPollEvents();
 }
 
+//Render Is Called After Update And Draws Objects To The Screen
 void Render() 
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (int i = 0; i < renderableInstances.size(); i++)
+	for (int i = 0; i < objects.size(); i++)
 	{
-		renderableInstances[i].Render();
+		objects[i]->Render();
 	}
 
 	glfwSwapBuffers(Window);
 }
 
+//On Window Resized Callback Links To The glfwWindowSizefun
 void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height) 
 {
-	glViewport(0, 0, _Width, _Height);
+	glViewport(0, 0, _Width, _Height);	
 }

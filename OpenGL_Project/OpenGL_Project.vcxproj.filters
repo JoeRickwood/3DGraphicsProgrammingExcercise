@@ -13,60 +13,66 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{36cd928a-eadb-4051-b99a-39253613febe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{54f38f45-1eb9-40b7-9eb7-0c91434eba4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderLoader.cpp">
+    <ClCompile Include="GraphicsLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderableInstance.cpp">
+    <ClCompile Include="RenderableLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components.cpp">
+    <ClCompile Include="ObjectInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Button.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ShaderLoader.h">
+    <ClInclude Include="GraphicsLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Renderable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderableInstance.h">
+    <ClInclude Include="RenderableLoader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Tests.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\FixedColor.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\FixedTriangle.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PositionOnly.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="VertexColor.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\VertexColor.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\Shaders\VertexColorFade.frag">
       <Filter>Resource Files</Filter>
     </None>
