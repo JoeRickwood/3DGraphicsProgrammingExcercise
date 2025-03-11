@@ -79,5 +79,13 @@
     <None Include="Resources\Shaders\WorldSpace.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="TextureSpace.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Test.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

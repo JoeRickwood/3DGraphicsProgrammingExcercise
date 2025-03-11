@@ -44,6 +44,5 @@ public:
 	void Draw();
 
 	friend class Renderer;
-
 };
 

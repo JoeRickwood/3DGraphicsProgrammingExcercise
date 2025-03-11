@@ -21,6 +21,8 @@ void Tests::Update()
 
 	parent->position = glm::vec3(x, y, 0.f);
 	parent->rotation = glm::vec3(0.f, 0.f, rot);
+
+	parent->scale = glm::vec3(1.f) * lerp(0.25f, 0.75f, (sin(time) + 1.f) / 2.f); //Assuming 0.5f Is Default Scale, 0.25 Is 50% and 0.75 is 150%
 }
 
 void Tests::ShaderUpdate()

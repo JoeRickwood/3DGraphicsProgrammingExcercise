@@ -1,13 +1,14 @@
 #pragma once
-#include "RenderableLoader.h"
 #include "ObjectInstance.h"
 
 class Renderer : public Component
 {
 public:
 	Renderable* renderable; //Points To Renderable Object From The RenderableLoader Static Class
+	ShaderType shader;
 
-	Renderer(RenderableType _type = RenderableType::Quad);
+
+	Renderer(RenderableType _type = RenderableType::Quad, ShaderType _shader = ShaderType::VertexColors);
 	~Renderer();
 
 	void Render() override;

@@ -20,18 +20,23 @@ public:
 	static GraphicsLoader& Instance() { static GraphicsLoader shaderLoader; return shaderLoader; }
 
 	GLuint GetShaderProgram(int _ID);
+	GLuint GetTexture(int _ID);
 	void InitializeShaderPrograms();
+	void InitializeTextures();
 
 private:
 	GraphicsLoader();
 	~GraphicsLoader();
 
 	std::vector<GLuint> shaderPrograms;
+	std::vector<GLuint> textures;
 
 	static GLuint CreateShaderProgram(const char* VertexShaderFilename, const char* FragmentShaderFilename);
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
 	static std::string ReadShaderFile(const char* filename);
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
+
+	static GLuint CreateTexture(std::string filename);
 };
 
 
@@ -70,3 +75,21 @@ static float lerp(float a, float b, float t)
 {
 	return ((b - a) * t) + a;
 }
+
+
+class Texture 
+{
+public:
+	int width;
+	int height;
+	int components;
+
+	Texture();
+	~Texture() {};
+};
+
+enum ShaderType
+{
+	VertexColors = 0,
+	Texture = 1
+};

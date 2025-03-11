@@ -1,4 +1,9 @@
+#pragma once
 #include "GraphicsLoader.h" 
+
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 GraphicsLoader::GraphicsLoader(void) {}
 GraphicsLoader::~GraphicsLoader(void) {}
@@ -96,12 +101,71 @@ void GraphicsLoader::PrintErrorDetails(bool isShader, GLuint id, const char* nam
 	std::cout << &log[0] << std::endl;
 }
 
+GLuint GraphicsLoader::CreateTexture(std::string filename)
+{
+	int width;
+	int height;
+	int components;
+	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &components, 0);
+
+	if (data == nullptr) {
+		std::cout << "Texture Not Loaded";
+	}
+
+	stbi_info(filename.c_str(), &width, &height, &components);
+
+	if (stbi_failure_reason()) {
+		std::cout << stbi_failure_reason();
+	}
+
+	GLuint ret = NULL;
+
+	//Create And Bind New Texture
+	glGenTextures(1, &ret);
+	glBindTexture(GL_TEXTURE_2D, ret);
+
+	data = stbi_load(filename.c_str(), &width, &height, &components, 0);
+
+	//Check If Is RGBA Or just RGB
+	GLint LoadedComponents = (components == 4) ? GL_RGBA : GL_RGB;
+
+	//Populate Texture Wuth IMage Data
+	glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0,
+				components, GL_UNSIGNED_BYTE, data);
+
+	//Generate Mipmaps, Free Memory And Unbind texture
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return ret;
+}
+
+
 void GraphicsLoader::InitializeShaderPrograms()
 {
-	shaderPrograms.push_back(GraphicsLoader::CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColorFade.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColorFade.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/TextureSpace.frag"));
+}
+
+void GraphicsLoader::InitializeTextures()
+{
+	textures.push_back(CreateTexture("Resources/Test.png"));
 }
 
 GLuint GraphicsLoader::GetShaderProgram(int _ID)
 {
 	return shaderPrograms[_ID];
+}
+
+GLuint GraphicsLoader::GetTexture(int _ID)
+{
+	return textures[_ID];
+}
+
+Texture::Texture()
+{
+	components = 0;
+	height = 0;
+	width = 0;
 }

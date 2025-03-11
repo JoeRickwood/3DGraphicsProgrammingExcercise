@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(RenderableType _type)
+Renderer::Renderer(RenderableType _type, ShaderType _shader)
 {
 	renderable = RenderableLoader::Instance().GetRenderable(_type);
 
@@ -8,6 +8,8 @@ Renderer::Renderer(RenderableType _type)
 	rotationMat = glm::mat4();
 	scaleMat = glm::mat4();
 	modelMat = glm::mat4();
+
+	shader = _shader;
 }
 
 Renderer::~Renderer()
@@ -17,10 +19,14 @@ Renderer::~Renderer()
 void Renderer::Render()
 {
 	//Set The New Shader Program
-	glUseProgram(GraphicsLoader::Instance().GetShaderProgram(0));
+	glUseProgram(GraphicsLoader::Instance().GetShaderProgram(shader));
 
-	GLint ModelMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(0), "ModelMatrix");
+	GLint ModelMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ModelMatrix");
 	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(0));
+	glUniform1i(glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Texture0"), 0);
 
 	parent->ShaderUpdate();
 

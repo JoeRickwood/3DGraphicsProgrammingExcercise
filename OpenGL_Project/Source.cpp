@@ -1,6 +1,7 @@
 #include "ObjectInstance.h"
 #include "Components.h"
 
+
 //Window Width And Height Of The Application (Pixels)
 static int windowWidth = 800;
 static int windowHeight = 800;
@@ -31,8 +32,7 @@ int main()
 		new ObjectInstance("Hexagon 1")
 	};
 
-	objects[0]->AddComponent<Tests>(3.f, 0.5f, 45.f);
-	objects[0]->AddComponent<Renderer>(RenderableType::Hexagon);
+	objects[0]->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture);
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -77,7 +77,6 @@ int main()
 		Render();
 	}
 
-
 	glfwTerminate();
 	return 0;
 }
@@ -89,6 +88,7 @@ void InitialSetup()
 	glViewport(0, 0, windowWidth, windowHeight);
 
 	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
+	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
 }

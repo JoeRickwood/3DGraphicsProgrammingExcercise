@@ -14,9 +14,9 @@ void RenderableLoader::Init()
 		Renderable( //Tri
 		{
 			//Position          // Color
-			-0.5f, -0.25f, 0.0f,   1.0f, 0.0f, 0.0f,
-			0.5f, -0.25f, 0.0f,	 0.0f, 1.0f, 0.0f,
-			0.f, 0.25f, 0.0f,	 0.0f, 0.0f, 1.0f,
+			-0.5f, -0.25f, 0.0f,   1.0f, 0.0f, 0.0f,	0.0f, 1.0f,
+			0.5f, -0.25f, 0.0f,	 0.0f, 1.0f, 0.0f,		0.0f, 1.0f,
+			0.f, 0.25f, 0.0f,	 0.0f, 0.0f, 1.0f,		0.0f, 1.0f,
 		},
 
 		{
@@ -26,11 +26,11 @@ void RenderableLoader::Init()
 
 		Renderable( //Quad
 		{
-			//Position          // Color
-			-0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, 0.0f,	 0.0f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.0f,	 0.0f, 0.0f, 1.0f,
-			0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f
+			//Position          // Color            //Texture Coords
+			-0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f,	 0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+			0.5f, 0.5f, 0.0f,	 0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+			0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  1.0f, 1.0f
 		},
 
 		{
@@ -42,13 +42,13 @@ void RenderableLoader::Init()
 		Renderable( //Hexagon
 		{
 			//Position                   // Color
-			0.0f, 0.0f, 0.0f,            1.0f, 1.0f, 1.0f,
-			0.0f, 0.5f, 0.0f,	         1.0f, 0.0f, 0.0f,
-			-adjacent, opposite, 0.0f,	 1.0f, 1.0f, 0.0f,
-			-adjacent, -opposite, 0.0f,  0.0f, 1.0f, 0.0f,
-			0.0f, -0.5f, 0.0f,           0.0f, 1.0f, 1.0f,
-			adjacent, -opposite, 0.0f,   0.0f, 0.0f, 1.0f,
-			adjacent, opposite, 0.0f,    1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 0.0f,            1.0f, 1.0f, 1.0f,		0.0f, 1.0f,
+			0.0f, 0.5f, 0.0f,	         1.0f, 0.0f, 0.0f,		0.0f, 1.0f,
+			-adjacent, opposite, 0.0f,	 1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
+			-adjacent, -opposite, 0.0f,  0.0f, 1.0f, 0.0f,		0.0f, 1.0f,
+			0.0f, -0.5f, 0.0f,           0.0f, 1.0f, 1.0f,		0.0f, 1.0f,
+			adjacent, -opposite, 0.0f,   0.0f, 0.0f, 1.0f,		0.0f, 1.0f,
+			adjacent, opposite, 0.0f,    1.0f, 0.0f, 1.0f,		0.0f, 1.0f,
 		},
 
 		{

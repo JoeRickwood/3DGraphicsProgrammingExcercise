@@ -1,11 +1,1 @@
-﻿  Button.cpp
-C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Button.cpp(30,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Button.cpp(30,22): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  ObjectInstance.cpp
-  Renderer.cpp
-C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Renderer.cpp(30,55): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  Source.cpp
-  Tests.cpp
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  OpenGL_Project.vcxproj -> C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\OpenGL_Project.exe
+﻿  OpenGL_Project.vcxproj -> C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\OpenGL_Project.exe
