@@ -45,6 +45,18 @@
     <ClCompile Include="Tests.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsLoader.h">
@@ -71,6 +83,18 @@
     <ClInclude Include="Tests.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\VertexColorFade.frag">
@@ -79,7 +103,7 @@
     <None Include="Resources\Shaders\WorldSpace.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="TextureSpace.frag">
+    <None Include="Resources\Shaders\TextureSpace.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

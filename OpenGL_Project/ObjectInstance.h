@@ -34,7 +34,7 @@ public:
 
 
 	template <typename T, typename... Args>
-	Component* AddComponent(Args&&... args)
+	T* AddComponent(Args&&... args)
 	{
 		T* a = new T(std::forward<Args>(args)...);
 

@@ -103,6 +103,11 @@ void GraphicsLoader::PrintErrorDetails(bool isShader, GLuint id, const char* nam
 
 GLuint GraphicsLoader::CreateTexture(std::string filename)
 {
+	stbi_set_flip_vertically_on_load(true);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	int width;
 	int height;
 	int components;
@@ -110,12 +115,6 @@ GLuint GraphicsLoader::CreateTexture(std::string filename)
 
 	if (data == nullptr) {
 		std::cout << "Texture Not Loaded";
-	}
-
-	stbi_info(filename.c_str(), &width, &height, &components);
-
-	if (stbi_failure_reason()) {
-		std::cout << stbi_failure_reason();
 	}
 
 	GLuint ret = NULL;
@@ -130,13 +129,22 @@ GLuint GraphicsLoader::CreateTexture(std::string filename)
 	GLint LoadedComponents = (components == 4) ? GL_RGBA : GL_RGB;
 
 	//Populate Texture Wuth IMage Data
-	glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0,
-				components, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, LoadedComponents, width, height, 0,
+				LoadedComponents, GL_UNSIGNED_BYTE, data);
+
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//Generate Mipmaps, Free Memory And Unbind texture
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(data);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	//glDisable(GL_BLEND);
 
 	return ret;
 }

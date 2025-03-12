@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsLoader.h"
+#include "Input.h"
 
 //This Tells The RenderableInstance What Renderable To Use At Its "Stamp"
 enum RenderableType : int
@@ -41,7 +41,6 @@ public:
 	~Renderable();
 
 	void Init();
-	void Draw();
 
 	friend class Renderer;
 };

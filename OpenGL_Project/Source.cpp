@@ -33,6 +33,10 @@ int main()
 	};
 
 	objects[0]->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture);
+	Animator* anim = objects[0]->AddComponent<Animator>(4.f);
+	anim->AddAnimation(Animation(0, 8, 1, 1));
+	anim->AddAnimation(Animation(0, 8, 1, 8));
+	objects[0]->AddComponent<Player>();
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -72,6 +76,8 @@ int main()
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(Window) == false) 
 	{
+		Time::Instance().Update();
+
 		Update();
 
 		Render();
@@ -89,6 +95,8 @@ void InitialSetup()
 
 	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
 	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
+
+	Input::Instance().Init();
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
 }

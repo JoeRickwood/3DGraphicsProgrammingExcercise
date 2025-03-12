@@ -1,6 +1,4 @@
 #pragma once
-
-// Library Includes
 #include <iostream>
 #include "windows.h"
 #include <string>
@@ -13,6 +11,11 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+
+#include "Time.h"
+
+// Library Includes
+
 
 class GraphicsLoader
 {

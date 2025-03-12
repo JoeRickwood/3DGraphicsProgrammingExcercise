@@ -142,29 +142,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animator.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderableLoader.cpp" />
     <ClCompile Include="GraphicsLoader.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Tests.cpp" />
+    <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animator.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="ObjectInstance.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderableLoader.h" />
     <ClInclude Include="GraphicsLoader.h" />
     <ClInclude Include="Tests.h" />
+    <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\TextureSpace.frag" />
     <None Include="Resources\Shaders\VertexColorFade.frag" />
     <None Include="Resources\Shaders\WorldSpace.vert" />
-    <None Include="TextureSpace.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Test.png" />
