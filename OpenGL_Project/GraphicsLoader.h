@@ -27,6 +27,8 @@ public:
 	void InitializeShaderPrograms();
 	void InitializeTextures();
 
+	glm::mat4 viewMatrix;
+
 private:
 	GraphicsLoader();
 	~GraphicsLoader();

@@ -1,4 +1,5 @@
 #pragma once
+#include "Physics.h"
 #include "Animator.h"
 
 class Player : public Component 
@@ -17,8 +18,8 @@ public:
 private:
 	Renderer* playerRenderer;
 	Animator* animator;
+	PhysicsObject* physicsObject;
 
-	float gravity;
 	bool isGrounded;
 	bool jumpLock;
 	float jumpResetTimer;

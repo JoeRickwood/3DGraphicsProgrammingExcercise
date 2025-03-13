@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(RenderableType _type, ShaderType _shader)
+Renderer::Renderer(RenderableType _type, ShaderType _shader, int _textureID)
 {
 	renderable = RenderableLoader::Instance().GetRenderable(_type);
 
@@ -10,6 +10,8 @@ Renderer::Renderer(RenderableType _type, ShaderType _shader)
 	modelMat = glm::mat4();
 
 	shader = _shader;
+
+	textureID = _textureID;
 
 	flipX = false;
 	flipY = false;
@@ -48,7 +50,7 @@ void Renderer::Render()
 	glUniform2f(UVFrameTRLoc, frame.topRight.x, frame.topRight.y);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(0));
+	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
 	glUniform1i(glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Texture0"), 0);
 
 	parent->ShaderUpdate();
@@ -77,7 +79,7 @@ void Renderer::Update()
 
 	glm::mat4 aspectMat = glm::scale(glm::mat4(1.0f), glm::vec3(800.f / (float)width, 800.f / (float)height, 1.f));
 
-	modelMat = aspectMat * translationMat * rotationMat * scaleMat;
+	modelMat = aspectMat * translationMat * GraphicsLoader::Instance().viewMatrix * rotationMat * scaleMat;
 }
 
 void Renderer::SetUVFrame(Frame frame)

@@ -1,18 +1,12 @@
 #include "ObjectInstance.h"
 
-//template <typename... Args>
-ObjectInstance::ObjectInstance(std::string _name/*, Args&&... args */)
+ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale)
 {
 	name = _name;
 
-	position = glm::vec3(0.f, 0.f, 0.f);
-	rotation = glm::vec3(0.f, 0.f, 0.f);
-	scale = glm::vec3(1.f, 1.f, 1.f);
-
-	/*for (auto t : args)
-	{	
-		AddComponent<Args>(t);
-	}  */
+	position = _position;
+	rotation = _rotation;
+	scale = _scale;
 }
 
 ObjectInstance::~ObjectInstance()

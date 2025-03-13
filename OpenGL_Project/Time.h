@@ -8,6 +8,7 @@ public:
 
 	float deltaTime;
 
+	void Init();
 	void Update();
 private:
 	Time();

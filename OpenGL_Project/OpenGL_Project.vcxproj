@@ -144,13 +144,18 @@
   <ItemGroup>
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderableLoader.cpp" />
     <ClCompile Include="GraphicsLoader.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="Time.cpp" />
@@ -158,14 +163,19 @@
   <ItemGroup>
     <ClInclude Include="Animator.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="MapGenerator.h" />
     <ClInclude Include="ObjectInstance.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderableLoader.h" />
     <ClInclude Include="GraphicsLoader.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Tests.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>

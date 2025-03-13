@@ -1,5 +1,11 @@
 #include "Time.h"
 
+void Time::Init()
+{
+	newT = std::chrono::high_resolution_clock::now();
+	oldT = newT;
+}
+
 void Time::Update()
 {
 	oldT = newT;

@@ -4,3 +4,8 @@
 
 #include "Animator.h"
 #include "Player.h"
+
+#include "PhysicsObject.h"
+#include "Collider.h"
+
+#include "MapGenerator.h"

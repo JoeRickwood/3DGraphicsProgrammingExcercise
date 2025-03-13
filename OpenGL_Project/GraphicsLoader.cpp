@@ -159,6 +159,10 @@ void GraphicsLoader::InitializeShaderPrograms()
 void GraphicsLoader::InitializeTextures()
 {
 	textures.push_back(CreateTexture("Resources/Test.png"));
+
+	textures.push_back(CreateTexture("Resources/Grass.png"));
+	textures.push_back(CreateTexture("Resources/Dirt.png"));
+	textures.push_back(CreateTexture("Resources/Stone.png"));
 }
 
 GLuint GraphicsLoader::GetShaderProgram(int _ID)

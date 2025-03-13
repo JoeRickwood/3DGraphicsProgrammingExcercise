@@ -6,7 +6,13 @@ Player::Player()
 	speed = 1.f;
 
 	isGrounded = false;
-	gravity = 0.0f;
+
+	jumpLock = false;
+	jumpResetTimer = 0.f;
+
+	playerRenderer = nullptr;
+	animator = nullptr;
+	physicsObject = nullptr;
 }
 
 Player::~Player()
@@ -17,14 +23,12 @@ void Player::Init()
 {
 	playerRenderer = parent->GetComponent<Renderer>();
 	animator = parent->GetComponent<Animator>();
-
-
-	parent->position = glm::vec3(0.0f, 0.0f, 0.0f);
+	physicsObject = parent->GetComponent<PhysicsObject>();
 }
 
 void Player::Update()
 {
-	isGrounded = parent->position.y - 0.55f <= -1.f;
+	isGrounded = Physics::Instance().CheckPoint(glm::vec3(parent->position.x, physicsObject->collider->GetRect()->bottom - 0.025f, 0.0f));
 
 	jumpResetTimer -= Time::Instance().deltaTime;
 
@@ -57,30 +61,25 @@ void Player::Update()
 		{
 			jumpLock = true;
 			jumpResetTimer = 0.2f;
-			gravity = 4.f;
+			physicsObject->velocity.y = 4.f;
 		}
 		else
 		{
-			gravity = -1.f;
+			physicsObject->velocity.y = -1.f;
 			jumpLock = false;
 		}
 
 	}
 	else 
 	{
-		gravity -= Time::Instance().deltaTime * 9.81f;
+		physicsObject->velocity.y -= Time::Instance().deltaTime * 9.81f;
 	}
 
-	parent->position += glm::vec3(input * speed, gravity, 0.f) * Time::Instance().deltaTime;
+	physicsObject->velocity.x = input * speed;
 
-	if (parent->position.y - 0.55f < -1.f)
-	{
-		float difference = -1.f - (parent->position.y - 0.55f);
+	GraphicsLoader::Instance().viewMatrix = glm::translate(glm::mat4(1.0f), parent->position * -1.f);
 
-		parent->position.y += difference;
-	}
-
-	std::cout << parent->position.y << std::endl;
+	//std::cout << parent->position.y;
 }
 
 

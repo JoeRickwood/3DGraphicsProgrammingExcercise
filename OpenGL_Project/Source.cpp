@@ -1,6 +1,5 @@
-#include "ObjectInstance.h"
-#include "Components.h"
-
+#include "Scene.h"
+#include "Physics.h"
 
 //Window Width And Height Of The Application (Pixels)
 static int windowWidth = 800;
@@ -9,7 +8,7 @@ static int windowHeight = 800;
 //Global Variables To Use In Main, Update + Render Functions
 GLFWwindow* Window;
 
-std::vector<ObjectInstance*> objects;
+Scene scene;
 
 //Forward Declare Functions For Later
 void InitialSetup();
@@ -17,26 +16,27 @@ void Update();
 void Render();
 void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height);
 
-void TestButton() {
-	std::cout << "Hello";
-}
-
 int main() 
 {
 	//We Initialize The Renderable Loader BEFORE We Set Our Rendereable Instances On Screen
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
 	RenderableLoader::Instance().Init();
 
-	objects =
-	{
-		new ObjectInstance("Hexagon 1")
-	};
-
-	objects[0]->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture);
-	Animator* anim = objects[0]->AddComponent<Animator>(4.f);
+	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.f), glm::vec3(0.5f, 0.5f, 0.5f));
+	player->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 0);
+	Animator* anim = player->AddComponent<Animator>(4.f);
 	anim->AddAnimation(Animation(0, 8, 1, 1));
 	anim->AddAnimation(Animation(0, 8, 1, 8));
-	objects[0]->AddComponent<Player>();
+	player->AddComponent<Collider>(glm::vec3(0.5f, 1.0f, 1.0f));
+	player->AddComponent<PhysicsObject>();
+	player->AddComponent<Player>();
+
+
+	ObjectInstance* floor = new ObjectInstance("Floor", glm::vec3(-50.f, -11.f, 0.0f));
+	floor->AddComponent<MapGenerator>(glm::vec2(0.4f, 0.35f), glm::vec2(100, 10));
+
+	scene.AddObject(player);
+	scene.AddObject(floor);
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -80,6 +80,8 @@ int main()
 
 		Update();
 
+		Physics::Instance().ResolveCollisions();
+
 		Render();
 	}
 
@@ -90,12 +92,13 @@ int main()
 //Sets Up Objects + Other GLFW Parameters
 void InitialSetup() 
 {
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0.6f, 0.6f, 1.0f, 1.0f);
 	glViewport(0, 0, windowWidth, windowHeight);
 
 	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
 	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
 
+	Time::Instance().Init();
 	Input::Instance().Init();
 
 	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
@@ -104,10 +107,7 @@ void InitialSetup()
 //Update Is Called Once Every Frame BEFORE Render
 void Update() 
 {
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Update();
-	}
+	scene.Update();
 
 	glfwPollEvents();
 }
@@ -117,10 +117,7 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Render();
-	}
+	scene.Render();
 
 	glfwSwapBuffers(Window);
 }
