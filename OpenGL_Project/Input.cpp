@@ -8,6 +8,10 @@ bool Input::GetKey(int key)
 void Input::Init()
 {
 	keystates = new bool[GLFW_KEY_LAST];
+	for (int i = 0; i < GLFW_KEY_LAST; i++)
+	{
+		keystates[i] = false;
+	}
 
 	GLFWwindow* window = glfwGetCurrentContext();
 

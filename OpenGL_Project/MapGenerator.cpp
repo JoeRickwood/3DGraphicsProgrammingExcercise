@@ -1,6 +1,7 @@
 #include "MapGenerator.h"
 #include "Collider.h"
 #include "Renderer.h"
+#include "Block.h"
 
 
 MapGenerator::MapGenerator(glm::vec2 _tileSize, glm::vec2 _mapSize)
@@ -19,6 +20,7 @@ void MapGenerator::AddTile(glm::vec2 _position, BlockType _type)
 	ObjectInstance* tile = new ObjectInstance("Tile " + tiles.size(), glm::vec3(_position.x * tileSize.x, _position.y * tileSize.y, 0.f), glm::vec3(0.f), glm::vec3(tileSize.x, tileSize.y, 0.0f));
 	tile->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, _type);
 	tile->AddComponent<Collider>();
+	tile->AddComponent<Block>();
 
 	tiles.push_back(tile);
 }
@@ -76,4 +78,28 @@ void MapGenerator::Render()
 	{
 		tile->Render();
 	}
+}
+
+ObjectInstance* MapGenerator::GetTile(glm::vec3 _position)
+{
+	for (int i = 0; i < tiles.size(); i++)
+	{
+		if(tiles[i] == nullptr)
+		{
+			continue;
+		}
+
+		if (tiles[i]->GetComponent<Collider>() == nullptr)
+		{
+			continue;
+		}
+
+		if (tiles[i]->GetComponent<Collider>()->GetRect()->Contains(_position))
+		{
+			std::cout << tiles[i]->position.x << "," << tiles[i]->position.y << std::endl;
+			return tiles[i];
+		}
+	}
+
+	return nullptr;
 }

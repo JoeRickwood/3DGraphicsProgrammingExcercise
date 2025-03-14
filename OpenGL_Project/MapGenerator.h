@@ -22,6 +22,9 @@ public:
 	void Update()override;
 	void Render()override;
 
+
+	ObjectInstance* GetTile(glm::vec3 _position);
+
 private:
 	std::vector<ObjectInstance*> tiles;
 	glm::vec2 tileSize;

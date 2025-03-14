@@ -12,6 +12,7 @@ PhysicsObject::PhysicsObject()
 
 PhysicsObject::~PhysicsObject()
 {
+	Physics::Instance().RemoveObject(this);
 }
 
 void PhysicsObject::Init()

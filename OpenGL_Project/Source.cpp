@@ -8,8 +8,6 @@ static int windowHeight = 800;
 //Global Variables To Use In Main, Update + Render Functions
 GLFWwindow* Window;
 
-Scene scene;
-
 //Forward Declare Functions For Later
 void InitialSetup();
 void Update();
@@ -22,7 +20,7 @@ int main()
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
 	RenderableLoader::Instance().Init();
 
-	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.f), glm::vec3(0.5f, 0.5f, 0.5f));
+	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.f), glm::vec3(0.45f, 0.45f, 0.5f));
 	player->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 0);
 	Animator* anim = player->AddComponent<Animator>(4.f);
 	anim->AddAnimation(Animation(0, 8, 1, 1));
@@ -32,11 +30,11 @@ int main()
 	player->AddComponent<Player>();
 
 
-	ObjectInstance* floor = new ObjectInstance("Floor", glm::vec3(-50.f, -11.f, 0.0f));
-	floor->AddComponent<MapGenerator>(glm::vec2(0.4f, 0.35f), glm::vec2(100, 10));
+	ObjectInstance* floor = new ObjectInstance("Map", glm::vec3(-50.f, -11.f, 0.0f));
+	floor->AddComponent<MapGenerator>(glm::vec2(0.5f, 0.5f), glm::vec2(100, 10));
 
-	scene.AddObject(player);
-	scene.AddObject(floor);
+	Scene::Current().AddObject(player);
+	Scene::Current().AddObject(floor);
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -107,7 +105,7 @@ void InitialSetup()
 //Update Is Called Once Every Frame BEFORE Render
 void Update() 
 {
-	scene.Update();
+	Scene::Current().Update();
 
 	glfwPollEvents();
 }
@@ -117,7 +115,7 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	scene.Render();
+	Scene::Current().Render();
 
 	glfwSwapBuffers(Window);
 }

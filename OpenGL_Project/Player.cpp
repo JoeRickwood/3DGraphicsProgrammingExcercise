@@ -1,4 +1,7 @@
 #include "Player.h"
+#include "Scene.h"
+#include "MapGenerator.h"
+#include "Block.h"
 
 Player::Player()
 {
@@ -79,7 +82,34 @@ void Player::Update()
 
 	GraphicsLoader::Instance().viewMatrix = glm::translate(glm::mat4(1.0f), parent->position * -1.f);
 
-	//std::cout << parent->position.y;
+
+	if (Input::Instance().GetKey(GLFW_KEY_DOWN)) 
+	{
+		Mine(glm::vec2(0.f, -0.45f));
+	}
+	else if (Input::Instance().GetKey(GLFW_KEY_UP))
+	{
+		Mine(glm::vec2(0.f, 0.45f));
+	}
+	else if (Input::Instance().GetKey(GLFW_KEY_LEFT))
+	{
+		Mine(glm::vec2(-0.45f, 0.0f));
+	}
+	else if (Input::Instance().GetKey(GLFW_KEY_RIGHT))
+	{
+		Mine(glm::vec2(0.45f, 0.0f));
+	}
+}
+
+void Player::Mine(glm::vec2 direction)
+{
+	MapGenerator* map = Scene::Current().FindObject("Map")->GetComponent<MapGenerator>();
+
+	ObjectInstance* obj = map->GetTile(parent->position + glm::vec3(direction.x, direction.y, 0.0f));
+	if (obj != nullptr)
+	{
+		obj->GetComponent<Block>()->AttackBlock(Time::Instance().deltaTime * 100.f);
+	}
 }
 
 

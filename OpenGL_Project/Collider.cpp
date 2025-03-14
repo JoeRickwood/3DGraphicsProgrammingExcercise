@@ -12,6 +12,7 @@ Collider::Collider(glm::vec2 _size)
 
 Collider::~Collider()
 {
+	Physics::Instance().RemoveCollider(this);
 }
 
 void Collider::Update()

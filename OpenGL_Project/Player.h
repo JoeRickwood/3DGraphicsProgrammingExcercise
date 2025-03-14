@@ -10,6 +10,7 @@ public:
 
 	void Init()override;
 	void Update()override;
+	void Mine(glm::vec2 direction);
 
 	float speed = 1.f;
 	float input = 0.f;

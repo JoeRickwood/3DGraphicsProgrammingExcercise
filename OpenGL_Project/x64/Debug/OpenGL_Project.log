@@ -1,6 +1,2 @@
-﻿  MapGenerator.cpp
-C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MapGenerator.cpp(35,53): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MapGenerator.cpp(42,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Source.cpp
-  Generating Code...
+﻿  Player.cpp
   OpenGL_Project.vcxproj -> C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\OpenGL_Project.exe
