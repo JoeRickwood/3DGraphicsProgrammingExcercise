@@ -81,7 +81,7 @@ void Player::Update()
 	physicsObject->velocity.x = input * speed;
 
 	GraphicsLoader::Instance().viewMatrix = glm::translate(glm::mat4(1.0f), parent->position * -1.f);
-
+	GraphicsLoader::Instance().zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.f / GraphicsLoader::Instance().orthographicSize));
 
 	if (Input::Instance().GetKey(GLFW_KEY_DOWN)) 
 	{

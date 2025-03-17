@@ -79,7 +79,7 @@ void Renderer::Update()
 
 	glm::mat4 aspectMat = glm::scale(glm::mat4(1.0f), glm::vec3(800.f / (float)width, 800.f / (float)height, 1.f));
 
-	modelMat = aspectMat * translationMat * GraphicsLoader::Instance().viewMatrix * rotationMat * scaleMat;
+	modelMat = GraphicsLoader::Instance().zoomMatrix * aspectMat * translationMat * GraphicsLoader::Instance().viewMatrix * rotationMat * scaleMat;
 }
 
 void Renderer::SetUVFrame(Frame frame)

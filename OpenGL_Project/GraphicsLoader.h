@@ -32,6 +32,9 @@ public:
 
 
 	glm::mat4 viewMatrix;
+	glm::mat4 zoomMatrix;
+
+	float orthographicSize = 1.5f;
 
 private:
 	GraphicsLoader();
