@@ -96,7 +96,6 @@ ObjectInstance* MapGenerator::GetTile(glm::vec3 _position)
 
 		if (tiles[i]->GetComponent<Collider>()->GetRect()->Contains(_position))
 		{
-			std::cout << tiles[i]->position.x << "," << tiles[i]->position.y << std::endl;
 			return tiles[i];
 		}
 	}

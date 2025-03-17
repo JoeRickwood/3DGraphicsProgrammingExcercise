@@ -33,8 +33,19 @@ int main()
 	ObjectInstance* floor = new ObjectInstance("Map", glm::vec3(-50.f, -11.f, 0.0f));
 	floor->AddComponent<MapGenerator>(glm::vec2(0.5f, 0.5f), glm::vec2(100, 10));
 
+
+	ObjectInstance* hexagon = new ObjectInstance("Hexagon", glm::vec3(0.F, 0.F, 0.F));
+	hexagon->AddComponent<Renderer>(RenderableType::Hexagon, ShaderType::VertexColors, 0);
+	hexagon->AddComponent<Tests>(3.f, 0.5f, 45.f);
+
+	ObjectInstance* hexagonSecond = new ObjectInstance("Hexagon2", glm::vec3(0.F, 0.F, 0.F));
+	hexagonSecond->AddComponent<Renderer>(RenderableType::Hexagon, ShaderType::VertexColors, 0);
+	hexagonSecond->AddComponent<Tests>(2.f, 0.5f, 45.f);
+
 	Scene::Current().AddObject(player);
 	Scene::Current().AddObject(floor);
+	Scene::Current().AddObject(hexagon);
+	Scene::Current().AddObject(hexagonSecond);
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();

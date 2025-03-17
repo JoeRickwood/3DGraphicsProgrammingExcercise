@@ -27,6 +27,10 @@ public:
 	void InitializeShaderPrograms();
 	void InitializeTextures();
 
+
+	//Camera Stuff
+
+
 	glm::mat4 viewMatrix;
 
 private:
