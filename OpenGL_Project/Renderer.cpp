@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(RenderableType _type, ShaderType _shader, int _textureID)
+Renderer::Renderer(RenderableType _type, ShaderType _shader, int _textureID, ProjectionType _projectionType)
 {
 	renderable = RenderableLoader::Instance().GetRenderable(_type);
 
@@ -12,6 +12,8 @@ Renderer::Renderer(RenderableType _type, ShaderType _shader, int _textureID)
 	shader = _shader;
 
 	textureID = _textureID;
+
+	projection = _projectionType;
 
 	flipX = false;
 	flipY = false;
@@ -29,6 +31,12 @@ void Renderer::Render()
 
 	GLint ModelMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ModelMatrix");
 	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
+
+	GLint ViewMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ViewMatrix");
+	glUniformMatrix4fv(ViewMatLoc, 1, GL_FALSE, glm::value_ptr(GraphicsLoader::Instance().viewMatrix));
+
+	GLint ProjectionMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ProjectionMatrix");
+	glUniformMatrix4fv(ProjectionMatLoc, 1, GL_FALSE, glm::value_ptr(GraphicsLoader::Instance().GetProjectionMatrix(projection)));
 
 	Frame frame = uvFrame;
 
@@ -75,11 +83,12 @@ void Renderer::Update()
 
 	int width = 0;
 	int height = 0;
+
 	glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
 
-	glm::mat4 aspectMat = glm::scale(glm::mat4(1.0f), glm::vec3(800.f / (float)width, 800.f / (float)height, 1.f));
+	//glm::mat4 aspectMat = glm::scale(glm::mat4(1.0f), glm::vec3(800.f / (float)width, 800.f / (float)height, 1.f));
 
-	modelMat = aspectMat * translationMat * GraphicsLoader::Instance().viewMatrix * rotationMat * scaleMat;
+	modelMat = translationMat * rotationMat * scaleMat;
 }
 
 void Renderer::SetUVFrame(Frame frame)

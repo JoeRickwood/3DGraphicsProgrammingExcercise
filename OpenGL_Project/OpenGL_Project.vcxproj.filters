@@ -75,6 +75,12 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PerlinNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsLoader.h">
@@ -131,6 +137,12 @@
     <ClInclude Include="Block.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="PerlinNoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\VertexColorFade.frag">
@@ -140,6 +152,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\TextureSpace.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\ClipSpace.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

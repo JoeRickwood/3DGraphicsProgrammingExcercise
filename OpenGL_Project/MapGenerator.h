@@ -1,6 +1,7 @@
 #pragma once
 #include "ObjectInstance.h"
 
+
 enum BlockType 
 {
 	Grass = 1, 
@@ -11,12 +12,12 @@ enum BlockType
 class MapGenerator : public Component 
 {
 public:
-	MapGenerator(glm::vec2 _tileSize, glm::vec2 _mapSize);
+	MapGenerator(glm::vec3 _tileSize, glm::vec3 _mapSize);
 	~MapGenerator();
 
-	void AddTile(glm::vec2 _position, BlockType _type);
+	void AddTile(glm::vec3 _position, BlockType _type);
 
-	int SampleHeight(float x);
+	int SampleHeight(float x, float z);
 
 	void Init()override;
 	void Update()override;
@@ -27,6 +28,9 @@ public:
 
 private:
 	std::vector<ObjectInstance*> tiles;
-	glm::vec2 tileSize;
-	glm::vec2 mapSize;
+	glm::vec3 tileSize;
+	glm::vec3 mapSize;
+
+	float frequency = 8.0f;
+	int octaves = 8;
 };

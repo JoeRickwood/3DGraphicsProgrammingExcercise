@@ -7,7 +7,8 @@ enum RenderableType : int
 	Triangle = 0,
 	Quad = 1,
 	Hexagon = 2,
-	MAX = 3 //MAX RenderableType Not Used
+	Cube = 3,
+	MAX = 4 //MAX RenderableType Not Used
 };
 
 class Renderer;

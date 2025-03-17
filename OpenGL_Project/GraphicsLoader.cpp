@@ -101,6 +101,40 @@ void GraphicsLoader::PrintErrorDetails(bool isShader, GLuint id, const char* nam
 	std::cout << &log[0] << std::endl;
 }
 
+void GraphicsLoader::CalculateViewMatrix()
+{
+	GraphicsLoader::Instance().viewMatrix = glm::lookAt(
+		GraphicsLoader::Instance().cameraPosition, 
+		GraphicsLoader::Instance().cameraPosition + GraphicsLoader::Instance().cameraLookDir, 
+		GraphicsLoader::Instance().cameraUpDir
+	);
+}
+
+void GraphicsLoader::CalculateProjectionMatrix()
+{
+	float halfWidth = GraphicsLoader::Instance().windowSize.x / 2.0f;
+	float halfheight = GraphicsLoader::Instance().windowSize.x / 2.0f;
+	GraphicsLoader::Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, 0.1f, 100.f);
+
+	float aspectRatio = GraphicsLoader::Instance().windowSize.x / GraphicsLoader::Instance().windowSize.y;
+
+	GraphicsLoader::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(GraphicsLoader::Instance().fieldOfView), aspectRatio, 0.1f, 100.f);
+
+}
+
+glm::mat4 GraphicsLoader::GetProjectionMatrix(ProjectionType _type)
+{
+	switch (_type)
+	{
+		case Orthographic:
+			return orthoProjectionMatrix;
+			break;
+		case Perspective:
+			return perspectiveProjectionMatrix;
+			break;
+	}
+}
+
 GLuint GraphicsLoader::CreateTexture(std::string filename)
 {
 	stbi_set_flip_vertically_on_load(true);
@@ -153,7 +187,7 @@ GLuint GraphicsLoader::CreateTexture(std::string filename)
 void GraphicsLoader::InitializeShaderPrograms()
 {
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColorFade.frag"));
-	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/TextureSpace.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag"));
 }
 
 void GraphicsLoader::InitializeTextures()

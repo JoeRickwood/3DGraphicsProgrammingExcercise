@@ -28,9 +28,10 @@ public:
 	ShaderType shader;
 	int textureID;
 	Frame uvFrame;
+	ProjectionType projection;
 
 
-	Renderer(RenderableType _type = RenderableType::Quad, ShaderType _shader = ShaderType::VertexColors, int _textureID = 0);
+	Renderer(RenderableType _type = RenderableType::Quad, ShaderType _shader = ShaderType::VertexColors, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective);
 	~Renderer();
 
 	void Render() override;

@@ -1,10 +1,6 @@
 #include "Scene.h"
 #include "Physics.h"
 
-//Window Width And Height Of The Application (Pixels)
-static int windowWidth = 800;
-static int windowHeight = 800;
-
 //Global Variables To Use In Main, Update + Render Functions
 GLFWwindow* Window;
 
@@ -20,32 +16,11 @@ int main()
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
 	RenderableLoader::Instance().Init();
 
-	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.f), glm::vec3(0.45f, 0.45f, 0.5f));
-	player->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 0);
-	Animator* anim = player->AddComponent<Animator>(4.f);
-	anim->AddAnimation(Animation(0, 8, 1, 1));
-	anim->AddAnimation(Animation(0, 8, 1, 8));
-	player->AddComponent<Collider>(glm::vec3(0.5f, 1.0f, 1.0f));
-	player->AddComponent<PhysicsObject>();
-	player->AddComponent<Player>();
+	ObjectInstance* test = new ObjectInstance("Test", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+	test->AddComponent<MapGenerator>(glm::vec3(1.f, 1.f, 1.f), glm::vec3(50, 10, 50));
+	test->AddComponent<CameraController>(1.0f);
 
-
-	ObjectInstance* floor = new ObjectInstance("Map", glm::vec3(-50.f, -11.f, 0.0f));
-	floor->AddComponent<MapGenerator>(glm::vec2(0.5f, 0.5f), glm::vec2(100, 10));
-
-
-	ObjectInstance* hexagon = new ObjectInstance("Hexagon", glm::vec3(0.F, 0.F, 0.F));
-	hexagon->AddComponent<Renderer>(RenderableType::Hexagon, ShaderType::VertexColors, 0);
-	hexagon->AddComponent<Tests>(3.f, 0.5f, 45.f);
-
-	ObjectInstance* hexagonSecond = new ObjectInstance("Hexagon2", glm::vec3(0.F, 0.F, 0.F));
-	hexagonSecond->AddComponent<Renderer>(RenderableType::Hexagon, ShaderType::VertexColors, 0);
-	hexagonSecond->AddComponent<Tests>(2.f, 0.5f, 45.f);
-
-	Scene::Current().AddObject(player);
-	Scene::Current().AddObject(floor);
-	Scene::Current().AddObject(hexagon);
-	Scene::Current().AddObject(hexagonSecond);
+	Scene::Current().AddObject(test);
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -55,7 +30,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
 	//Create Window
-	Window = glfwCreateWindow(windowWidth, windowHeight, "OPEN GL EXCERCISE", NULL, NULL);
+	Window = glfwCreateWindow(800, 800, "OPEN GL EXCERCISE", NULL, NULL);
 
 	if(Window == NULL) 
 	{
@@ -91,6 +66,9 @@ int main()
 
 		Physics::Instance().ResolveCollisions();
 
+		GraphicsLoader::CalculateProjectionMatrix();
+		GraphicsLoader::CalculateViewMatrix();
+
 		Render();
 	}
 
@@ -101,8 +79,15 @@ int main()
 //Sets Up Objects + Other GLFW Parameters
 void InitialSetup() 
 {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+
+	glEnable(GL_CULL_FACE);
+
 	glClearColor(0.6f, 0.6f, 1.0f, 1.0f);
-	glViewport(0, 0, windowWidth, windowHeight);
+	glViewport(0, 0, GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y);
 
 	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
 	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
@@ -124,7 +109,7 @@ void Update()
 //Render Is Called After Update And Draws Objects To The Screen
 void Render() 
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Scene::Current().Render();
 
@@ -134,5 +119,8 @@ void Render()
 //On Window Resized Callback Links To The glfwWindowSizefun
 void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height) 
 {
-	glViewport(0, 0, _Width, _Height);	
+	glViewport(0, 0, _Width, _Height);
+
+	GraphicsLoader::Instance().windowSize.x = _Width;
+	GraphicsLoader::Instance().windowSize.y = _Height;
 }

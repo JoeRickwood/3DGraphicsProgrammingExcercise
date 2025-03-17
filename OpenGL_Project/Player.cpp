@@ -80,7 +80,7 @@ void Player::Update()
 
 	physicsObject->velocity.x = input * speed;
 
-	GraphicsLoader::Instance().viewMatrix = glm::translate(glm::mat4(1.0f), parent->position * -1.f);
+	//GraphicsLoader::Instance().viewMatrix = glm::translate(glm::mat4(1.0f), parent->position * -1.f);
 
 
 	if (Input::Instance().GetKey(GLFW_KEY_DOWN)) 
