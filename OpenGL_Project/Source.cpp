@@ -66,8 +66,8 @@ int main()
 
 		Physics::Instance().ResolveCollisions();
 
-		GraphicsLoader::CalculateProjectionMatrix();
-		GraphicsLoader::CalculateViewMatrix();
+		Camera::CalculateProjectionMatrix();
+		Camera::CalculateViewMatrix();
 
 		Render();
 	}

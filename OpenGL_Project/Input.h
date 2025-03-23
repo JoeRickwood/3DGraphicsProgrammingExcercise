@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsLoader.h"
+#include "Camera.h"
 
 class Input
 {

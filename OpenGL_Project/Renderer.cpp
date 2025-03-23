@@ -33,10 +33,10 @@ void Renderer::Render()
 	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
 
 	GLint ViewMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ViewMatrix");
-	glUniformMatrix4fv(ViewMatLoc, 1, GL_FALSE, glm::value_ptr(GraphicsLoader::Instance().viewMatrix));
+	glUniformMatrix4fv(ViewMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().viewMatrix));
 
 	GLint ProjectionMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ProjectionMatrix");
-	glUniformMatrix4fv(ProjectionMatLoc, 1, GL_FALSE, glm::value_ptr(GraphicsLoader::Instance().GetProjectionMatrix(projection)));
+	glUniformMatrix4fv(ProjectionMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().GetProjectionMatrix(projection)));
 
 	Frame frame = uvFrame;
 
