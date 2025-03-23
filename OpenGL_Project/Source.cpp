@@ -17,6 +17,7 @@ int main()
 	RenderableLoader::Instance().Init();
 
 	ObjectInstance* test = new ObjectInstance("Test", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+
 	test->AddComponent<MapGenerator>(glm::vec3(1.f, 1.f, 1.f), glm::vec3(50, 10, 50));
 	test->AddComponent<CameraController>(3.0f);
 

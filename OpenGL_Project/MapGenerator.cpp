@@ -1,7 +1,6 @@
 #include "MapGenerator.h"
 #include "Collider.h"
 #include "Renderer.h"
-#include "Block.h"
 
 #include "PerlinNoise.h"
 
@@ -20,8 +19,6 @@ void MapGenerator::AddTile(glm::vec3 _position, BlockType _type)
 {
 	ObjectInstance* tile = new ObjectInstance("Tile " + tiles.size(), glm::vec3(_position.x * tileSize.x, _position.y * tileSize.y, _position.z * tileSize.z), glm::vec3(0.f), glm::vec3(tileSize.x, tileSize.y, tileSize.z));
 	tile->AddComponent<Renderer>(RenderableType::Cube, ShaderType::Texture, _type);
-	tile->AddComponent<Collider>();
-	tile->AddComponent<Block>();
 
 	tiles.push_back(tile);
 }
