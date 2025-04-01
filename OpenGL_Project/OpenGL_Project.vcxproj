@@ -147,7 +147,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="Input.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -158,7 +157,6 @@
     <ClCompile Include="GraphicsLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Tests.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +166,6 @@
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Components.h" />
-    <ClInclude Include="Input.h" />
     <ClInclude Include="MapGenerator.h" />
     <ClInclude Include="ObjectInstance.h" />
     <ClInclude Include="PerlinNoise.h" />
@@ -179,7 +176,6 @@
     <ClInclude Include="RenderableLoader.h" />
     <ClInclude Include="GraphicsLoader.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Tests.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>

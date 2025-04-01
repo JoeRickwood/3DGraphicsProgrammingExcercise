@@ -35,7 +35,7 @@ void RenderableLoader::Init()
 
 		{
 			0, 1, 2, //First Triangle
-			1, 2, 3  //Second Triangle
+			3, 2, 1  //Second Triangle
 		}
 		),
 

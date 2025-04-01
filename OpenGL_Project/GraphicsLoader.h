@@ -32,6 +32,7 @@ public:
 	void InitializeTextures();
 	
 	glm::vec2 windowSize = glm::vec2(800, 800);
+	GLFWwindow* currentWindow;
 
 private:
 	GraphicsLoader();

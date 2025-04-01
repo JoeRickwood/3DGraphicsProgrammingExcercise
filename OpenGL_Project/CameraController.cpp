@@ -19,9 +19,10 @@ void CameraController::Init()
 void CameraController::Update()
 {
 	input = glm::vec3(
-		(Input::Instance().GetKey(GLFW_KEY_A) == true ? -1.f : 0.f) + (Input::Instance().GetKey(GLFW_KEY_D) == true ? 1.f : 0.f),
-		(Input::Instance().GetKey(GLFW_KEY_W) == true ? 1.f : 0.f) + (Input::Instance().GetKey(GLFW_KEY_S) == true ? -1.f : 0.f),
-		(Input::Instance().GetKey(GLFW_KEY_LEFT_CONTROL) == true ? -1.f : 0.f) + (Input::Instance().GetKey(GLFW_KEY_SPACE) == true ? 1.f : 0.f)
+		(glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_A) == GLFW_PRESS ? -1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_D) == GLFW_PRESS ? 1.f : 0.f),
+		(glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? -1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_SPACE) == GLFW_PRESS ? 1.f : 0.f),
+		(glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_W) == GLFW_PRESS ? 1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_S) == GLFW_PRESS ? -1.f : 0.f)
+		
 	);
 
 	glm::vec3 right = glm::cross(Camera::Instance().cameraLookDir, Camera::Instance().cameraUpDir);

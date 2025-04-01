@@ -1,9 +1,6 @@
 #include "Scene.h"
 #include "Physics.h"
 
-//Global Variables To Use In Main, Update + Render Functions
-GLFWwindow* Window;
-
 //Forward Declare Functions For Later
 void InitialSetup();
 void Update();
@@ -16,10 +13,12 @@ int main()
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
 	RenderableLoader::Instance().Init();
 
-	ObjectInstance* test = new ObjectInstance("Test", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+	ObjectInstance* test = new ObjectInstance("Test", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 100.f, 100.f));
 
-	test->AddComponent<MapGenerator>(glm::vec3(1.f, 1.f, 1.f), glm::vec3(50, 10, 50));
-	test->AddComponent<CameraController>(3.0f);
+	test->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 0, ProjectionType::Orthographic);
+	Animator* anim = test->AddComponent<Animator>(3.f);
+	anim->AddAnimation(Animation(0, 8, 1, 8));
+	test->AddComponent<CameraController>(250.0f);
 
 	Scene::Current().AddObject(test);
 
@@ -31,11 +30,11 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
 	//Create Window
-	Window = glfwCreateWindow(800, 800, "OPEN GL EXCERCISE", NULL, NULL);
+	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(800, 800, "OPEN GL EXCERCISE", NULL, NULL);
 
-	if(Window == NULL) 
+	if(GraphicsLoader::Instance().currentWindow == NULL)
 	{
-		std::cout << "Error Creating Window, GLFW Failed To Initialize, Terminating Program" << std::endl;
+		std::cout << "Error Creating GraphicsLoader::Instance().currentWindow, GLFW Failed To Initialize, Terminating Program" << std::endl;
 		system("pause");
 
 		glfwTerminate();
@@ -43,7 +42,7 @@ int main()
 	}
 
 	//Make The Window The Current Context Of GLFW
-	glfwMakeContextCurrent(Window);
+	glfwMakeContextCurrent(GraphicsLoader::Instance().currentWindow);
 
 	if (glewInit() != GLEW_OK)
 	{
@@ -59,7 +58,7 @@ int main()
 	RenderableLoader::Instance().LinkRenderables();
 
 	//Application Loop Runs Until The Window Is Set To close
-	while (glfwWindowShouldClose(Window) == false) 
+	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)
 	{
 		Time::Instance().Update();
 
@@ -94,9 +93,8 @@ void InitialSetup()
 	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
 
 	Time::Instance().Init();
-	Input::Instance().Init();
 
-	glfwSetWindowSizeCallback(Window, (GLFWwindowsizefun)OnWindowResized);
+	glfwSetWindowSizeCallback(GraphicsLoader::Instance().currentWindow, (GLFWwindowsizefun)OnWindowResized);
 }
 
 //Update Is Called Once Every Frame BEFORE Render
@@ -114,7 +112,7 @@ void Render()
 
 	Scene::Current().Render();
 
-	glfwSwapBuffers(Window);
+	glfwSwapBuffers(GraphicsLoader::Instance().currentWindow);
 }
 
 //On Window Resized Callback Links To The glfwWindowSizefun

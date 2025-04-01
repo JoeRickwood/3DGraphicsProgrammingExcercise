@@ -14,7 +14,5 @@ public:
 
 private:
 	glm::vec3 input;
-
-
 };
 

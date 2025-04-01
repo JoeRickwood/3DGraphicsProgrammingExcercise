@@ -1,5 +1,5 @@
 #pragma once
-#include "Input.h"
+#include "Camera.h"
 
 //This Tells The RenderableInstance What Renderable To Use At Its "Stamp"
 enum RenderableType : int
