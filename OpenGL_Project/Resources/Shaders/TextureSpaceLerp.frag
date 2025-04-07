@@ -4,6 +4,9 @@ in vec3 FragColor;
 in vec2 FragTexCoords;
 
 uniform sampler2D Texture0;
+uniform sampler2D Texture1;
+
+uniform float Time;
 
 uniform vec2 UVFrameBottomLeft;
 uniform vec2 UVFrameTopRight;
@@ -18,5 +21,8 @@ void main()
         float v = mix(UVFrameBottomLeft.y, UVFrameTopRight.y, FragTexCoords.y);
 
     	// Sample texture from the correct region
-    	FinalColor = texture(Texture0, vec2(u, v));
+
+        vec4 color = mix(texture(Texture0, vec2(u, v)), texture(Texture1, vec2(u, v)), (sin(Time) + 1f) * 0.5f);
+
+    	FinalColor = mix(texture(Texture0, vec2(u, v)), texture(Texture1, vec2(u, v)), (sin(Time) + 1f) * 0.5f);
 }

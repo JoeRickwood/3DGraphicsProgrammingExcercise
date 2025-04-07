@@ -3,8 +3,8 @@
 void RenderableLoader::Init()
 {
 	//Values For The Hexagon Vertices 
-	float opposite = 0.5f * sinf(3.141592653589793238462 / 6.0f);
-	float adjacent = 0.5f * cosf(3.141592653589793238462 / 6.0f);
+	float opposite = 0.5f * sinf(3.1415f / 6.0f);
+	float adjacent = 0.5f * cosf(3.1415f / 6.0f);
 
 	//Set The Renderables Index Based On The RenderableType Enum
 	//Renderable Instances Will Point To These Renderables To Render To The Screen

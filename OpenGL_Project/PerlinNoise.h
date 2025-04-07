@@ -50,9 +50,9 @@ static double Interpolate(double a, double b, double x) {  // cosine interpolati
 }
 
 static double InterpolatedNoise(int i, double x, double y) {
-    int integer_X = x;
+    int integer_X = (int)x;
     double fractional_X = x - integer_X;
-    int integer_Y = y;
+    int integer_Y = (int)y;
     double fractional_Y = y - integer_Y;
 
     double v1 = SmoothedNoise(i, integer_X, integer_Y),

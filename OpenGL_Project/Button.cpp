@@ -29,7 +29,7 @@ void Button::Update()
 
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 
-	if (bounds.Contains(xpos, ypos) && state == GLFW_PRESS && presslock == false)
+	if (bounds.Contains((float)xpos, (float)ypos) && state == GLFW_PRESS && presslock == false)
 	{
 		Click();
 		presslock = true;

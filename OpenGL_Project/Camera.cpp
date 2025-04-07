@@ -2,12 +2,16 @@
 
 Camera::Camera()
 {
+	orthoProjectionMatrix = glm::mat4();
+	perspectiveProjectionMatrix = glm::mat4();
+	viewMatrix = glm::mat4();
 }
 
 Camera::~Camera()
 {
 }
 
+//Calculates The View Matrix Of Camera, This Takes Into Count The Camera Position, And Direction Its Facing
 void Camera::CalculateViewMatrix()
 {
 	Camera::Instance().viewMatrix = glm::lookAt(
@@ -17,10 +21,12 @@ void Camera::CalculateViewMatrix()
 	);
 }
 
+//Calcualtes The Projection Matrix Used By Objects And Passed Into The Model Matrix
 void Camera::CalculateProjectionMatrix()
 {
 	float halfWidth = GraphicsLoader::Instance().windowSize.x / 2.0f;
-	float halfheight = GraphicsLoader::Instance().windowSize.x / 2.0f;
+	float halfheight = GraphicsLoader::Instance().windowSize.y / 2.0f;
+
 	Camera::Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, 0.01f, 10000.f);
 
 	float aspectRatio = GraphicsLoader::Instance().windowSize.x / GraphicsLoader::Instance().windowSize.y;
@@ -28,6 +34,7 @@ void Camera::CalculateProjectionMatrix()
 	Camera::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, 0.1f, 100.f);
 }
 
+//Gets The Projection Matrix Of Either Orthographic Or Perspective, Returns Default Perspective
 glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 {
 	switch (_type)
@@ -38,5 +45,7 @@ glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 	case Perspective:
 		return perspectiveProjectionMatrix;
 		break;
+	default:
+		return perspectiveProjectionMatrix;
 	}
 }

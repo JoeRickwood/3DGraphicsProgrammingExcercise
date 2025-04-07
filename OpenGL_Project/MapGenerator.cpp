@@ -34,7 +34,7 @@ void MapGenerator::Init()
 	{
 		for (int j = 0; j < mapSize.x; j++)
 		{
-			float sample = ValueNoise_2D(i * 1.f, j * 1.f) * 30.f;
+			float sample = (float)ValueNoise_2D(i * 1.f, j * 1.f) * 30.f;
 
 			for (int k = 0; k < sample; k++)
 			{

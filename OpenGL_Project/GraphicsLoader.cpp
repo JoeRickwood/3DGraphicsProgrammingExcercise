@@ -5,7 +5,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-GraphicsLoader::GraphicsLoader(void) {}
+GraphicsLoader::GraphicsLoader(void) 
+{
+	currentWindow = nullptr;
+}
+
 GraphicsLoader::~GraphicsLoader(void) {}
 
 GLuint GraphicsLoader::CreateShaderProgram(const char* vertexShaderFilename, const char* fragmentShaderFilename)
@@ -45,7 +49,7 @@ GLuint GraphicsLoader::CreateShader(GLenum shaderType, const char* shaderName)
 
 
 	const char* shaderChars = shaderTxt.c_str();
-	int shaderLength = shaderTxt.size();
+	int shaderLength = (int)shaderTxt.size();
 	
 	// Populate the Shader Object (ID) and compile
 	glShaderSource(shaderID, 1, &shaderChars, &shaderLength);
@@ -154,15 +158,15 @@ void GraphicsLoader::InitializeShaderPrograms()
 {
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColorFade.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpaceLerp.frag"));
+
 }
 
 void GraphicsLoader::InitializeTextures()
 {
 	textures.push_back(CreateTexture("Resources/Test.png"));
-
-	textures.push_back(CreateTexture("Resources/Grass.png"));
-	textures.push_back(CreateTexture("Resources/Dirt.png"));
-	textures.push_back(CreateTexture("Resources/Stone.png"));
+	textures.push_back(CreateTexture("Resources/Test1.png"));
+	textures.push_back(CreateTexture("Resources/Test2.png"));
 }
 
 GLuint GraphicsLoader::GetShaderProgram(int _ID)

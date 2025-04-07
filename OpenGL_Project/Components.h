@@ -7,4 +7,8 @@
 #include "Collider.h"
 
 #include "MapGenerator.h"
-#include "CameraController.h";
+#include "CameraController.h"
+
+#include "TestLerp.h"
+#include "TestRepeat.h"
+#include "TestCamera.h"

@@ -17,6 +17,7 @@ public:
 	~ObjectInstance();
 
 
+	//Gets The Component Of Type T And Returns The Pointer To It
 	template<typename T>
 	T *GetComponent()
 	{
@@ -32,7 +33,7 @@ public:
 		return nullptr;
 	}
 
-
+	//Adds A Custom Component Of Type T To The Object, Then Returns The Pointer To It
 	template <typename T, typename... Args>
 	T* AddComponent(Args&&... args)
 	{

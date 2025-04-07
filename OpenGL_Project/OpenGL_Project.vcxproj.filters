@@ -69,6 +69,18 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestRepeat.h">
+      <Filter>Header Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCamera.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRepeat.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLerp.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsLoader.h">
@@ -122,6 +134,12 @@
     <ClInclude Include="CameraController.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="TestLerp.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCamera.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\VertexColorFade.frag">
@@ -134,6 +152,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\ClipSpace.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\TextureSpaceLerp.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

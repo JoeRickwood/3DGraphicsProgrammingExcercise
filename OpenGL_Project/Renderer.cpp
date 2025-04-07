@@ -24,6 +24,7 @@ Renderer::~Renderer()
 {
 }
 
+
 void Renderer::Render()
 {
 	//Set The New Shader Program
@@ -66,7 +67,7 @@ void Renderer::Render()
 	//Draw Renderable
 	glBindVertexArray(renderable->VAO);
 
-	glDrawElements(GL_TRIANGLES, renderable->indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)renderable->indices.size(), GL_UNSIGNED_INT, 0);
 
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);

@@ -101,5 +101,6 @@ public:
 enum ShaderType
 {
 	VertexColors = 0,
-	Texture = 1
+	Texture = 1,
+	LerpTest = 2
 };
