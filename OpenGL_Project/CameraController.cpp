@@ -1,10 +1,15 @@
 #include "CameraController.h"
+#include "Time.h"
 
-CameraController::CameraController(float _moveSpeed)
+CameraController::CameraController(float _moveSpeed, float _distance)
 {
 	moveSpeed = _moveSpeed;
+	distance = _distance;
 
-	input = glm::vec3(0.f, 0.f, 0.f);
+	targetPosition = glm::vec3(0.f, 0.f, 0.f);
+	position = glm::vec3(0.f, 0.f, 0.f);
+
+	t = 0.f;
 }
 
 CameraController::~CameraController()
@@ -18,16 +23,13 @@ void CameraController::Init()
 
 void CameraController::Update()
 {
-	input = glm::vec3(
-		(glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_A) == GLFW_PRESS ? -1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_D) == GLFW_PRESS ? 1.f : 0.f),
-		(glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? -1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_SPACE) == GLFW_PRESS ? 1.f : 0.f),
-		(glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_W) == GLFW_PRESS ? 1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_S) == GLFW_PRESS ? -1.f : 0.f)
-		
-	);
+	t += Time::Instance().deltaTime * moveSpeed;
 
-	glm::vec3 right = glm::cross(Camera::Instance().cameraLookDir, Camera::Instance().cameraUpDir);
+	float x = sinf(t) * distance;
+	float z = cosf(t) * distance;
 
-	glm::vec3 velocity = (Camera::Instance().cameraLookDir * input.y) + (right * input.x) + (glm::vec3(0.f, 1.f, 0.f) * input.z);
+	position = glm::vec3(x, Camera::Instance().cameraPosition.y, z);
 
-	Camera::Instance().cameraPosition += velocity * Time::Instance().deltaTime * moveSpeed;
+	Camera::Instance().cameraPosition = position;
+	Camera::Instance().cameraLookDir = targetPosition - position;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "GraphicsLoader.h" 
-
+#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -156,17 +156,12 @@ GLuint GraphicsLoader::CreateTexture(std::string filename)
 
 void GraphicsLoader::InitializeShaderPrograms()
 {
-	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColorFade.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag"));
-	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpaceLerp.frag"));
-
 }
 
 void GraphicsLoader::InitializeTextures()
 {
 	textures.push_back(CreateTexture("Resources/Test.png"));
-	textures.push_back(CreateTexture("Resources/Test1.png"));
-	textures.push_back(CreateTexture("Resources/Test2.png"));
 }
 
 GLuint GraphicsLoader::GetShaderProgram(int _ID)
@@ -177,11 +172,4 @@ GLuint GraphicsLoader::GetShaderProgram(int _ID)
 GLuint GraphicsLoader::GetTexture(int _ID)
 {
 	return textures[_ID];
-}
-
-Texture::Texture()
-{
-	components = 0;
-	height = 0;
-	width = 0;
 }

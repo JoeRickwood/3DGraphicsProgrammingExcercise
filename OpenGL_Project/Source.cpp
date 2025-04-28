@@ -1,5 +1,7 @@
+#include <iostream>
+
 #include "Scene.h"
-#include "Physics.h"
+#include "Time.h"
 
 //Forward Declare Functions For Later
 void InitialSetup();
@@ -14,45 +16,15 @@ int main()
 	RenderableLoader::Instance().Init();
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* test = new ObjectInstance("Test", glm::vec3(-100.0f, 50.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 100.f, 100.f));
-	test->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 0, ProjectionType::Orthographic);
-	Animator* anim = test->AddComponent<Animator>(3.f);
-	anim->AddAnimation(Animation(0, 4, 2, 8));
-	test->AddComponent<TestCamera>(2.0f, 150.f);
+	ObjectInstance* test = new ObjectInstance("TestCube", glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+	test->AddComponent<Renderer>(RenderableType::Cube, ShaderType::Texture, 0, ProjectionType::Perspective);
+	test->AddComponent<CameraController>(1.f, 10.f);
 
-	//Object That Interpolates Between Two Textures
-	ObjectInstance* testLerp = new ObjectInstance("TestLerp", glm::vec3(-200.0f, 50.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 100.f, 100.f));
-	testLerp->AddComponent<Renderer>(RenderableType::Quad, ShaderType::LerpTest, 0, ProjectionType::Orthographic);
-	Animator* anim2 = testLerp->AddComponent<Animator>(3.f);
-	anim2->AddAnimation(Animation(0, 4, 2, 8));
-	testLerp->AddComponent<TestLerp>(1.f, 0, 1);
-
-	//Repeating Texture Shows 2x2 Textures Mapped Correctly
-	ObjectInstance* testRepeat = new ObjectInstance("TestRepeat", glm::vec3(150.0f, -25.0f, 0.0f), glm::vec3(0.f), glm::vec3(250.f, 250.f, 250.f));
-	testRepeat->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 2, ProjectionType::Orthographic);
-	testRepeat->AddComponent<TestRepeat>(2);
-
-
-	//Object That Is Flipped Left
-	ObjectInstance* testFlipLeft = new ObjectInstance("TestFlipLeft", glm::vec3(-200.0f, -100.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 100.f, 100.f));
-	testFlipLeft->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 2, ProjectionType::Orthographic);
-	testFlipLeft->GetComponent<Renderer>()->FlipX(true); //Flip The Renderer X Value, To Make Object Face Left
-
-	//Object That Is Flipped Right
-	ObjectInstance* testFlipRight = new ObjectInstance("TestFlipRight", glm::vec3(-100.0f, -100.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 100.f, 100.f));
-	testFlipRight->AddComponent<Renderer>(RenderableType::Quad, ShaderType::Texture, 2, ProjectionType::Orthographic);
-
-
-	Scene::Current().AddObject(testRepeat);
 	Scene::Current().AddObject(test);
-	Scene::Current().AddObject(testLerp);
-	Scene::Current().AddObject(testFlipLeft);
-	Scene::Current().AddObject(testFlipRight);
-
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
-
+	
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -91,8 +63,6 @@ int main()
 		Time::Instance().Update();
 
 		Update();
-
-		Physics::Instance().ResolveCollisions();
 
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();

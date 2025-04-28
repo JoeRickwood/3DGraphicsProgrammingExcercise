@@ -26,12 +26,13 @@ class Renderer : public Component
 public:
 	Renderable* renderable; //Points To Renderable Object From The RenderableLoader Static Class
 	ShaderType shader;
+
 	int textureID;
 	Frame uvFrame;
 	ProjectionType projection;
 
 
-	Renderer(RenderableType _type = RenderableType::Quad, ShaderType _shader = ShaderType::VertexColors, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective);
+	Renderer(RenderableType _type = RenderableType::Quad, ShaderType _shader = ShaderType::Texture, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective);
 	~Renderer();
 
 	void Render() override;

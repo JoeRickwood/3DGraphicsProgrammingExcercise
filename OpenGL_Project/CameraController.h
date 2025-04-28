@@ -5,14 +5,17 @@ class CameraController : public Component
 {
 public:
 	float moveSpeed;
+	float distance;
 
-	CameraController(float _moveSpeed);
+	CameraController(float _moveSpeed, float _distance);
 	~CameraController();
 
 	void Init()override;
 	void Update()override;
 
 private:
-	glm::vec3 input;
+	glm::vec3 position;
+	glm::vec3 targetPosition;
+	float t;
 };
 

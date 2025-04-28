@@ -14,7 +14,7 @@ public:
 	//Camera Stuff
 	glm::mat4 viewMatrix;
 
-	glm::vec3 cameraPosition = glm::vec3(3.0f, 6.0f, 5.0f);
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 10.0f);
 	glm::vec3 cameraLookDir = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraUpDir = glm::vec3(0.0f, 1.0f, 0.0f);

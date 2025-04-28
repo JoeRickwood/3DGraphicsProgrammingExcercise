@@ -1,6 +1,4 @@
 #pragma once
-#include <iostream>
-#include "windows.h"
 #include <string>
 #include <vector>
 #include<fstream>
@@ -11,8 +9,6 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
-
-#include "Time.h"
 
 // Library Includes
 enum ProjectionType
@@ -28,6 +24,7 @@ public:
 
 	GLuint GetShaderProgram(int _ID);
 	GLuint GetTexture(int _ID);
+
 	void InitializeShaderPrograms();
 	void InitializeTextures();
 	
@@ -86,21 +83,7 @@ static float lerp(float a, float b, float t)
 	return ((b - a) * t) + a;
 }
 
-
-class Texture 
-{
-public:
-	int width;
-	int height;
-	int components;
-
-	Texture();
-	~Texture() {};
-};
-
 enum ShaderType
 {
-	VertexColors = 0,
-	Texture = 1,
-	LerpTest = 2
+	Texture = 0,
 };

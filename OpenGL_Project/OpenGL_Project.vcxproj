@@ -145,54 +145,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Animator.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
-    <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
-    <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderableLoader.cpp" />
     <ClCompile Include="GraphicsLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="TestCamera.cpp" />
-    <ClCompile Include="TestLerp.cpp" />
-    <ClCompile Include="TestRepeat.cpp" />
-    <ClCompile Include="TestRepeat.h" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animator.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
-    <ClInclude Include="Collider.h" />
     <ClInclude Include="Components.h" />
-    <ClInclude Include="MapGenerator.h" />
     <ClInclude Include="ObjectInstance.h" />
     <ClInclude Include="PerlinNoise.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderableLoader.h" />
     <ClInclude Include="GraphicsLoader.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="TestCamera.h" />
-    <ClInclude Include="TestLerp.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\ClipSpace.vert" />
     <None Include="Resources\Shaders\TextureSpace.frag" />
-    <None Include="Resources\Shaders\TextureSpaceLerp.frag" />
-    <None Include="Resources\Shaders\VertexColorFade.frag" />
-    <None Include="Resources\Shaders\WorldSpace.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Test.png" />
