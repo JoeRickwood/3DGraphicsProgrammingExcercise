@@ -2,13 +2,16 @@
 
 layout (location = 0) in vec3 Position;
 layout (location = 1) in vec2 TexCoords;
+layout (location = 2) in vec3 Normal;
 
-layout (location = 2) in vec4 InstancedMVP0;
-layout (location = 3) in vec4 InstancedMVP1;
-layout (location = 4) in vec4 InstancedMVP2;
-layout (location = 5) in vec4 InstancedMVP3;
+layout (location = 3) in vec4 InstancedMVP0;
+layout (location = 4) in vec4 InstancedMVP1;
+layout (location = 5) in vec4 InstancedMVP2;
+layout (location = 6) in vec4 InstancedMVP3;
 
 out vec2 FragTexCoords;
+out vec3 FragNormal;
+out vec3 FragPos;
 
 void main() 
 {
@@ -22,4 +25,6 @@ void main()
 	gl_Position = InstancedMVP * vec4(Position, 1.0f);
 
 	FragTexCoords = TexCoords;
+	FragNormal = mat3(transpose(inverse(InstancedMVP))) * Normal;
+	FragPos = vec3(InstancedMVP * vec4(Position, 1.0f));
 }

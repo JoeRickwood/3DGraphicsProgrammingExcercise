@@ -61,4 +61,14 @@ void Mesh::Init()
 		(GLvoid*)(offsetof(VertexStandard, VertexStandard::texcoord)));
 
 	glEnableVertexAttribArray(1);
+	
+	glVertexAttribPointer(
+		2,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(VertexStandard),
+		(GLvoid*)(offsetof(VertexStandard, VertexStandard::normal)));
+
+	glEnableVertexAttribArray(2);
 }

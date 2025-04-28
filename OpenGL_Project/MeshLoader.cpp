@@ -78,6 +78,15 @@ void MeshLoader::LoadMesh(std::string filepath)
 					};
 				}
 
+				if (tinyobjVertex.normal_index >= 0) //Negative means No Normal Data
+				{
+					vertex.normal = {
+						attrib.normals[3 * size_t(tinyobjVertex.normal_index) + 0],
+						attrib.normals[3 * size_t(tinyobjVertex.normal_index) + 1],
+						attrib.normals[3 * size_t(tinyobjVertex.normal_index) + 2]
+					};
+				}
+
 				//Push vertex into list once filled with data
 				vertices.push_back(vertex);
 			}

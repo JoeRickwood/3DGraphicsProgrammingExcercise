@@ -6,17 +6,20 @@ struct VertexStandard
 public:
 	glm::vec3 position;
 	glm::vec2 texcoord;
+	glm::vec3 normal;
 
 	VertexStandard() 
 	{
 		position = glm::vec3();
 		texcoord = glm::vec2();
+		normal = glm::vec3();
 	};
 
-	VertexStandard(glm::vec3 _position, glm::vec2 _texcoord) 
+	VertexStandard(glm::vec3 _position, glm::vec2 _texcoord, glm::vec3 _normal) 
 	{
 		position = _position;
 		texcoord = _texcoord;
+		normal = _normal;
 	};
 };
 

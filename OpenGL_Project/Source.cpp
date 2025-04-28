@@ -23,9 +23,9 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.5f, 0.5f, 0.5f));
-	auto cur = tree->AddComponent<InstancedRenderer>(0, ShaderType::Instanced, 0, ProjectionType::Perspective);
-	tree->AddComponent<CameraController>(0.05f, 250.f);
+	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f, -5.f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+	auto cur = tree->AddComponent<Renderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
+	tree->AddComponent<CameraController>(0.05f, 45.f);
 
 	Scene::Current().AddObject(tree);
 
@@ -58,16 +58,6 @@ int main()
 	InitialSetup();
 
 	MeshLoader::Instance().LinkMeshes();
-
-	for (int x = -25; x < 25; x++)
-	{
-		for (int y = -25; y < 25; y++)
-		{
-			cur->AddInstance(glm::vec3(x * 5, -10.f, y * 5), glm::vec3(0.f), glm::vec3(1.0f, 1.0f, 1.0f));
-		}
-	}
-
-	cur->InitInstancing();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)

@@ -14,14 +14,11 @@ Renderer::Renderer(int _type, ShaderType _shader, int _textureID, ProjectionType
 	textureID = _textureID;
 
 	projection = _projectionType;
-
-	flipX = false;
-	flipY = false;
-	SetUVFrame(uvFrame);
 }
 
 Renderer::~Renderer()
 {
+
 }
 
 void Renderer::InitializeRenderingInfo()
@@ -38,24 +35,9 @@ void Renderer::InitializeRenderingInfo()
 	GLint ProjectionMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ProjectionMatrix");
 	glUniformMatrix4fv(ProjectionMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().GetProjectionMatrix(projection)));
 
-	Frame frame = uvFrame;
+	GLint CameraLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "CameraPos");
+	glUniform3f(CameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
 
-	if (flipX)
-	{
-		frame.FlipX();
-	}
-
-	if (flipY)
-	{
-		frame.FlipY();
-	}
-
-	//Set The UV Frame, Mostly Used For Animation But Also To Reposition The Bounds Of The Image
-	GLint UVFrameBLLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "UVFrameBottomLeft");
-	glUniform2f(UVFrameBLLoc, frame.bottomLeft.x, frame.bottomLeft.y);
-
-	GLint UVFrameTRLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "UVFrameTopRight");
-	glUniform2f(UVFrameTRLoc, frame.topRight.x, frame.topRight.y);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
@@ -92,21 +74,6 @@ void Renderer::Update()
 	modelMat = translationMat * rotationMat * scaleMat;
 }
 
-void Renderer::SetUVFrame(Frame frame)
-{
-	uvFrame = frame;
-}
-
-void Renderer::FlipX(bool state)
-{
-	flipX = state;
-}
-
-void Renderer::FlipY(bool state)
-{
-	flipY = state;
-
-}
 
 Bounds Renderer::GetWorldBounds()
 {
@@ -115,16 +82,4 @@ Bounds Renderer::GetWorldBounds()
 
 	Bounds ret = Bounds((-0.5f * parent->scale.x) + x, (-0.5f * parent->scale.y) + y, (0.5f * parent->scale.x) + x, (0.5f * parent->scale.y) + y);
 	return ret;
-}
-
-void Frame::FlipX()
-{
-	bottomLeft.x = 1.f - bottomLeft.x;
-	topRight.x = 1.f - topRight.x;
-}
-
-void Frame::FlipY()
-{
-	bottomLeft.y = 1.f - bottomLeft.y;
-	topRight.y = 1.f - topRight.y;
 }
