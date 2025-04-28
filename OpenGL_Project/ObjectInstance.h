@@ -1,5 +1,5 @@
 #pragma once
-#include "RenderableLoader.h"
+#include "MeshLoader.h"
 
 class Component;
 

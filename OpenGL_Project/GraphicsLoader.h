@@ -86,4 +86,5 @@ static float lerp(float a, float b, float t)
 enum ShaderType
 {
 	Texture = 0,
+	Instanced = 1
 };

@@ -13,14 +13,7 @@ int main()
 {
 	//We Initialize The Renderable Loader BEFORE We Set Our Rendereable Instances On Screen
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
-	RenderableLoader::Instance().Init();
-
-	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* test = new ObjectInstance("TestCube", glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
-	test->AddComponent<Renderer>(RenderableType::Cube, ShaderType::Texture, 0, ProjectionType::Perspective);
-	test->AddComponent<CameraController>(1.f, 10.f);
-
-	Scene::Current().AddObject(test);
+	MeshLoader::Instance().Init();
 
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -28,6 +21,14 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
+	//Object Which Shows What A Regular Object With Animation Looks Like
+	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.5f, 0.5f, 0.5f));
+	auto cur = tree->AddComponent<InstancedRenderer>(0, ShaderType::Instanced, 0, ProjectionType::Perspective);
+	tree->AddComponent<CameraController>(0.05f, 250.f);
+
+	Scene::Current().AddObject(tree);
+
 
 	//Create Window
 	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(800, 800, "OPEN GL EXCERCISE", NULL, NULL);
@@ -55,7 +56,18 @@ int main()
 
 	//Setup All Objects In Project
 	InitialSetup();
-	RenderableLoader::Instance().LinkRenderables();
+
+	MeshLoader::Instance().LinkMeshes();
+
+	for (int x = -25; x < 25; x++)
+	{
+		for (int y = -25; y < 25; y++)
+		{
+			cur->AddInstance(glm::vec3(x * 5, -10.f, y * 5), glm::vec3(0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+		}
+	}
+
+	cur->InitInstancing();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)

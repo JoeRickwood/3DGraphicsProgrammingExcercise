@@ -25,6 +25,9 @@ void CameraController::Update()
 {
 	t += Time::Instance().deltaTime * moveSpeed;
 
+	Camera::Instance().cameraPosition.y += Time::Instance().deltaTime * (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_W) == GLFW_PRESS ? 1.f : 0.f);
+	Camera::Instance().cameraPosition.y += Time::Instance().deltaTime * (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_S) == GLFW_PRESS ? -1.f : 0.f);
+
 	float x = sinf(t) * distance;
 	float z = cosf(t) * distance;
 

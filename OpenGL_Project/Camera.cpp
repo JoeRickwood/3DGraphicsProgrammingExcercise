@@ -31,7 +31,7 @@ void Camera::CalculateProjectionMatrix()
 
 	float aspectRatio = GraphicsLoader::Instance().windowSize.x / GraphicsLoader::Instance().windowSize.y;
 
-	Camera::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, 0.1f, 100.f);
+	Camera::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, 0.1f, 10000.f);
 }
 
 //Gets The Projection Matrix Of Either Orthographic Or Perspective, Returns Default Perspective

@@ -1,8 +1,8 @@
 #include "Renderer.h"
 
-Renderer::Renderer(RenderableType _type, ShaderType _shader, int _textureID, ProjectionType _projectionType)
+Renderer::Renderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType)
 {
-	renderable = RenderableLoader::Instance().GetRenderable(_type);
+	mesh = MeshLoader::Instance().GetMesh(_type);
 
 	translationMat = glm::mat4();
 	rotationMat = glm::mat4();
@@ -24,8 +24,7 @@ Renderer::~Renderer()
 {
 }
 
-
-void Renderer::Render()
+void Renderer::InitializeRenderingInfo()
 {
 	//Set The New Shader Program
 	glUseProgram(GraphicsLoader::Instance().GetShaderProgram(shader));
@@ -63,16 +62,19 @@ void Renderer::Render()
 	glUniform1i(glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Texture0"), 0);
 
 	parent->ShaderUpdate();
+}
+
+
+void Renderer::Render()
+{
+	InitializeRenderingInfo();
 
 	//Draw Renderable
-	glBindVertexArray(renderable->VAO);
+	glBindVertexArray(mesh->VAO);
 
-	glDrawElements(GL_TRIANGLES, (GLsizei)renderable->indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh->data.size());
 
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-
-	//Unbind The Shader Program
 	glUseProgram(0);
 }
 
@@ -86,8 +88,6 @@ void Renderer::Update()
 	int height = 0;
 
 	glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
-
-	//glm::mat4 aspectMat = glm::scale(glm::mat4(1.0f), glm::vec3(800.f / (float)width, 800.f / (float)height, 1.f));
 
 	modelMat = translationMat * rotationMat * scaleMat;
 }
