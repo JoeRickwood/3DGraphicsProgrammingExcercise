@@ -4,11 +4,9 @@
 //This Tells The RenderableInstance What Renderable To Use At Its "Stamp"
 enum RenderableType : int
 {
-	Triangle = 0,
-	Quad = 1,
-	Hexagon = 2,
-	Cube = 3,
-	MAX = 4 //MAX RenderableType Not Used
+	Quad = 0,
+	Cube = 1,
+	MAX = 2 //MAX RenderableType Not Used
 };
 
 class Renderer;
@@ -16,20 +14,12 @@ class Renderer;
 class Renderable
 {
 private: //Renderables Contain The Base Data To Be Drawn to The Screen, Used As Basically A "Stamp" Which Multiple Instances Can Use
-	std::vector<GLfloat> data = {
-		//Position          // Color
-		-0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f,	 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f,	 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f
-	};
+
+	std::vector<GLfloat> data;
 
 	//Indices Tell The Program Which Vertices To Use For Each Triangle
-	std::vector<GLuint> indices = {
-		0, 1, 2, //First Triangle
-		0, 2, 3  //Second Triangle
-	};
-	
+	std::vector<GLuint> indices;
+
 	GLuint VAO;
 	GLuint VBO;
 	GLuint EBO;
