@@ -17,6 +17,7 @@ public:
 	void Update();
 	void Render();
 	void ShaderUpdate();
+	bool CheckCollision(glm::vec3 _position);
 
 private:
 

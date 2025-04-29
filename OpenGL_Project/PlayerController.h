@@ -9,9 +9,6 @@ private:
 	float jumpHeight = 5.f;
 	float mouseSensitivity = 3.f;
 
-	glm::vec3 velocity;
-	float gravity;
-
 	float jumpResetTimer;
 
 	glm::vec2 mousePos;

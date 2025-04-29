@@ -24,19 +24,27 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.f), glm::vec3(0.f), glm::vec3(100.f, 0.1f, 100.f));
+	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 0.1f, 100.f));
 	auto groundRenderer = ground->AddComponent<Renderer>(0, ShaderType::Texture, 1, ProjectionType::Perspective);
-	groundRenderer->textureTiling = glm::vec2(100.f, 100.f);
+	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
+	ground->AddComponent<Collider>(glm::vec3(200.f, 1.0f, 200.f), glm::vec3(0.f, -0.5f, 0.f));
+
+	ObjectInstance* platform = new ObjectInstance("Platform", glm::vec3(25.0f, 0.3f, 25.0f), glm::vec3(0.f), glm::vec3(20.f, 1.f, 20.f));
+	auto platformRenderer = platform->AddComponent<Renderer>(0, ShaderType::Texture, 1, ProjectionType::Perspective);
+	platformRenderer->textureTiling = glm::vec2(20.f, 20.f);
+	platform->AddComponent<Collider>(glm::vec3(40.f, 1.0f, 40.f), glm::vec3(0.f, 0.f, 0.f));
 
 	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
 	auto cur = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 0, ProjectionType::Perspective);
 
 	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
+	player->AddComponent<PhysicsObject>();
 
 	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(ground);
 	Scene::Current().AddObject(player);
+	Scene::Current().AddObject(platform);
 
 
 	//Create Window

@@ -1,14 +1,12 @@
 #include "PlayerController.h"
 #include "Time.h"
 #include <iostream>
+#include "PhysicsObject.h"
 
 PlayerController::PlayerController(float _moveSpeed, float _height, float _mouseSensitivity)
 {
 	moveSpeed = _moveSpeed;
 	height = _height;
-
-	velocity = glm::vec3();
-	gravity = 0.f;
 
 	jumpResetTimer = 0.f;
 
@@ -25,6 +23,8 @@ PlayerController::~PlayerController()
 
 void PlayerController::Update()
 {
+	auto physicsObject = parent->GetComponent<PhysicsObject>();
+
 	//Camera Rotation
 	prevMousePos = mousePos;
 
@@ -57,12 +57,12 @@ void PlayerController::Update()
 
 
 	//Movement
-	gravity -= Time::Instance().deltaTime * 9.81f;
+	physicsObject->velocity.y -= Time::Instance().deltaTime * 9.81f;
 	jumpResetTimer -= Time::Instance().deltaTime;
 
 	glm::vec3 cameraRight = glm::cross(Camera::Instance().cameraLookDir, Camera::Instance().cameraUpDir);
 
-	velocity =
+	glm::vec3 tmpVelocity =
 		(cameraRight * ((glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_D) == GLFW_PRESS ? 1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_A) == GLFW_PRESS ? -1.f : 0.f)) +
 		Camera::Instance().cameraLookDir * ((glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_W) == GLFW_PRESS ? 1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_S) == GLFW_PRESS ? -1.f : 0.f))) * moveSpeed;
 
@@ -74,30 +74,16 @@ void PlayerController::Update()
 		}
 	}
 
-
-
-	velocity.y = gravity;
+	tmpVelocity.y = physicsObject->velocity.y;
+	physicsObject->velocity = tmpVelocity;
 
 	Camera::Instance().cameraPosition = parent->position + glm::vec3(0.f, height, 0.f);
-
-	float prevY = parent->position.y;
-	parent->position.y += velocity.y * Time::Instance().deltaTime;
-	if (parent->position.y < 0.f) 
-	{
-		velocity.y = 0.f;
-		if (jumpResetTimer <= 0.f) 
-		{
-			gravity = 0.f;
-		}
-		parent->position.y = prevY;
-	}
-
-	parent->position.x += velocity.x * Time::Instance().deltaTime;
-	parent->position.z += velocity.z * Time::Instance().deltaTime;
 }
 
 void PlayerController::Jump()
 {
-	gravity = jumpHeight;
+	auto physicsObject = parent->GetComponent<PhysicsObject>();
+
+	physicsObject->velocity.y = jumpHeight;
 	jumpResetTimer = 0.2f;
 }
