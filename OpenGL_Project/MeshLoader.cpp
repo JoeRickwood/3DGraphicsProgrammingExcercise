@@ -6,7 +6,8 @@
 
 void MeshLoader::Init()
 {
-	LoadMesh("Resources/Tent.obj");
+	LoadMesh("Resources/Cube.obj");
+	LoadMesh("Resources/Test.obj");
 }
 
 void MeshLoader::LinkMeshes()

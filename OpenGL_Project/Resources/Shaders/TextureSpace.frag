@@ -6,16 +6,17 @@ in vec3 FragPos;
 
 
 uniform sampler2D Texture0;
+uniform vec2 Tiling;
 
-uniform float AmbientStrength            = 0.15f;
+uniform float AmbientStrength            = 0.5f;
 uniform vec3 AmbientColor                = vec3(1.f, 1.f, 1.f);
 
 uniform vec3 LightColor                  = vec3(1.f, 1.f, 1.f);
 uniform vec3 LightPos                    = vec3(-300.f, 0.f, 100.f);
 
 uniform vec3 CameraPos;
-uniform float LightSpecularStrength     = 1.0f;
-uniform float ObjectShininess           = 100.0f;
+uniform float LightSpecularStrength     = 0.5f;
+uniform float ObjectShininess           = 35.0f;
 
 
 out vec4 FinalColor;
@@ -37,6 +38,6 @@ void main()
 
     vec4 Light = vec4(Ambient + Diffuse + Specular, 1.0f);
 
-    FinalColor = Light * texture(Texture0, FragTexCoords);
+    FinalColor = Light * texture(Texture0, FragTexCoords * Tiling);
     //FinalColor = vec4(FragNormal, 1.0f);
 }

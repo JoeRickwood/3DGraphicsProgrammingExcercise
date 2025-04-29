@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "Time.h"
+#include "PerlinNoise.h"
 
 //Forward Declare Functions For Later
 void InitialSetup();
@@ -23,15 +24,23 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f, -5.f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
-	auto cur = tree->AddComponent<Renderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
-	tree->AddComponent<CameraController>(0.05f, 45.f);
+	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.f), glm::vec3(0.f), glm::vec3(100.f, 0.1f, 100.f));
+	auto groundRenderer = ground->AddComponent<Renderer>(0, ShaderType::Texture, 1, ProjectionType::Perspective);
+	groundRenderer->textureTiling = glm::vec2(100.f, 100.f);
+
+	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+	auto cur = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 0, ProjectionType::Perspective);
+
+	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
 
 	Scene::Current().AddObject(tree);
+	Scene::Current().AddObject(ground);
+	Scene::Current().AddObject(player);
 
 
 	//Create Window
-	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(800, 800, "OPEN GL EXCERCISE", NULL, NULL);
+	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", glfwGetPrimaryMonitor(), NULL);
 
 	if(GraphicsLoader::Instance().currentWindow == NULL)
 	{
@@ -58,6 +67,19 @@ int main()
 	InitialSetup();
 
 	MeshLoader::Instance().LinkMeshes();
+
+	for (int i = 0; i < 5000; i++)
+	{
+		float x = Noise(3, i, i + 3434) * 100.f;
+		float y = Noise(7, i - 231276, i + 3213) * 100.f;
+
+		float scale = (((rand() % 100) / 100.f) + 0.5f) * 0.25f;
+		float rot = (rand() % 360);
+
+		cur->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
+	}
+
+	cur->InitInstancing();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)

@@ -8,6 +8,7 @@ public:
 	ShaderType shader;
 
 	int textureID;
+	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
 	ProjectionType projection;
 
 	Renderer(int _type = 0, ShaderType _shader = ShaderType::Texture, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective);

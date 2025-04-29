@@ -28,7 +28,7 @@ public:
 	void InitializeShaderPrograms();
 	void InitializeTextures();
 	
-	glm::vec2 windowSize = glm::vec2(800, 800);
+	glm::vec2 windowSize = glm::vec2(1920, 1080);
 	GLFWwindow* currentWindow;
 
 private:

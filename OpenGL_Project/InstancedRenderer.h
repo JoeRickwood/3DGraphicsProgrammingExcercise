@@ -10,7 +10,8 @@ private:
 	std::vector<glm::vec3> rotations;
 	std::vector<glm::vec3> scales;
 
-	std::vector<glm::mat4> InstancedMVPs;
+	std::vector<glm::mat4> ModelMatrixes;
+	glm::mat4 VP;
 
 	GLuint VBO_Instanced;
 

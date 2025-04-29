@@ -38,8 +38,14 @@ void Renderer::InitializeRenderingInfo()
 	GLint CameraLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "CameraPos");
 	glUniform3f(CameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
 
+	GLint TextureTilingLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Tiling");
+	glUniform2f(TextureTilingLoc, textureTiling.x, textureTiling.y);
 
 	glActiveTexture(GL_TEXTURE0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
 	glUniform1i(glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Texture0"), 0);
 
