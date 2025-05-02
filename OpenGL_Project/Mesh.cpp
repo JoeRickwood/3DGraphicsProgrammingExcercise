@@ -71,4 +71,6 @@ void Mesh::Init()
 		(GLvoid*)(offsetof(VertexStandard, VertexStandard::normal)));
 
 	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(0);
 }

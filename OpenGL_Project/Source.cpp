@@ -25,7 +25,7 @@ int main()
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 0.1f, 100.f));
-	auto groundRenderer = ground->AddComponent<Renderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
+	auto groundRenderer = ground->AddComponent<DefaultRenderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
 	ground->AddComponent<Collider>(glm::vec3(200.f, 1.0f, 200.f), glm::vec3(0.f, -0.5f, 0.f));
 
@@ -38,19 +38,24 @@ int main()
 	auto treeRenderer = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 1, ProjectionType::Perspective);
 	auto treeCollider = tree->AddComponent<InstancedCollider>();
 
+	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto grassRenderer = grass->AddComponent<InstancedRenderer>(2, ShaderType::Instanced, 2, ProjectionType::Perspective);
+
 	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f, 10.f, 0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
 	player->AddComponent<PhysicsObject>();
 	player->AddComponent<Collider>(glm::vec3(0.5f, 2.f, 0.5f), glm::vec3(0.f, 0.f, 0.f));
 
 	Scene::Current().AddObject(tree);
+	Scene::Current().AddObject(grass);
+
 	Scene::Current().AddObject(ground);
 	Scene::Current().AddObject(player);
 	Scene::Current().AddObject(platform);
 
 
 	//Create Window
-	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", glfwGetPrimaryMonitor(), NULL);
+	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
 
 	if(GraphicsLoader::Instance().currentWindow == NULL)
 	{
@@ -90,6 +95,19 @@ int main()
 		treeCollider->AddInstance(glm::vec3(1.f, 2.f, 1.f) * scale, glm::vec3(x, 0.f, y));
 	}
 
+	for (int i = 0; i < 5000; i++)
+	{
+		float x = Noise(3, i, i + 3434) * 100.f;
+		float y = Noise(7, i - 231276, i + 3213) * 100.f;
+
+		float scale = (((rand() % 100) / 100.f) + 0.5f) * 1;
+		float rot = (rand() % 360);
+
+		grassRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
+	}
+
+
+	grassRenderer->InitInstancing();
 	treeRenderer->InitInstancing();
 
 	//Application Loop Runs Until The Window Is Set To close
@@ -116,7 +134,6 @@ void InitialSetup()
 	glDepthFunc(GL_LESS);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
-
 	glEnable(GL_CULL_FACE);
 
 	glClearColor(0.6f, 0.6f, 1.0f, 1.0f);

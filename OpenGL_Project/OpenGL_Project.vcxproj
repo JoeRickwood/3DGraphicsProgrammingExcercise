@@ -149,6 +149,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="DefaultRenderer.cpp" />
     <ClCompile Include="InstancedCollider.cpp" />
     <ClCompile Include="InstancedRenderer.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="DefaultRenderer.h" />
     <ClInclude Include="InstancedCollider.h" />
     <ClInclude Include="InstancedRenderer.h" />
     <ClInclude Include="ObjectInstance.h" />

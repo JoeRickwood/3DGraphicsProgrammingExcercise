@@ -38,6 +38,9 @@ void main()
 
     vec4 Light = vec4(Ambient + Diffuse + Specular, 1.0f);
 
+    if(texture(Texture0, FragTexCoords * Tiling).a < 0.5)
+        discard;
+
     FinalColor = Light * texture(Texture0, FragTexCoords * Tiling);
     //FinalColor = vec4(FragNormal, 1.0f);
 }

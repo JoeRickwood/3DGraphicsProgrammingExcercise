@@ -26,6 +26,8 @@ void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 void InstancedRenderer::InitInstancing()
 {
 	//Generate The Instanced VBO
+	glBindVertexArray(mesh->VAO);
+
 	glGenBuffers(1, &VBO_Instanced);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_Instanced);
 	glBufferData(GL_ARRAY_BUFFER, ModelMatrixes.size() * sizeof(glm::mat4), ModelMatrixes.data(), GL_DYNAMIC_DRAW);
@@ -51,6 +53,9 @@ void InstancedRenderer::InitInstancing()
 void InstancedRenderer::Render()
 {
 	InitializeRenderingInfo();
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
 	for (int i = 0; i < drawCount - 1; i++)

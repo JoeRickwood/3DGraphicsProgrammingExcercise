@@ -6,7 +6,7 @@ class MeshLoader
 public:
 	static MeshLoader& Instance() { static MeshLoader shaderLoader; return shaderLoader; }
 
-	std::vector<Mesh> meshes;
+	std::vector<Mesh*> meshes;
 
 	void Init();
 	void LinkMeshes();

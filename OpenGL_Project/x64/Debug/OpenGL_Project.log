@@ -1,2 +1,12 @@
-﻿  InstancedRenderer.cpp
+﻿  PlayerController.cpp
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(42,17): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(42,17): warning C4244:         with
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(42,17): warning C4244:         [
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(42,17): warning C4244:             T=float
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(42,17): warning C4244:         ]
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(43,17): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(43,17): warning C4244:         with
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(43,17): warning C4244:         [
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(43,17): warning C4244:             T=float
+C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\PlayerController.cpp(43,17): warning C4244:         ]
   OpenGL_Project.vcxproj -> C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\OpenGL_Project.exe

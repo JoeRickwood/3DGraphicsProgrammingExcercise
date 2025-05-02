@@ -8,19 +8,21 @@ void MeshLoader::Init()
 {
 	LoadMesh("Resources/Cube.obj");
 	LoadMesh("Resources/Tree.obj");
+	LoadMesh("Resources/Grass.obj");
 }
+
 
 void MeshLoader::LinkMeshes()
 {
 	for (int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Init();
+		meshes[i]->Init();
 	}
 }
 
 Mesh* MeshLoader::GetMesh(int _type)
 {
-	return &meshes[(int)_type]; //Returns Renderable Based On The RenderableType Enum
+	return meshes[(int)_type]; 
 }
 
 void MeshLoader::LoadMesh(std::string filepath)
@@ -95,7 +97,7 @@ void MeshLoader::LoadMesh(std::string filepath)
 		}
 	}
 
-	meshes.push_back(Mesh(vertices));
+	meshes.push_back(new Mesh(vertices));
 }
 
 MeshLoader::MeshLoader() 

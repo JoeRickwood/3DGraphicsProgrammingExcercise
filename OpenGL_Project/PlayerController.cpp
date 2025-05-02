@@ -15,6 +15,8 @@ PlayerController::PlayerController(float _moveSpeed, float _height, float _mouse
 	mousePos = glm::vec2(0.0f, 0.0f);
 
 	mouseSensitivity = _mouseSensitivity;
+
+	grounded = false;
 }
 
 PlayerController::~PlayerController()
