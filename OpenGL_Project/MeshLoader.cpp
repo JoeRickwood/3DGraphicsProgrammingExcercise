@@ -7,7 +7,7 @@
 void MeshLoader::Init()
 {
 	LoadMesh("Resources/Cube.obj");
-	LoadMesh("Resources/Test.obj");
+	LoadMesh("Resources/Tree.obj");
 }
 
 void MeshLoader::LinkMeshes()

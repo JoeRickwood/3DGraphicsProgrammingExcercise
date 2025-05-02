@@ -17,7 +17,9 @@ public:
 	void Update();
 	void Render();
 	void ShaderUpdate();
-	bool CheckCollision(glm::vec3 _position);
+
+	bool CheckCollision(Collider* col);
+	Collider* OverlapPoint(glm::vec3 point);
 
 private:
 

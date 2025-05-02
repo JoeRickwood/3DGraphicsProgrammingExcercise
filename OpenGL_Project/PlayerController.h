@@ -10,6 +10,7 @@ private:
 	float mouseSensitivity = 3.f;
 
 	float jumpResetTimer;
+	bool grounded;
 
 	glm::vec2 mousePos;
 	glm::vec2 prevMousePos;

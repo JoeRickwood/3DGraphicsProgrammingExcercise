@@ -25,21 +25,23 @@ int main()
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 0.1f, 100.f));
-	auto groundRenderer = ground->AddComponent<Renderer>(0, ShaderType::Texture, 1, ProjectionType::Perspective);
+	auto groundRenderer = ground->AddComponent<Renderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
 	ground->AddComponent<Collider>(glm::vec3(200.f, 1.0f, 200.f), glm::vec3(0.f, -0.5f, 0.f));
 
 	ObjectInstance* platform = new ObjectInstance("Platform", glm::vec3(25.0f, 0.3f, 25.0f), glm::vec3(0.f), glm::vec3(20.f, 1.f, 20.f));
-	auto platformRenderer = platform->AddComponent<Renderer>(0, ShaderType::Texture, 1, ProjectionType::Perspective);
+	auto platformRenderer = platform->AddComponent<Renderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
 	platformRenderer->textureTiling = glm::vec2(20.f, 20.f);
 	platform->AddComponent<Collider>(glm::vec3(40.f, 1.0f, 40.f), glm::vec3(0.f, 0.f, 0.f));
 
 	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
-	auto cur = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 0, ProjectionType::Perspective);
+	auto treeRenderer = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 1, ProjectionType::Perspective);
+	auto treeCollider = tree->AddComponent<InstancedCollider>();
 
-	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f, 10.f, 0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
 	player->AddComponent<PhysicsObject>();
+	player->AddComponent<Collider>(glm::vec3(0.5f, 2.f, 0.5f), glm::vec3(0.f, 0.f, 0.f));
 
 	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(ground);
@@ -76,18 +78,19 @@ int main()
 
 	MeshLoader::Instance().LinkMeshes();
 
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 500; i++)
 	{
 		float x = Noise(3, i, i + 3434) * 100.f;
 		float y = Noise(7, i - 231276, i + 3213) * 100.f;
 
-		float scale = (((rand() % 100) / 100.f) + 0.5f) * 0.25f;
+		float scale = (((rand() % 100) / 100.f) + 0.5f) * 5;
 		float rot = (rand() % 360);
 
-		cur->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
+		treeRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
+		treeCollider->AddInstance(glm::vec3(1.f, 2.f, 1.f) * scale, glm::vec3(x, 0.f, y));
 	}
 
-	cur->InitInstancing();
+	treeRenderer->InitInstancing();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)

@@ -2,6 +2,7 @@
 #include "Time.h"
 #include <iostream>
 #include "PhysicsObject.h"
+#include "Scene.h"
 
 PlayerController::PlayerController(float _moveSpeed, float _height, float _mouseSensitivity)
 {
@@ -23,6 +24,9 @@ PlayerController::~PlayerController()
 
 void PlayerController::Update()
 {
+	grounded = Scene::Current().OverlapPoint(parent->position - glm::vec3(0.f, (height / 2.f) + 0.1f, 0.f));
+
+
 	auto physicsObject = parent->GetComponent<PhysicsObject>();
 
 	//Camera Rotation
@@ -66,7 +70,7 @@ void PlayerController::Update()
 		(cameraRight * ((glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_D) == GLFW_PRESS ? 1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_A) == GLFW_PRESS ? -1.f : 0.f)) +
 		Camera::Instance().cameraLookDir * ((glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_W) == GLFW_PRESS ? 1.f : 0.f) + (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_S) == GLFW_PRESS ? -1.f : 0.f))) * moveSpeed;
 
-	if (jumpResetTimer <= 0.f)
+	if (jumpResetTimer <= 0.f && grounded)
 	{
 		if (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
