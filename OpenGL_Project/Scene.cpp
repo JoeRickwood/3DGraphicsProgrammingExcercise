@@ -105,6 +105,9 @@ void Scene::Update()
 
 void Scene::Render()
 {
+	glViewport(0, 0, GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	for (auto& obj : objects)
 	{
 		if (obj == nullptr)

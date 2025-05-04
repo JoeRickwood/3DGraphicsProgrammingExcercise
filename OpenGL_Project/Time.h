@@ -7,6 +7,7 @@ public:
 	static Time& Instance() { static Time time; return time; }
 
 	float deltaTime;
+	float time;
 
 	void Init();
 	void Update();

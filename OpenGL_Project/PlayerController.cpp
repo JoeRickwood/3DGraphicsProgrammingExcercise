@@ -45,14 +45,14 @@ void PlayerController::Update()
 	glm::vec2 moveDir = mousePos - prevMousePos;
 
 	parent->rotation.x += moveDir.y * mouseSensitivity;
-	if (parent->rotation.x < -89.f) 
+	if (parent->rotation.x < glm::radians(-89.f))
 	{
-		parent->rotation.x = -89.f;
+		parent->rotation.x = glm::radians(-89.f);
 	}
 
-	if (parent->rotation.x > 89.f) 
+	if (parent->rotation.x > glm::radians(89.f))
 	{
-		parent->rotation.x = 89.f;
+		parent->rotation.x = glm::radians(89.f);
 	}
 
 	parent->rotation.y -= moveDir.x * mouseSensitivity;

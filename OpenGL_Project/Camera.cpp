@@ -27,7 +27,7 @@ void Camera::CalculateProjectionMatrix()
 	float halfWidth = GraphicsLoader::Instance().windowSize.x / 2.0f;
 	float halfheight = GraphicsLoader::Instance().windowSize.y / 2.0f;
 
-	Camera::Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, 0.01f, 10000.f);
+	Camera::Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, Camera::Instance().nearPlane, Camera::Instance().farPlane);
 
 	float aspectRatio = GraphicsLoader::Instance().windowSize.x / GraphicsLoader::Instance().windowSize.y;
 

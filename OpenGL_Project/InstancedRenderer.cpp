@@ -48,16 +48,7 @@ void InstancedRenderer::InitInstancing()
 	glVertexAttribDivisor(6, 1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
 
-void InstancedRenderer::Render()
-{
-	InitializeRenderingInfo();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
 	for (int i = 0; i < drawCount - 1; i++)
 	{
 		glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(rotations[i].y), glm::vec3(0.f, 1.f, 0.f));
@@ -66,6 +57,13 @@ void InstancedRenderer::Render()
 
 		ModelMatrixes[i] = modelMat;
 	}
+}
+
+void InstancedRenderer::Render()
+{
+	InitializeRenderingInfo();
+
+	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
 
 	GLint VPLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "VP");
 	glUniformMatrix4fv(VPLoc, 1, GL_FALSE, glm::value_ptr(VP));

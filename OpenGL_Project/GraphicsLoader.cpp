@@ -158,6 +158,8 @@ void GraphicsLoader::InitializeShaderPrograms()
 {
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpaceInstanced.vert", "Resources/Shaders/TextureSpace.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/GrassSway.vert", "Resources/Shaders/Grass.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/Water.vert", "Resources/Shaders/Water.frag"));
 }
 
 void GraphicsLoader::InitializeTextures()

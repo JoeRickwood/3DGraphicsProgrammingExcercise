@@ -22,7 +22,6 @@ public:
 	Collider* OverlapPoint(glm::vec3 point);
 
 private:
-
 	std::vector<ObjectInstance*> objects;
 };
 

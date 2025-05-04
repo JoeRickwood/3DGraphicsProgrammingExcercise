@@ -1,4 +1,5 @@
 #pragma once
+// Library Includes
 #include <string>
 #include <vector>
 #include<fstream>
@@ -10,11 +11,19 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-// Library Includes
+
 enum ProjectionType
 {
 	Orthographic,
 	Perspective
+};
+
+enum ShaderType
+{
+	Texture = 0,
+	Instanced = 1,
+	GrassSway = 2,
+	WaterShader = 3
 };
 
 class GraphicsLoader
@@ -29,6 +38,8 @@ public:
 	void InitializeTextures();
 	
 	glm::vec2 windowSize = glm::vec2(1920, 1080);
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
 	GLFWwindow* currentWindow;
 
 private:
@@ -82,9 +93,3 @@ static float lerp(float a, float b, float t)
 {
 	return ((b - a) * t) + a;
 }
-
-enum ShaderType
-{
-	Texture = 0,
-	Instanced = 1
-};

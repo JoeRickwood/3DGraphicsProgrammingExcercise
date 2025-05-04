@@ -29,17 +29,16 @@ int main()
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
 	ground->AddComponent<Collider>(glm::vec3(200.f, 1.0f, 200.f), glm::vec3(0.f, -0.5f, 0.f));
 
-	ObjectInstance* platform = new ObjectInstance("Platform", glm::vec3(25.0f, 0.3f, 25.0f), glm::vec3(0.f), glm::vec3(20.f, 1.f, 20.f));
-	auto platformRenderer = platform->AddComponent<Renderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
-	platformRenderer->textureTiling = glm::vec2(20.f, 20.f);
-	platform->AddComponent<Collider>(glm::vec3(40.f, 1.0f, 40.f), glm::vec3(0.f, 0.f, 0.f));
+	ObjectInstance* water = new ObjectInstance("Water", glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.f), glm::vec3(200.f, 0.1f, 200.f));
+	water->AddComponent<DefaultRenderer>(3, ShaderType::WaterShader, 0, ProjectionType::Perspective);
+	water->AddComponent<Water>(0.1f, 100.f, 10.f);
 
 	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
 	auto treeRenderer = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 1, ProjectionType::Perspective);
 	auto treeCollider = tree->AddComponent<InstancedCollider>();
 
 	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto grassRenderer = grass->AddComponent<InstancedRenderer>(2, ShaderType::Instanced, 2, ProjectionType::Perspective);
+	auto grassRenderer = grass->AddComponent<InstancedRenderer>(2, ShaderType::GrassSway, 2, ProjectionType::Perspective);
 
 	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f, 10.f, 0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
@@ -47,11 +46,10 @@ int main()
 	player->AddComponent<Collider>(glm::vec3(0.5f, 2.f, 0.5f), glm::vec3(0.f, 0.f, 0.f));
 
 	Scene::Current().AddObject(tree);
-	Scene::Current().AddObject(grass);
-
 	Scene::Current().AddObject(ground);
+	Scene::Current().AddObject(water);
 	Scene::Current().AddObject(player);
-	Scene::Current().AddObject(platform);
+	Scene::Current().AddObject(grass);
 
 
 	//Create Window
@@ -95,17 +93,16 @@ int main()
 		treeCollider->AddInstance(glm::vec3(1.f, 2.f, 1.f) * scale, glm::vec3(x, 0.f, y));
 	}
 
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 200000; i++)
 	{
 		float x = Noise(3, i, i + 3434) * 100.f;
 		float y = Noise(7, i - 231276, i + 3213) * 100.f;
 
-		float scale = (((rand() % 100) / 100.f) + 0.5f) * 1;
+		float scale = (((rand() % 100) / 100.f) + 0.5f) * 0.5f;
 		float rot = (rand() % 360);
 
 		grassRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
 	}
-
 
 	grassRenderer->InitInstancing();
 	treeRenderer->InitInstancing();
@@ -114,6 +111,8 @@ int main()
 	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)
 	{
 		Time::Instance().Update();
+
+		glfwSetWindowTitle(glfwGetCurrentContext(), ("Game Window (" + to_string((int)round(1.f / Time::Instance().deltaTime))+ " FPS)").c_str());
 
 		Update();
 
@@ -131,10 +130,15 @@ int main()
 void InitialSetup() 
 {
 	glEnable(GL_DEPTH_TEST);
+
 	glDepthFunc(GL_LESS);
+	glEnable(GL_BLEND);
+
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
+
+	glfwSwapInterval(0);
 
 	glClearColor(0.6f, 0.6f, 1.0f, 1.0f);
 	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);

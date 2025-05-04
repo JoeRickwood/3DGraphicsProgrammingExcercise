@@ -1,4 +1,6 @@
 #include "Renderer.h"
+#include "Time.h"
+#include "Scene.h"
 
 Renderer::Renderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType)
 {
@@ -23,6 +25,9 @@ void Renderer::InitializeRenderingInfo()
 
 	GLint CameraLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "CameraPos");
 	glUniform3f(CameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
+
+	GLint TimeLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Time");
+	glUniform1f(TimeLoc, Time::Instance().time);
 
 	GLint TextureTilingLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Tiling");
 	glUniform2f(TextureTilingLoc, textureTiling.x, textureTiling.y);

@@ -4,9 +4,7 @@ in vec2 FragTexCoords;
 in vec3 FragNormal;
 in vec3 FragPos;
 
-
 uniform sampler2D Texture0;
-
 uniform vec2 Tiling;
 
 uniform float AmbientStrength            = 0.5f;
@@ -21,7 +19,6 @@ uniform float ObjectShininess           = 35.0f;
 
 
 out vec4 FinalColor;
-
 
 
 void main() 
@@ -41,8 +38,12 @@ void main()
 
     vec4 Light = vec4(Ambient + Diffuse + Specular, 1.0f);
 
+
     if(texture(Texture0, FragTexCoords * Tiling).a < 0.5)
         discard;
 
-    FinalColor = Light * texture(Texture0, FragTexCoords * Tiling);
+    vec4 col = texture(Texture0, FragTexCoords * Tiling) * Light;
+    col.a = 0.75f;
+
+    FinalColor = col;
 }
