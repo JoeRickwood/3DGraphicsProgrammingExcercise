@@ -45,6 +45,7 @@ void ObjectInstance::Render()
 //COMPONENTS
 Component::Component()
 {
+	enabled = true;
 	parent = nullptr;
 }
 
@@ -66,4 +67,9 @@ void Component::ShaderUpdate()
 
 void Component::Render()
 {
+}
+
+void Component::SetEnabledState(bool state)
+{
+	enabled = state;
 }

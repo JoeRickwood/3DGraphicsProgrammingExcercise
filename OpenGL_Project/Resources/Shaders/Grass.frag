@@ -10,12 +10,12 @@ uniform vec2 Tiling;
 uniform float AmbientStrength            = 0.5f;
 uniform vec3 AmbientColor                = vec3(1.f, 1.f, 1.f);
 
-uniform vec3 LightColor                  = vec3(1.f, 1.f, 1.f);
+uniform vec3 LightColor                  = vec3(0.5f, 0.5f, 0.5f);
 uniform vec3 LightPos                    = vec3(-300.f, 0.f, 100.f);
 
 uniform vec3 CameraPos;
-uniform float LightSpecularStrength     = 0.5f;
-uniform float ObjectShininess           = 35.0f;
+uniform float LightSpecularStrength     = 0.2f;
+uniform float ObjectShininess           = 10.0f;
 
 
 out vec4 FinalColor;
@@ -43,7 +43,10 @@ void main()
         discard;
 
     vec4 col = texture(Texture0, FragTexCoords * Tiling) * Light;
-    col.a = 0.75f;
+
+    float val = FragTexCoords.y * 2f;
+
+    col.a = clamp(val * val * val, 0f, 1f);
 
     FinalColor = col;
 }

@@ -6,6 +6,7 @@ class CameraController : public Component
 public:
 	float moveSpeed;
 	float distance;
+	float height;
 
 	CameraController(float _moveSpeed, float _distance);
 	~CameraController();

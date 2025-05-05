@@ -17,6 +17,9 @@ PlayerController::PlayerController(float _moveSpeed, float _height, float _mouse
 	mouseSensitivity = _mouseSensitivity;
 
 	grounded = false;
+
+	state = false;
+	tabLock = false;
 }
 
 PlayerController::~PlayerController()
@@ -26,6 +29,26 @@ PlayerController::~PlayerController()
 
 void PlayerController::Update()
 {
+	if (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_TAB) == GLFW_PRESS && tabLock == false)
+	{
+		tabLock = true;
+		state = !state;
+
+		parent->GetComponent<CameraController>()->SetEnabledState(state);
+		SetEnabledState(!state);
+	}
+
+	if (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_TAB) == GLFW_RELEASE && tabLock)
+	{
+		tabLock = false;
+	}
+
+
+	if (enabled == false)
+	{
+		return;
+	}
+
 	grounded = Scene::Current().OverlapPoint(parent->position - glm::vec3(0.f, (height / 2.f) + 0.1f, 0.f));
 
 

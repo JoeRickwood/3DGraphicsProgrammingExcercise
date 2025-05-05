@@ -23,15 +23,14 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
+	//Funni Transparent Window Stuff XD
+	//glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, 1);
+
 	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 0.1f, 100.f));
+	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
 	auto groundRenderer = ground->AddComponent<DefaultRenderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
-	ground->AddComponent<Collider>(glm::vec3(200.f, 1.0f, 200.f), glm::vec3(0.f, -0.5f, 0.f));
-
-	ObjectInstance* water = new ObjectInstance("Water", glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.f), glm::vec3(200.f, 0.1f, 200.f));
-	water->AddComponent<DefaultRenderer>(3, ShaderType::WaterShader, 0, ProjectionType::Perspective);
-	water->AddComponent<Water>(0.1f, 100.f, 10.f);
+	ground->AddComponent<Collider>(glm::vec3(200.f, 10.0f, 200.f), glm::vec3(0.f, 5.f, 0.f));
 
 	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
 	auto treeRenderer = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 1, ProjectionType::Perspective);
@@ -44,10 +43,11 @@ int main()
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
 	player->AddComponent<PhysicsObject>();
 	player->AddComponent<Collider>(glm::vec3(0.5f, 2.f, 0.5f), glm::vec3(0.f, 0.f, 0.f));
+	auto cc = player->AddComponent<CameraController>(0.1f, 150.f);
+	cc->SetEnabledState(false);
 
 	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(ground);
-	Scene::Current().AddObject(water);
 	Scene::Current().AddObject(player);
 	Scene::Current().AddObject(grass);
 
@@ -93,7 +93,7 @@ int main()
 		treeCollider->AddInstance(glm::vec3(1.f, 2.f, 1.f) * scale, glm::vec3(x, 0.f, y));
 	}
 
-	for (int i = 0; i < 200000; i++)
+	for (int i = 0; i < 100000; i++)
 	{
 		float x = Noise(3, i, i + 3434) * 100.f;
 		float y = Noise(7, i - 231276, i + 3213) * 100.f;
@@ -101,7 +101,7 @@ int main()
 		float scale = (((rand() % 100) / 100.f) + 0.5f) * 0.5f;
 		float rot = (rand() % 360);
 
-		grassRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
+		grassRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale * 1.5f, scale));
 	}
 
 	grassRenderer->InitInstancing();

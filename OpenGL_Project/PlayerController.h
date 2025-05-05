@@ -12,6 +12,9 @@ private:
 	float jumpResetTimer;
 	bool grounded;
 
+	bool state;
+	bool tabLock;
+
 	glm::vec2 mousePos;
 	glm::vec2 prevMousePos;
 

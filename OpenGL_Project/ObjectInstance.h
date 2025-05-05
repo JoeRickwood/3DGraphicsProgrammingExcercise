@@ -58,8 +58,12 @@ private:
 
 class Component
 {
+protected:
+	bool enabled;
+
 public:
 	ObjectInstance* parent; //Parent Gets Set In The Instance's AddComponent Method And Can Be Acessed In Order To Change Values On The Parent
+
 	Component();
 	~Component();
 
@@ -74,5 +78,8 @@ public:
 
 	//Called On Render
 	virtual void Render();
+
+	//Called To Enable Or Disable A Component
+	void SetEnabledState(bool state);
 };
 

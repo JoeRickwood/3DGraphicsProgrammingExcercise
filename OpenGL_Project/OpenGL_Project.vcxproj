@@ -162,7 +162,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Time.cpp" />
-    <ClCompile Include="Water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -184,7 +183,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="tiny_obj_loader.h" />
-    <ClInclude Include="Water.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\ClipSpace.vert" />
@@ -192,8 +190,6 @@
     <None Include="Resources\Shaders\Grass.frag" />
     <None Include="Resources\Shaders\GrassSway.vert" />
     <None Include="Resources\Shaders\TextureSpace.frag" />
-    <None Include="Resources\Shaders\Water.frag" />
-    <None Include="Resources\Shaders\Water.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Test.png" />

@@ -17,11 +17,10 @@ uniform vec3 LightPos                    = vec3(-300.f, 0.f, 100.f);
 
 uniform vec3 CameraPos;
 uniform float LightSpecularStrength     = 0.5f;
-uniform float ObjectShininess           = 35.0f;
+uniform float ObjectShininess           = 15f;
 
 
 out vec4 FinalColor;
-
 
 
 void main() 

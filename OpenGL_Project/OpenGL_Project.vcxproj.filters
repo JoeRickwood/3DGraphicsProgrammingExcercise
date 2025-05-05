@@ -72,9 +72,6 @@
     <ClCompile Include="DefaultRenderer.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Water.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsLoader.h">
@@ -134,9 +131,6 @@
     <ClInclude Include="DefaultRenderer.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Water.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\TextureSpace.frag">
@@ -152,12 +146,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\Grass.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Water.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Water.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
