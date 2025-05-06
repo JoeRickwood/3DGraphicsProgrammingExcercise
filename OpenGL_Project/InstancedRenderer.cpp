@@ -14,7 +14,7 @@ InstancedRenderer::~InstancedRenderer()
 
 void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
 {
-	drawCount++;
+	++drawCount;
 
 	positions.push_back(pos);
 	rotations.push_back(rot);
@@ -26,7 +26,7 @@ void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 void InstancedRenderer::InitInstancing()
 {
 	//Generate The Instanced VBO
-	for (int i = 0; i < drawCount - 1; i++)
+	for (int i = 0; i < drawCount - 1; ++i)
 	{
 		glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(rotations[i].y), glm::vec3(0.f, 1.f, 0.f));
 
@@ -67,10 +67,6 @@ void InstancedRenderer::Render()
 
 	GLint VPLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "VP");
 	glUniformMatrix4fv(VPLoc, 1, GL_FALSE, glm::value_ptr(VP));
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_Instanced);
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, ModelMatrixes.size() * sizeof(glm::mat4), ModelMatrixes.data());
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

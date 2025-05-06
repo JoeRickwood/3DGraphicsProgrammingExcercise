@@ -62,8 +62,8 @@ void PlayerController::Update()
 	double x;
 	double y;
 	glfwGetCursorPos(GraphicsLoader::Instance().currentWindow, &x, &y);
-	mousePos.x = x / GraphicsLoader::Instance().windowSize.x;
-	mousePos.y = y / GraphicsLoader::Instance().windowSize.y;
+	mousePos.x = (float)x / GraphicsLoader::Instance().windowSize.x;
+	mousePos.y = (float)y / GraphicsLoader::Instance().windowSize.y;
 
 	glm::vec2 moveDir = mousePos - prevMousePos;
 

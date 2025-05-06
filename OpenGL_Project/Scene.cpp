@@ -16,7 +16,7 @@ void Scene::AddObject(ObjectInstance* _obj)
 
 void Scene::RemoveObject(ObjectInstance* _obj)
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); ++i)
 	{
 		if (objects[i] == _obj)
 		{
@@ -44,6 +44,19 @@ ObjectInstance* Scene::FindObject(std::string _name)
 	return nullptr;
 }
 
+void Scene::ShaderInit()
+{
+	for (auto& obj : objects)
+	{
+		if (obj == nullptr)
+		{
+			continue;
+		}
+
+		obj->ShaderInit();
+	}
+}
+
 void Scene::Update()
 {
 	for (auto& obj : objects)
@@ -60,7 +73,7 @@ void Scene::Update()
 	//Do Physics After Update Happens
 
 	//Check All Physics Objects
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); ++i)
 	{
 		auto obj = objects[i]->GetComponent<PhysicsObject>();
 
@@ -105,7 +118,7 @@ void Scene::Update()
 
 void Scene::Render()
 {
-	glViewport(0, 0, GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y);
+	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (auto& obj : objects)
@@ -139,7 +152,7 @@ bool Scene::CheckCollision(Collider* col)
 		return false;
 	}
 
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); ++i)
 	{
 		if (objects[i] == col->parent)
 		{
@@ -171,7 +184,7 @@ bool Scene::CheckCollision(Collider* col)
 
 Collider* Scene::OverlapPoint(glm::vec3 point)
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); ++i)
 	{
 		auto obj = objects[i]->GetComponent<Collider>();
 

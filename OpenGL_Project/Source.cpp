@@ -46,14 +46,14 @@ int main()
 	auto cc = player->AddComponent<CameraController>(0.1f, 150.f);
 	cc->SetEnabledState(false);
 
-	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(ground);
-	Scene::Current().AddObject(player);
+	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(grass);
+	Scene::Current().AddObject(player);
 
 
 	//Create Window
-	GraphicsLoader::Instance().currentWindow = glfwCreateWindow(GraphicsLoader::Instance().windowSize.x, GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
+	GraphicsLoader::Instance().currentWindow = glfwCreateWindow((int)GraphicsLoader::Instance().windowSize.x, (int)GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
 
 	if(GraphicsLoader::Instance().currentWindow == NULL)
 	{
@@ -81,25 +81,25 @@ int main()
 
 	MeshLoader::Instance().LinkMeshes();
 
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 500; ++i)
 	{
 		float x = Noise(3, i, i + 3434) * 100.f;
 		float y = Noise(7, i - 231276, i + 3213) * 100.f;
 
-		float scale = (((rand() % 100) / 100.f) + 0.5f) * 5;
-		float rot = (rand() % 360);
+		float scale = (float)(((rand() % 100) / 100.f) + 0.5f) * 5;
+		float rot = (float)(rand() % 360);
 
 		treeRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
 		treeCollider->AddInstance(glm::vec3(1.f, 2.f, 1.f) * scale, glm::vec3(x, 0.f, y));
 	}
 
-	for (int i = 0; i < 100000; i++)
+	for (int i = 0; i < 500000; ++i)
 	{
 		float x = Noise(3, i, i + 3434) * 100.f;
 		float y = Noise(7, i - 231276, i + 3213) * 100.f;
 
 		float scale = (((rand() % 100) / 100.f) + 0.5f) * 0.5f;
-		float rot = (rand() % 360);
+		float rot = (float)(rand() % 360);
 
 		grassRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale * 1.5f, scale));
 	}
@@ -107,12 +107,15 @@ int main()
 	grassRenderer->InitInstancing();
 	treeRenderer->InitInstancing();
 
+
+	Scene::Current().ShaderInit();
+
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)
 	{
 		Time::Instance().Update();
 
-		glfwSetWindowTitle(glfwGetCurrentContext(), ("Game Window (" + to_string((int)round(1.f / Time::Instance().deltaTime))+ " FPS)").c_str());
+		std::cout << "Game Window (" + to_string((int)round(1.f / Time::Instance().deltaTime)) + " FPS) \n";
 
 		Update();
 

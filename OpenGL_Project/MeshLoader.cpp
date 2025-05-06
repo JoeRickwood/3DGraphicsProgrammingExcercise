@@ -15,7 +15,7 @@ void MeshLoader::Init()
 
 void MeshLoader::LinkMeshes()
 {
-	for (int i = 0; i < meshes.size(); i++)
+	for (int i = 0; i < meshes.size(); ++i)
 	{
 		meshes[i]->Init();
 	}
@@ -52,17 +52,17 @@ void MeshLoader::LoadMesh(std::string filepath)
 
 
 	//Loop Through The Shapes Of The Object
-	for (size_t shapeIndex = 0; shapeIndex < shapes.size(); shapeIndex++)
+	for (size_t shapeIndex = 0; shapeIndex < shapes.size(); ++shapeIndex)
 	{
 
 		//Loop Through The Faces Of Each Shape
 		size_t readIndexOffset = 0;
-		for (size_t faceIndex = 0; faceIndex < size_t(shapes[shapeIndex].mesh.num_face_vertices.size()); faceIndex++)
+		for (size_t faceIndex = 0; faceIndex < size_t(shapes[shapeIndex].mesh.num_face_vertices.size()); ++faceIndex)
 		{
 
 			//Loop Through The Vertices Of Each Face
 			size_t faceVertexCount = size_t(shapes[shapeIndex].mesh.num_face_vertices[faceIndex]);
-			for (size_t vertexIndex = 0; vertexIndex < faceVertexCount; vertexIndex++)
+			for (size_t vertexIndex = 0; vertexIndex < faceVertexCount; ++vertexIndex)
 			{
 				VertexStandard vertex{};
 

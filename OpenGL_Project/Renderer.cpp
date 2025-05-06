@@ -11,6 +11,11 @@ Renderer::Renderer(int _type, ShaderType _shader, int _textureID, ProjectionType
 	textureID = _textureID;
 
 	projection = _projectionType;
+
+	cameraLoc = NULL;
+	timeLoc = NULL;
+	mainTexLoc = NULL;
+	mainTextureTilingLoc = NULL;
 }
 
 Renderer::~Renderer()
@@ -18,19 +23,29 @@ Renderer::~Renderer()
 
 }
 
+
+//Uses This Function To Store The Uniform Locations Of The Shader
+void Renderer::ShaderInit()
+{
+	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(shader);
+
+	cameraLoc = glGetUniformLocation(prgm, "CameraPos");
+	timeLoc = glGetUniformLocation(prgm, "Time");
+	mainTexLoc = glGetUniformLocation(prgm, "Texture0");
+	mainTextureTilingLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Tiling");
+}
+
 void Renderer::InitializeRenderingInfo()
 {
+	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(shader);
+
 	//Set The New Shader Program
-	glUseProgram(GraphicsLoader::Instance().GetShaderProgram(shader));
+	glUseProgram(prgm);
 
-	GLint CameraLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "CameraPos");
-	glUniform3f(CameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
-
-	GLint TimeLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Time");
-	glUniform1f(TimeLoc, Time::Instance().time);
-
-	GLint TextureTilingLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Tiling");
-	glUniform2f(TextureTilingLoc, textureTiling.x, textureTiling.y);
+	//Pass In Uniforms
+	glUniform3f(cameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
+	glUniform1f(timeLoc, Time::Instance().time);
+	glUniform2f(mainTextureTilingLoc, textureTiling.x, textureTiling.y);
 
 	glActiveTexture(GL_TEXTURE0);
 
@@ -38,11 +53,11 @@ void Renderer::InitializeRenderingInfo()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
-	glUniform1i(glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Texture0"), 0);
+
+	glUniform1i(mainTexLoc, 0);
 
 	parent->ShaderUpdate();
 }
-
 
 void Renderer::Render()
 {

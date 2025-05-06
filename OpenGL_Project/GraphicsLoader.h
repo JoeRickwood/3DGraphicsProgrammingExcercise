@@ -76,7 +76,7 @@ public:
 	}
 
 	//Basic Method To Check If The Bounding Box Contains Point Of x, y
-	bool Contains(float x, float y)
+	inline const bool Contains(float x, float y)
 	{
 		if (x > minX && x < maxX &&
 			y > minY && y < maxY)

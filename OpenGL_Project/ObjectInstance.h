@@ -48,6 +48,7 @@ public:
 		return a;
 	}
 
+	void ShaderInit();
 	void Update();
 	void ShaderUpdate();
 	void Render();
@@ -69,6 +70,9 @@ public:
 
 	//Used To Assign Values After Its Parent Has Been Added
 	virtual void Init();
+
+	//Used Usually To Get Shader Uniform Locations Ahead Of Time, Removing The Need To Do It Every Frame
+	virtual void ShaderInit();
 
 	//Called Every Frame
 	virtual void Update();

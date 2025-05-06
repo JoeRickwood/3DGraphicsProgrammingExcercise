@@ -3,6 +3,13 @@
 
 class Renderer : public Component
 {
+protected:
+	GLint cameraLoc;
+	GLint timeLoc;
+
+	GLint mainTexLoc;
+	GLint mainTextureTilingLoc;
+
 public:
 	Mesh* mesh; //Points To Renderable Object From The RenderableLoader Static Class
 	ShaderType shader;
@@ -16,6 +23,7 @@ public:
 	virtual void InitializeRenderingInfo();
 	Bounds GetWorldBounds();
 
+	void ShaderInit()override;
 	void Update() override;
 	void Render() override;
 

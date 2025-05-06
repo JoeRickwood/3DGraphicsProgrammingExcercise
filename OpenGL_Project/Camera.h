@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphicsLoader.h"
+
 class Camera
 {
 public:

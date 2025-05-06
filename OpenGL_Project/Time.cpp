@@ -13,7 +13,7 @@ void Time::Update()
 
 	newT = std::chrono::high_resolution_clock::now();
 
-	deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(newT - oldT).count() / 1000.f;
+	deltaTime = (float)std::chrono::duration_cast<std::chrono::microseconds>(newT - oldT).count() / 1000000.0f;
 	time += deltaTime;
 }
 
