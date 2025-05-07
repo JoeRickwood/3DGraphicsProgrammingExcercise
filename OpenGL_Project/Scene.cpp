@@ -44,6 +44,7 @@ ObjectInstance* Scene::FindObject(std::string _name)
 	return nullptr;
 }
 
+
 void Scene::ShaderInit()
 {
 	for (auto& obj : objects)
@@ -69,12 +70,7 @@ void Scene::Update()
 		obj->Update();
 	}
 
-
-	//Do Physics After Update Happens
-
-	Time::Instance().BeginTimer("Physics");
 	HandlePhysics();
-	Time::Instance().EndTimer();
 }
 
 void Scene::Render()

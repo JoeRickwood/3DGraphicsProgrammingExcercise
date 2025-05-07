@@ -23,19 +23,21 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
+	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
+	skybox->AddComponent<Skybox>(0, 3);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
-	auto groundRenderer = ground->AddComponent<DefaultRenderer>(0, ShaderType::Texture, 0, ProjectionType::Perspective);
+	auto groundRenderer = ground->AddComponent<DefaultRenderer>(1, ShaderType::Texture, 0, ProjectionType::Perspective);
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
 	ground->AddComponent<Collider>(glm::vec3(200.f, 10.0f, 200.f), glm::vec3(0.f, 5.f, 0.f));
 
 	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
-	auto treeRenderer = tree->AddComponent<InstancedRenderer>(1, ShaderType::Instanced, 1, ProjectionType::Perspective);
+	auto treeRenderer = tree->AddComponent<InstancedRenderer>(2, ShaderType::Instanced, 1, ProjectionType::Perspective);
 	auto treeCollider = tree->AddComponent<InstancedCollider>();
 
 	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto grassRenderer = grass->AddComponent<InstancedRenderer>(2, ShaderType::GrassSway, 2, ProjectionType::Perspective);
+	auto grassRenderer = grass->AddComponent<InstancedRenderer>(3, ShaderType::GrassSway, 2, ProjectionType::Perspective);
 
 	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f, 10.f, 0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
@@ -44,6 +46,7 @@ int main()
 	auto cc = player->AddComponent<CameraController>(0.1f, 150.f);
 	cc->SetEnabledState(false);
 
+	Scene::Current().AddObject(skybox);
 	Scene::Current().AddObject(ground);
 	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(grass);
@@ -119,9 +122,7 @@ int main()
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();
 
-		Time::Instance().BeginTimer("Render");
 		Render();
-		Time::Instance().EndTimer();
 	}
 
 	glfwTerminate();

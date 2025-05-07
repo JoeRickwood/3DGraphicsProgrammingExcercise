@@ -153,12 +153,48 @@ GLuint GraphicsLoader::CreateTexture(std::string filename)
 	return ret;
 }
 
+GLuint GraphicsLoader::CreateSkybox(std::string filepaths[6])
+{
+	GLuint skybox = NULL;
+
+	glGenTextures(1, &skybox);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox);
+	stbi_set_flip_vertically_on_load(false);
+
+	int imageWidth;
+	int imageHeight;
+	int imageComponents;
+
+	for (int i = 0; i < 6; ++i)
+	{
+		unsigned char* imageData = stbi_load(filepaths[i].c_str(), &imageWidth, &imageHeight, &imageComponents, 0);
+
+		GLint loadedComponents = (imageComponents == 4) ? GL_RGBA : GL_RGB;
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, loadedComponents, imageWidth, imageHeight, 0, loadedComponents, GL_UNSIGNED_BYTE, imageData);
+	
+		stbi_image_free(imageData);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return skybox;
+}
+
 
 void GraphicsLoader::InitializeShaderPrograms()
 {
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpaceInstanced.vert", "Resources/Shaders/TextureSpace.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/GrassSway.vert", "Resources/Shaders/Grass.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/Skybox.vert", "Resources/Shaders/Skybox.frag"));
 }
 
 void GraphicsLoader::InitializeTextures()
@@ -166,6 +202,19 @@ void GraphicsLoader::InitializeTextures()
 	textures.push_back(CreateTexture("Resources/Prototype.png"));
 	textures.push_back(CreateTexture("Resources/Tree.png"));
 	textures.push_back(CreateTexture("Resources/Grass.png"));
+
+	std::string skyboxPaths[6] = 
+	{
+		"Resources/Skybox/Right.jpg",
+		"Resources/Skybox/Left.jpg",
+		"Resources/Skybox/Top.jpg",
+		"Resources/Skybox/Bottom.jpg",
+		"Resources/Skybox/Front.jpg",
+		"Resources/Skybox/Back.jpg"
+	};
+
+	skyboxes.push_back(CreateSkybox(skyboxPaths));
+
 }
 
 GLuint GraphicsLoader::GetShaderProgram(int _ID)
@@ -176,4 +225,9 @@ GLuint GraphicsLoader::GetShaderProgram(int _ID)
 GLuint GraphicsLoader::GetTexture(int _ID)
 {
 	return textures[_ID];
+}
+
+GLuint GraphicsLoader::GetSkybox(int _ID)
+{
+	return skyboxes[_ID];
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "ObjectInstance.h"
 #include "Components.h"
+#include "Skybox.h"
 
 class Scene
 {

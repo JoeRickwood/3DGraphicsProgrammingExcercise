@@ -159,6 +159,7 @@
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="GraphicsLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="GraphicsLoader.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
@@ -187,10 +189,9 @@
     <None Include="Resources\Shaders\ClipSpaceInstanced.vert" />
     <None Include="Resources\Shaders\Grass.frag" />
     <None Include="Resources\Shaders\GrassSway.vert" />
+    <None Include="Resources\Shaders\Skybox.frag" />
+    <None Include="Resources\Shaders\Skybox.vert" />
     <None Include="Resources\Shaders\TextureSpace.frag" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Test.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

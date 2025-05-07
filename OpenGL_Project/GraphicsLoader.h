@@ -33,6 +33,7 @@ public:
 
 	GLuint GetShaderProgram(int _ID);
 	GLuint GetTexture(int _ID);
+	GLuint GetSkybox(int _ID);
 
 	void InitializeShaderPrograms();
 	void InitializeTextures();
@@ -48,6 +49,7 @@ private:
 
 	std::vector<GLuint> shaderPrograms;
 	std::vector<GLuint> textures;
+	std::vector<GLuint> skyboxes;
 
 	static GLuint CreateShaderProgram(const char* VertexShaderFilename, const char* FragmentShaderFilename);
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
@@ -55,6 +57,7 @@ private:
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
 
 	static GLuint CreateTexture(std::string filename);
+	static GLuint CreateSkybox(std::string filepaths[6]);
 };
 
 

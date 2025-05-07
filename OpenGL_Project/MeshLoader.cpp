@@ -6,6 +6,7 @@
 
 void MeshLoader::Init()
 {
+	LoadMesh("Resources/Cube_InvertedNormals.obj");
 	LoadMesh("Resources/Cube.obj");
 	LoadMesh("Resources/Tree.obj");
 	LoadMesh("Resources/Grass.obj");
