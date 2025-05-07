@@ -17,6 +17,19 @@ void Time::Update()
 	time += deltaTime;
 }
 
+void Time::BeginTimer(std::string _timerName)
+{
+	timerT1 = std::chrono::high_resolution_clock::now();
+	timerName = _timerName;
+}
+
+void Time::EndTimer()
+{
+	timerT2 = std::chrono::high_resolution_clock::now();
+
+	std::cout << "Time Taken To Complete " << timerName << " : " << (float)std::chrono::duration_cast<std::chrono::microseconds>(timerT2 - timerT1).count() << " Microseconds \n";
+}
+
 Time::Time()
 {
 	time = 0.f;

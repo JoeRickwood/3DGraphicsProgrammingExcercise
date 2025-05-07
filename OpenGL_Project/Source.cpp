@@ -23,8 +23,6 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-	//Funni Transparent Window Stuff XD
-	//glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, 1);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
@@ -50,7 +48,6 @@ int main()
 	Scene::Current().AddObject(tree);
 	Scene::Current().AddObject(grass);
 	Scene::Current().AddObject(player);
-
 
 	//Create Window
 	GraphicsLoader::Instance().currentWindow = glfwCreateWindow((int)GraphicsLoader::Instance().windowSize.x, (int)GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
@@ -122,7 +119,9 @@ int main()
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();
 
+		Time::Instance().BeginTimer("Render");
 		Render();
+		Time::Instance().EndTimer();
 	}
 
 	glfwTerminate();

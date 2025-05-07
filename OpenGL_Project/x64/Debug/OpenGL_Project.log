@@ -1,18 +1,19 @@
-﻿  Source.cpp
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,140): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,140): warning C4244:         with
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,140): warning C4244:         [
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,140): warning C4244:             T=float
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,140): warning C4244:         ]
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,99): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,99): warning C4244:         with
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,99): warning C4244:         [
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,99): warning C4244:             T=float
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(55,99): warning C4244:         ]
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(85,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(86,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(89,13): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(97,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(98,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(101,13): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  OpenGL_Project.vcxproj -> C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\OpenGL_Project.exe
+﻿  Camera.cpp
+  CameraController.cpp
+  Collider.cpp
+  DefaultRenderer.cpp
+  InstancedCollider.cpp
+  InstancedRenderer.cpp
+  ObjectInstance.cpp
+  Mesh.cpp
+  PhysicsObject.cpp
+  PlayerController.cpp
+  Renderer.cpp
+  MeshLoader.cpp
+  GraphicsLoader.cpp
+  Scene.cpp
+  Source.cpp
+  Time.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  OpenGL_Project.vcxproj -> C:\Users\rando\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\OpenGL_Project.exe

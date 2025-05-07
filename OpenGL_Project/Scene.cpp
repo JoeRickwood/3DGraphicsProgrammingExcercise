@@ -72,23 +72,48 @@ void Scene::Update()
 
 	//Do Physics After Update Happens
 
+	Time::Instance().BeginTimer("Physics");
+	HandlePhysics();
+	Time::Instance().EndTimer();
+}
+
+void Scene::Render()
+{
+	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (int i = 0; i < objects.size(); ++i)
+	{
+		objects[i]->Render();
+	}
+}
+
+void Scene::ShaderUpdate()
+{
+	for (int i = 0; i < objects.size(); ++i)
+	{
+		objects[i]->ShaderUpdate();
+	}
+}
+
+void Scene::HandlePhysics()
+{
 	//Check All Physics Objects
 	for (int i = 0; i < objects.size(); ++i)
 	{
 		auto obj = objects[i]->GetComponent<PhysicsObject>();
+		auto col = objects[i]->GetComponent<Collider>();
 
-		if (obj == NULL) 
+		if (obj == NULL)
 		{
 			continue;
 		}
-
-		auto col = objects[i]->GetComponent<Collider>();
 
 		//Resolve X Collisions
 		float prevX = obj->parent->position.x;
 		obj->parent->position.x += obj->velocity.x * Time::Instance().deltaTime;
 
-		if (CheckCollision(col)) 
+		if (CheckCollision(col))
 		{
 			obj->velocity.x = 0.f;
 			obj->parent->position.x = prevX;
@@ -113,35 +138,6 @@ void Scene::Update()
 			obj->velocity.z = 0.f;
 			obj->parent->position.z = prevZ;
 		}
-	}
-}
-
-void Scene::Render()
-{
-	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	for (auto& obj : objects)
-	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
-
-		obj->Render();
-	}
-}
-
-void Scene::ShaderUpdate()
-{
-	for (auto& obj : objects)
-	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
-
-		obj->ShaderUpdate();
 	}
 }
 
