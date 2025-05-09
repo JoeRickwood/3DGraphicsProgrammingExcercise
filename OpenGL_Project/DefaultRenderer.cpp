@@ -1,6 +1,6 @@
 #include "DefaultRenderer.h"
 
-DefaultRenderer::DefaultRenderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType) : Renderer(_type, _shader, _textureID, _projectionType)
+DefaultRenderer::DefaultRenderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType, int _reflectionTexID) : Renderer(_type, _shader, _textureID, _projectionType, _reflectionTexID)
 {
 	translationMat = glm::mat4();
 	rotationMat = glm::mat4();

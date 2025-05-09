@@ -154,5 +154,8 @@
     <None Include="Resources\Shaders\Skybox.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\TextureSpaceReflective.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

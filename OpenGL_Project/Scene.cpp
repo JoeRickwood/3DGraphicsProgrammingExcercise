@@ -30,11 +30,6 @@ ObjectInstance* Scene::FindObject(std::string _name)
 {
 	for (auto& obj : objects)
 	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
-
 		if (obj->name == _name) 
 		{
 			return obj;

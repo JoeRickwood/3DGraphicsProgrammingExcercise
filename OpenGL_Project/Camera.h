@@ -21,7 +21,7 @@ public:
 	glm::vec3 cameraUpDir = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	float nearPlane = 0.1f;
-	float farPlane = 500.f;
+	float farPlane = 5000.f;
 	float fieldOfView = 45.f;
 
 private:

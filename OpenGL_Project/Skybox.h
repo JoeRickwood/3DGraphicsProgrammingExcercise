@@ -7,9 +7,10 @@ class Skybox : public Component
 private:
 	Mesh* mesh;
 	int skyboxShader;
-	int skyboxTexID;
 
 public:
+	int skyboxTexID;
+
 	Skybox(int _skybox, int _shader);
 	~Skybox();
 

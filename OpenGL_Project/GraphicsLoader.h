@@ -23,7 +23,8 @@ enum ShaderType
 	Texture = 0,
 	Instanced = 1,
 	GrassSway = 2,
-	WaterShader = 3
+	Cubemap = 3,
+	TextureReflective = 4
 };
 
 class GraphicsLoader

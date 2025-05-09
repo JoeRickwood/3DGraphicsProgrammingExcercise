@@ -10,7 +10,7 @@ void MeshLoader::Init()
 	LoadMesh("Resources/Cube.obj");
 	LoadMesh("Resources/Tree.obj");
 	LoadMesh("Resources/Grass.obj");
-	LoadMesh("Resources/Water.obj");
+	LoadMesh("Resources/Artifact.obj");
 }
 
 

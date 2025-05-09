@@ -6,6 +6,8 @@ in vec3 FragPos;
 
 
 uniform sampler2D Texture0;
+uniform samplerCube SkyboxTex;
+uniform sampler2D ReflectionTex;
 
 uniform vec2 Tiling;
 
@@ -40,8 +42,17 @@ void main()
 
     vec4 Light = vec4(Ambient + Diffuse + Specular, 1.0f);
 
-    if(texture(Texture0, FragTexCoords * Tiling).a < 0.5)
-        discard;
+    vec3 ViewDir = normalize(FragPos - CameraPos);
+    vec3 ReflectDir = reflect(ViewDir, Normal);
 
-    FinalColor = Light * texture(Texture0, FragTexCoords * Tiling);
+     vec4 mainCol = Light * texture(Texture0, FragTexCoords * Tiling);
+
+    if(mainCol.a < 0.5)
+        discard;
+   
+    vec4 reflectionCol = texture(SkyboxTex, ReflectDir);
+
+    vec4 refl = texture(ReflectionTex, FragTexCoords * Tiling);
+
+    FinalColor = mix(mainCol, reflectionCol, refl.a > 0.1f ? refl.r : 0f);
 }

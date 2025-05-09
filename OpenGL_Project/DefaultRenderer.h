@@ -10,7 +10,7 @@ private:
 	glm::mat4 modelMat;
 
 public:
-	DefaultRenderer(int _type = 0, ShaderType _shader = ShaderType::Texture, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective);
+	DefaultRenderer(int _type = 0, ShaderType _shader = ShaderType::Texture, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective, int _reflectionTexID = -1);
 	~DefaultRenderer();
 
 	void InitializeRenderingInfo() override;

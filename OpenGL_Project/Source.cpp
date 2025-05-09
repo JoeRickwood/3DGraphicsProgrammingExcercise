@@ -22,9 +22,10 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
-	skybox->AddComponent<Skybox>(0, 3);
+	skybox->AddComponent<Skybox>(0, ShaderType::Cubemap);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
@@ -32,14 +33,14 @@ int main()
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
 	ground->AddComponent<Collider>(glm::vec3(200.f, 10.0f, 200.f), glm::vec3(0.f, 5.f, 0.f));
 
-	ObjectInstance* tree = new ObjectInstance("Tree", glm::vec3(0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
-	auto treeRenderer = tree->AddComponent<InstancedRenderer>(2, ShaderType::Instanced, 1, ProjectionType::Perspective);
-	auto treeCollider = tree->AddComponent<InstancedCollider>();
+	ObjectInstance* artifact = new ObjectInstance("Artifact", glm::vec3(0.0f, 5.f, 0.0f), glm::vec3(0.f), glm::vec3(10.f, 10.f, 10.f));
+	artifact->AddComponent<DefaultRenderer>(4, ShaderType::TextureReflective, 3, ProjectionType::Perspective, 4);
+	artifact->AddComponent<Collider>(glm::vec3(15.f, 10.f, 15.f), glm::vec3(0.f, 0.f, 0.f));
 
 	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto grassRenderer = grass->AddComponent<InstancedRenderer>(3, ShaderType::GrassSway, 2, ProjectionType::Perspective);
 
-	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(0.f, 10.f, 0.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
+	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(-10.f, 10.f, -10.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
 	player->AddComponent<PhysicsObject>();
 	player->AddComponent<Collider>(glm::vec3(0.5f, 2.f, 0.5f), glm::vec3(0.f, 0.f, 0.f));
@@ -48,9 +49,10 @@ int main()
 
 	Scene::Current().AddObject(skybox);
 	Scene::Current().AddObject(ground);
-	Scene::Current().AddObject(tree);
-	Scene::Current().AddObject(grass);
+	Scene::Current().AddObject(artifact);
 	Scene::Current().AddObject(player);
+	Scene::Current().AddObject(grass);
+
 
 	//Create Window
 	GraphicsLoader::Instance().currentWindow = glfwCreateWindow((int)GraphicsLoader::Instance().windowSize.x, (int)GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
@@ -81,18 +83,6 @@ int main()
 
 	MeshLoader::Instance().LinkMeshes();
 
-	for (int i = 0; i < 500; ++i)
-	{
-		float x = Noise(3, i, i + 3434) * 100.f;
-		float y = Noise(7, i - 231276, i + 3213) * 100.f;
-
-		float scale = (float)(((rand() % 100) / 100.f) + 0.5f) * 5;
-		float rot = (float)(rand() % 360);
-
-		treeRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale, scale));
-		treeCollider->AddInstance(glm::vec3(1.f, 2.f, 1.f) * scale, glm::vec3(x, 0.f, y));
-	}
-
 	for (int i = 0; i < 500000; ++i)
 	{
 		float x = Noise(3, i, i + 3434) * 100.f;
@@ -105,7 +95,6 @@ int main()
 	}
 
 	grassRenderer->InitInstancing();
-	treeRenderer->InitInstancing();
 
 
 	Scene::Current().ShaderInit();
@@ -140,6 +129,8 @@ void InitialSetup()
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
+
+	glEnable(GL_MULTISAMPLE);
 
 	glfwSwapInterval(0);
 
