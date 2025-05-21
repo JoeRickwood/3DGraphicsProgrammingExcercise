@@ -10,7 +10,7 @@ public:
 	static void CalculateViewMatrix();
 	static void CalculateProjectionMatrix();
 
-	glm::mat4 GetProjectionMatrix(ProjectionType _type);
+	const glm::mat4 GetProjectionMatrix(ProjectionType _type);
 
 	//Camera Stuff
 	glm::mat4 viewMatrix;

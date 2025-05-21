@@ -11,6 +11,7 @@ void MeshLoader::Init()
 	LoadMesh("Resources/Tree.obj");
 	LoadMesh("Resources/Grass.obj");
 	LoadMesh("Resources/Artifact.obj");
+	LoadMesh("Resources/Quad.obj");
 }
 
 

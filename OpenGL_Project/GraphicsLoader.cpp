@@ -196,6 +196,7 @@ void GraphicsLoader::InitializeShaderPrograms()
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/GrassSway.vert", "Resources/Shaders/Grass.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/Skybox.vert", "Resources/Shaders/Skybox.frag"));
 	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpaceReflective.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ScreenSpace.vert", "Resources/Shaders/TextureSpaceUnlit.frag"));
 }
 
 void GraphicsLoader::InitializeTextures()
@@ -205,6 +206,11 @@ void GraphicsLoader::InitializeTextures()
 	textures.push_back(CreateTexture("Resources/Grass.png"));
 	textures.push_back(CreateTexture("Resources/Artifact.png"));
 	textures.push_back(CreateTexture("Resources/Artifact_Reflection.png"));
+
+	textures.push_back(CreateTexture("Resources/ButtonTex0.png"));
+	textures.push_back(CreateTexture("Resources/ButtonTex1.png"));
+
+	textures.push_back(CreateTexture("Resources/Tree_Alt.png"));
 
 	std::string skyboxPaths[6] = 
 	{

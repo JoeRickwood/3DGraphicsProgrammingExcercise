@@ -4,25 +4,41 @@
 class PlayerController : public Component
 {
 private:
-	float moveSpeed = 3.f;
-	float height = 2.f;
-	float jumpHeight = 5.f;
-	float mouseSensitivity = 3.f;
+	float objectMoveSpeed = 3.f;
+	float cameraMoveSpeed = 15.f;
 
-	float jumpResetTimer;
-	bool grounded;
+	glm::vec3 velocity;
 
-	bool state;
-	bool tabLock;
 
-	glm::vec2 mousePos;
-	glm::vec2 prevMousePos;
+	float distance;
+	float height;
+
+	glm::vec3 position;
+	glm::vec3 targetPosition;
+	float t;
+
+	bool texToggle;
+
+
+	bool mouseCursorVisibilityToggleLock;
+	bool mouseCursorVisibility;
+
+	bool wireframeToggleLock;
+	bool wireframeMode;
+
+	bool cameraToggleLock;
+	bool cameraToggle;
+
+	int tex0;
+	int tex1;
 
 public:
-	PlayerController(float _moveSpeed = 3.f, float _height = 2.f, float _mouseSensitivity = 3.f);
+	PlayerController(float _objectMoveSpeed, float _cameraMoveSpeed, float _distance, int _altTex, int _altTex1);
 	~PlayerController();
 
+	void HandleStates();
 	void Update()override;
-	void Jump();
+
+	void ToggleTexture();
 };
 

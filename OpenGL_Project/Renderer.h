@@ -26,7 +26,7 @@ public:
 	~Renderer();
 
 	virtual void InitializeRenderingInfo();
-	Bounds GetWorldBounds();
+	const Bounds GetWorldBounds();
 
 	void ShaderInit()override;
 	void Update() override;

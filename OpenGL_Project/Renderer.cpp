@@ -92,7 +92,7 @@ void Renderer::Update()
 }
 
 
-Bounds Renderer::GetWorldBounds()
+const Bounds Renderer::GetWorldBounds()
 {
 	float x = parent->position.x;
 	float y = -parent->position.y;

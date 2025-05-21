@@ -35,7 +35,7 @@ void Camera::CalculateProjectionMatrix()
 }
 
 //Gets The Projection Matrix Of Either Orthographic Or Perspective, Returns Default Perspective
-glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
+const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 {
 	switch (_type)
 	{

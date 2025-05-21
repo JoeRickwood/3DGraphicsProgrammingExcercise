@@ -24,7 +24,8 @@ enum ShaderType
 	Instanced = 1,
 	GrassSway = 2,
 	Cubemap = 3,
-	TextureReflective = 4
+	TextureReflective = 4,
+	TextureUnlit = 5
 };
 
 class GraphicsLoader
@@ -96,4 +97,14 @@ public:
 static float lerp(float a, float b, float t)
 {
 	return ((b - a) * t) + a;
+}
+
+static glm::vec3 lerp(glm::vec3 a, glm::vec3 b, float t) 
+{
+	return glm::vec3
+	(
+		lerp(a.x, b.x, t),
+		lerp(a.y, b.y, t),
+		lerp(a.z, b.z, t)
+	);
 }

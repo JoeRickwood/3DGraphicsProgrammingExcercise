@@ -31,27 +31,35 @@ int main()
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
 	auto groundRenderer = ground->AddComponent<DefaultRenderer>(1, ShaderType::Texture, 0, ProjectionType::Perspective);
 	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
-	ground->AddComponent<Collider>(glm::vec3(200.f, 10.0f, 200.f), glm::vec3(0.f, 5.f, 0.f));
 
 	ObjectInstance* artifact = new ObjectInstance("Artifact", glm::vec3(0.0f, 5.f, 0.0f), glm::vec3(0.f), glm::vec3(10.f, 10.f, 10.f));
 	artifact->AddComponent<DefaultRenderer>(4, ShaderType::TextureReflective, 3, ProjectionType::Perspective, 4);
-	artifact->AddComponent<Collider>(glm::vec3(15.f, 10.f, 15.f), glm::vec3(0.f, 0.f, 0.f));
 
 	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto grassRenderer = grass->AddComponent<InstancedRenderer>(3, ShaderType::GrassSway, 2, ProjectionType::Perspective);
 
-	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(-10.f, 10.f, -10.f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
-	player->AddComponent<PlayerController>(10.f, 2.f, 1.f);
-	player->AddComponent<PhysicsObject>();
-	player->AddComponent<Collider>(glm::vec3(0.5f, 2.f, 0.5f), glm::vec3(0.f, 0.f, 0.f));
-	auto cc = player->AddComponent<CameraController>(0.1f, 150.f);
-	cc->SetEnabledState(false);
+	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(-10.f, 10.f, -10.f), glm::vec3(0.f), glm::vec3(10.f, 10.f, 10.f));
+	player->AddComponent<DefaultRenderer>(2, ShaderType::Texture, 1, ProjectionType::Perspective);
+	player->AddComponent<PlayerController>(10.f, 0.2f, 100.f, 1, 7);
 
+	//Button Toggles The Texture Of the Player tree Object
+	ObjectInstance* button = new ObjectInstance("Button", glm::vec3(-0.85f, 0.85f, 0.f), glm::vec3(0.f), glm::vec3(0.2f, 0.2f, 0.2f));
+	button->AddComponent<DefaultRenderer>(5, ShaderType::TextureUnlit, 5, ProjectionType::Orthographic);
+	auto btnComp = button->AddComponent<Button>(5, 6);
+	btnComp->AddListener( //Adds A Listener To The Button Component To Target The Toggle Texture On The Player Controller
+	[player]()
+	{
+			player->GetComponent<PlayerController>()->ToggleTexture();
+	});
+
+
+	//Add All Objects To The Current Scene
 	Scene::Current().AddObject(skybox);
 	Scene::Current().AddObject(ground);
 	Scene::Current().AddObject(artifact);
 	Scene::Current().AddObject(player);
 	Scene::Current().AddObject(grass);
+	Scene::Current().AddObject(button);
 
 
 	//Create Window
@@ -104,7 +112,7 @@ int main()
 	{
 		Time::Instance().Update();
 
-		std::cout << "Game Window (" + to_string((int)round(1.f / Time::Instance().deltaTime)) + " FPS) \n";
+		//std::cout << "Game Window (" + to_string((int)round(1.f / Time::Instance().deltaTime)) + " FPS) \n";
 
 		Update();
 
