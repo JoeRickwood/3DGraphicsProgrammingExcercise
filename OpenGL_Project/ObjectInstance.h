@@ -1,5 +1,5 @@
 #pragma once
-#include "RenderableLoader.h"
+#include "MeshLoader.h"
 
 class Component;
 
@@ -17,6 +17,7 @@ public:
 	~ObjectInstance();
 
 
+	//Gets The Component Of Type T And Returns The Pointer To It
 	template<typename T>
 	T *GetComponent()
 	{
@@ -32,7 +33,7 @@ public:
 		return nullptr;
 	}
 
-
+	//Adds A Custom Component Of Type T To The Object, Then Returns The Pointer To It
 	template <typename T, typename... Args>
 	T* AddComponent(Args&&... args)
 	{
@@ -47,6 +48,7 @@ public:
 		return a;
 	}
 
+	void ShaderInit();
 	void Update();
 	void ShaderUpdate();
 	void Render();
@@ -57,13 +59,20 @@ private:
 
 class Component
 {
+protected:
+	bool enabled;
+
 public:
 	ObjectInstance* parent; //Parent Gets Set In The Instance's AddComponent Method And Can Be Acessed In Order To Change Values On The Parent
+
 	Component();
 	~Component();
 
 	//Used To Assign Values After Its Parent Has Been Added
 	virtual void Init();
+
+	//Used Usually To Get Shader Uniform Locations Ahead Of Time, Removing The Need To Do It Every Frame
+	virtual void ShaderInit();
 
 	//Called Every Frame
 	virtual void Update();
@@ -73,5 +82,8 @@ public:
 
 	//Called On Render
 	virtual void Render();
+
+	//Called To Enable Or Disable A Component
+	void SetEnabledState(bool state);
 };
 

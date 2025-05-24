@@ -1,120 +1,102 @@
 #include "Renderer.h"
+#include "Time.h"
+#include "Scene.h"
 
-Renderer::Renderer(RenderableType _type, ShaderType _shader, int _textureID)
+Renderer::Renderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType, int _reflectionTexID)
 {
-	renderable = RenderableLoader::Instance().GetRenderable(_type);
-
-	translationMat = glm::mat4();
-	rotationMat = glm::mat4();
-	scaleMat = glm::mat4();
-	modelMat = glm::mat4();
+	mesh = MeshLoader::Instance().GetMesh(_type);
 
 	shader = _shader;
 
 	textureID = _textureID;
+	reflectionTexID = _reflectionTexID;
 
-	flipX = false;
-	flipY = false;
-	SetUVFrame(uvFrame);
+	projection = _projectionType;
+
+	cameraLoc = NULL;
+	timeLoc = NULL;
+	mainTexLoc = NULL;
+	mainTextureTilingLoc = NULL;
+	skyboxLoc = NULL;
 }
 
 Renderer::~Renderer()
 {
+
+}
+
+
+//Uses This Function To Store The Uniform Locations Of The Shader
+void Renderer::ShaderInit()
+{
+	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(shader);
+
+	cameraLoc = glGetUniformLocation(prgm, "CameraPos");
+	timeLoc = glGetUniformLocation(prgm, "Time");
+	mainTexLoc = glGetUniformLocation(prgm, "Texture0");
+	mainTextureTilingLoc = glGetUniformLocation(prgm, "Tiling");
+	skyboxLoc = glGetUniformLocation(prgm, "SkyboxTex");
+	reflectionTexLoc = glGetUniformLocation(prgm, "ReflectionTex");
+}
+
+void Renderer::InitializeRenderingInfo()
+{
+	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(shader);
+
+	//Set The New Shader Program
+	glUseProgram(prgm);
+
+	//Pass In Uniforms
+	glUniform3f(cameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
+	glUniform1f(timeLoc, Time::Instance().time);
+	glUniform2f(mainTextureTilingLoc, textureTiling.x, textureTiling.y);
+
+	//Set The Active Textrure Slot
+	glActiveTexture(GL_TEXTURE0);
+	///Set The Texture Mode To Repeat
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//Bind Texture To Opengl
+	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
+	//Pass It Into The Uniform
+	glUniform1i(mainTexLoc, 0);
+
+	//Now The Cubemap
+	glActiveTexture(GL_TEXTURE1);
+	Skybox* skybox = Scene::Current().FindObject("Skybox")->GetComponent<Skybox>();
+	//Bind Texture To Opengl
+	glBindTexture(GL_TEXTURE_CUBE_MAP, GraphicsLoader::Instance().GetSkybox(skybox->skyboxTexID));
+	//Pass It Into Uniform
+	glUniform1i(skyboxLoc, 1);
+
+
+	//Only Send In Reflection Map If It Exists On The Renderer
+	if (reflectionTexID != -1) 
+	{
+		//Set The Reflection Map Now
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(reflectionTexID));
+		glUniform1i(reflectionTexLoc, 2);
+	}
+
+	parent->ShaderUpdate();
 }
 
 void Renderer::Render()
 {
-	//Set The New Shader Program
-	glUseProgram(GraphicsLoader::Instance().GetShaderProgram(shader));
 
-	GLint ModelMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ModelMatrix");
-	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
-
-	Frame frame = uvFrame;
-
-	if (flipX)
-	{
-		frame.FlipX();
-	}
-
-	if (flipY)
-	{
-		frame.FlipY();
-	}
-
-	//Set The UV Frame, Mostly Used For Animation But Also To Reposition The Bounds Of The Image
-	GLint UVFrameBLLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "UVFrameBottomLeft");
-	glUniform2f(UVFrameBLLoc, frame.bottomLeft.x, frame.bottomLeft.y);
-
-	GLint UVFrameTRLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "UVFrameTopRight");
-	glUniform2f(UVFrameTRLoc, frame.topRight.x, frame.topRight.y);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
-	glUniform1i(glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "Texture0"), 0);
-
-	parent->ShaderUpdate();
-
-	//Draw Renderable
-	glBindVertexArray(renderable->VAO);
-
-	glDrawElements(GL_TRIANGLES, renderable->indices.size(), GL_UNSIGNED_INT, 0);
-
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-
-	//Unbind The Shader Program
-	glUseProgram(0);
 }
 
 void Renderer::Update()
 {
-	translationMat = glm::translate(glm::mat4(1.0f), parent->position);
-	rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(parent->rotation.z), glm::vec3(0.f, 0.f, 1.f));
-	scaleMat = glm::scale(glm::mat4(1.0f), parent->scale);
-
-	int width = 0;
-	int height = 0;
-	glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
-
-	glm::mat4 aspectMat = glm::scale(glm::mat4(1.0f), glm::vec3(800.f / (float)width, 800.f / (float)height, 1.f));
-
-	modelMat = GraphicsLoader::Instance().zoomMatrix * aspectMat * translationMat * GraphicsLoader::Instance().viewMatrix * rotationMat * scaleMat;
 }
 
-void Renderer::SetUVFrame(Frame frame)
-{
-	uvFrame = frame;
-}
 
-void Renderer::FlipX(bool state)
-{
-	flipX = state;
-}
-
-void Renderer::FlipY(bool state)
-{
-	flipY = state;
-
-}
-
-Bounds Renderer::GetWorldBounds()
+const Bounds Renderer::GetWorldBounds()
 {
 	float x = parent->position.x;
 	float y = -parent->position.y;
 
 	Bounds ret = Bounds((-0.5f * parent->scale.x) + x, (-0.5f * parent->scale.y) + y, (0.5f * parent->scale.x) + x, (0.5f * parent->scale.y) + y);
 	return ret;
-}
-
-void Frame::FlipX()
-{
-	bottomLeft.x = 1.f - bottomLeft.x;
-	topRight.x = 1.f - topRight.x;
-}
-
-void Frame::FlipY()
-{
-	bottomLeft.y = 1.f - bottomLeft.y;
-	topRight.y = 1.f - topRight.y;
 }

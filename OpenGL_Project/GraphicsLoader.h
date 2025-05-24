@@ -1,6 +1,5 @@
 #pragma once
-#include <iostream>
-#include "windows.h"
+// Library Includes
 #include <string>
 #include <vector>
 #include<fstream>
@@ -12,10 +11,22 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-#include "Time.h"
 
-// Library Includes
+enum ProjectionType
+{
+	Orthographic,
+	Perspective
+};
 
+enum ShaderType
+{
+	Texture = 0,
+	Instanced = 1,
+	GrassSway = 2,
+	Cubemap = 3,
+	TextureReflective = 4,
+	TextureUnlit = 5
+};
 
 class GraphicsLoader
 {
@@ -24,17 +35,15 @@ public:
 
 	GLuint GetShaderProgram(int _ID);
 	GLuint GetTexture(int _ID);
+	GLuint GetSkybox(int _ID);
+
 	void InitializeShaderPrograms();
 	void InitializeTextures();
+	
+	glm::vec2 windowSize = glm::vec2(1920, 1080);
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
-
-	//Camera Stuff
-
-
-	glm::mat4 viewMatrix;
-	glm::mat4 zoomMatrix;
-
-	float orthographicSize = 1.5f;
+	GLFWwindow* currentWindow;
 
 private:
 	GraphicsLoader();
@@ -42,6 +51,7 @@ private:
 
 	std::vector<GLuint> shaderPrograms;
 	std::vector<GLuint> textures;
+	std::vector<GLuint> skyboxes;
 
 	static GLuint CreateShaderProgram(const char* VertexShaderFilename, const char* FragmentShaderFilename);
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
@@ -49,6 +59,7 @@ private:
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
 
 	static GLuint CreateTexture(std::string filename);
+	static GLuint CreateSkybox(std::string filepaths[6]);
 };
 
 
@@ -70,7 +81,7 @@ public:
 	}
 
 	//Basic Method To Check If The Bounding Box Contains Point Of x, y
-	bool Contains(float x, float y)
+	inline const bool Contains(float x, float y)
 	{
 		if (x > minX && x < maxX &&
 			y > minY && y < maxY)
@@ -88,20 +99,12 @@ static float lerp(float a, float b, float t)
 	return ((b - a) * t) + a;
 }
 
-
-class Texture 
+static glm::vec3 lerp(glm::vec3 a, glm::vec3 b, float t) 
 {
-public:
-	int width;
-	int height;
-	int components;
-
-	Texture();
-	~Texture() {};
-};
-
-enum ShaderType
-{
-	VertexColors = 0,
-	Texture = 1
-};
+	return glm::vec3
+	(
+		lerp(a.x, b.x, t),
+		lerp(a.y, b.y, t),
+		lerp(a.z, b.z, t)
+	);
+}

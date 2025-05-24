@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Time.h"
 
 Scene::Scene()
 {
@@ -15,7 +16,7 @@ void Scene::AddObject(ObjectInstance* _obj)
 
 void Scene::RemoveObject(ObjectInstance* _obj)
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); ++i)
 	{
 		if (objects[i] == _obj)
 		{
@@ -29,11 +30,6 @@ ObjectInstance* Scene::FindObject(std::string _name)
 {
 	for (auto& obj : objects)
 	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
-
 		if (obj->name == _name) 
 		{
 			return obj;
@@ -41,6 +37,20 @@ ObjectInstance* Scene::FindObject(std::string _name)
 	}
 
 	return nullptr;
+}
+
+
+void Scene::ShaderInit()
+{
+	for (auto& obj : objects)
+	{
+		if (obj == nullptr)
+		{
+			continue;
+		}
+
+		obj->ShaderInit();
+	}
 }
 
 void Scene::Update()
@@ -58,26 +68,19 @@ void Scene::Update()
 
 void Scene::Render()
 {
-	for (auto& obj : objects)
-	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
+	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		obj->Render();
+	for (int i = 0; i < objects.size(); ++i)
+	{
+		objects[i]->Render();
 	}
 }
 
 void Scene::ShaderUpdate()
 {
-	for (auto& obj : objects)
+	for (int i = 0; i < objects.size(); ++i)
 	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
-
-		obj->ShaderUpdate();
+		objects[i]->ShaderUpdate();
 	}
 }

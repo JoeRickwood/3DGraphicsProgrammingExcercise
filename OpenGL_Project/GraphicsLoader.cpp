@@ -1,11 +1,15 @@
 #pragma once
 #include "GraphicsLoader.h" 
-
+#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-GraphicsLoader::GraphicsLoader(void) {}
+GraphicsLoader::GraphicsLoader(void) 
+{
+	currentWindow = nullptr;
+}
+
 GraphicsLoader::~GraphicsLoader(void) {}
 
 GLuint GraphicsLoader::CreateShaderProgram(const char* vertexShaderFilename, const char* fragmentShaderFilename)
@@ -45,7 +49,7 @@ GLuint GraphicsLoader::CreateShader(GLenum shaderType, const char* shaderName)
 
 
 	const char* shaderChars = shaderTxt.c_str();
-	int shaderLength = shaderTxt.size();
+	int shaderLength = (int)shaderTxt.size();
 	
 	// Populate the Shader Object (ID) and compile
 	glShaderSource(shaderID, 1, &shaderChars, &shaderLength);
@@ -149,20 +153,77 @@ GLuint GraphicsLoader::CreateTexture(std::string filename)
 	return ret;
 }
 
+GLuint GraphicsLoader::CreateSkybox(std::string filepaths[6])
+{
+	GLuint skybox = NULL;
+
+	glGenTextures(1, &skybox);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox);
+	stbi_set_flip_vertically_on_load(false);
+
+	int imageWidth;
+	int imageHeight;
+	int imageComponents;
+
+	for (int i = 0; i < 6; ++i)
+	{
+		unsigned char* imageData = stbi_load(filepaths[i].c_str(), &imageWidth, &imageHeight, &imageComponents, 0);
+
+		GLint loadedComponents = (imageComponents == 4) ? GL_RGBA : GL_RGB;
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, loadedComponents, imageWidth, imageHeight, 0, loadedComponents, GL_UNSIGNED_BYTE, imageData);
+	
+		stbi_image_free(imageData);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return skybox;
+}
+
 
 void GraphicsLoader::InitializeShaderPrograms()
 {
-	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/VertexColorFade.frag"));
-	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/WorldSpace.vert", "Resources/Shaders/TextureSpace.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpaceInstanced.vert", "Resources/Shaders/TextureSpace.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/GrassSway.vert", "Resources/Shaders/Grass.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/Skybox.vert", "Resources/Shaders/Skybox.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpaceReflective.frag"));
+	shaderPrograms.push_back(CreateShaderProgram("Resources/Shaders/ScreenSpace.vert", "Resources/Shaders/TextureSpaceUnlit.frag"));
 }
 
 void GraphicsLoader::InitializeTextures()
 {
-	textures.push_back(CreateTexture("Resources/Test.png"));
-
+	textures.push_back(CreateTexture("Resources/Prototype.png"));
+	textures.push_back(CreateTexture("Resources/Tree.png"));
 	textures.push_back(CreateTexture("Resources/Grass.png"));
-	textures.push_back(CreateTexture("Resources/Dirt.png"));
-	textures.push_back(CreateTexture("Resources/Stone.png"));
+	textures.push_back(CreateTexture("Resources/Artifact.png"));
+	textures.push_back(CreateTexture("Resources/Artifact_Reflection.png"));
+
+	textures.push_back(CreateTexture("Resources/ButtonTex0.png"));
+	textures.push_back(CreateTexture("Resources/ButtonTex1.png"));
+
+	textures.push_back(CreateTexture("Resources/Tree_Alt.png"));
+
+	std::string skyboxPaths[6] = 
+	{
+		"Resources/Skybox/Front.png",
+		"Resources/Skybox/Back.png",
+		"Resources/Skybox/Top.png",
+		"Resources/Skybox/Bottom.png",
+		"Resources/Skybox/Right.png",
+		"Resources/Skybox/Left.png"
+	};
+
+	skyboxes.push_back(CreateSkybox(skyboxPaths));
+
 }
 
 GLuint GraphicsLoader::GetShaderProgram(int _ID)
@@ -175,9 +236,7 @@ GLuint GraphicsLoader::GetTexture(int _ID)
 	return textures[_ID];
 }
 
-Texture::Texture()
+GLuint GraphicsLoader::GetSkybox(int _ID)
 {
-	components = 0;
-	height = 0;
-	width = 0;
+	return skyboxes[_ID];
 }

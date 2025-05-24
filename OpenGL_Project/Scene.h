@@ -1,6 +1,7 @@
 #pragma once
 #include "ObjectInstance.h"
 #include "Components.h"
+#include "Skybox.h"
 
 class Scene
 {
@@ -14,12 +15,12 @@ public:
 	void RemoveObject(ObjectInstance* _obj);
 	ObjectInstance* FindObject(std::string _name);
 
+	void ShaderInit();
 	void Update();
 	void Render();
 	void ShaderUpdate();
 
 private:
-
 	std::vector<ObjectInstance*> objects;
 };
 
