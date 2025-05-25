@@ -15,14 +15,6 @@ ObjectInstance::~ObjectInstance()
 	Scene::Current().RemoveObject(this);
 }
 
-void ObjectInstance::ShaderInit()
-{
-	for (int i = 0; i < components.size(); ++i)
-	{
-		components[i]->ShaderInit();
-	}
-}
-
 void ObjectInstance::Update()
 {
 	for (int i = 0; i < components.size(); ++i)
@@ -65,9 +57,6 @@ void Component::Init()
 {
 }
 
-void Component::ShaderInit()
-{
-}
 
 void Component::Update()
 {

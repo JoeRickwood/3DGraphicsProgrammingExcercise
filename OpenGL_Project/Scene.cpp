@@ -39,20 +39,6 @@ ObjectInstance* Scene::FindObject(std::string _name)
 	return nullptr;
 }
 
-
-void Scene::ShaderInit()
-{
-	for (auto& obj : objects)
-	{
-		if (obj == nullptr)
-		{
-			continue;
-		}
-
-		obj->ShaderInit();
-	}
-}
-
 void Scene::Update()
 {
 	for (auto& obj : objects)

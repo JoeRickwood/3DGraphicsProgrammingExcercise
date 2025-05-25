@@ -15,7 +15,6 @@ public:
 	void RemoveObject(ObjectInstance* _obj);
 	ObjectInstance* FindObject(std::string _name);
 
-	void ShaderInit();
 	void Update();
 	void Render();
 	void ShaderUpdate();

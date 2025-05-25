@@ -1,4 +1,5 @@
 #include "DefaultRenderer.h"
+#include <iostream>
 
 DefaultRenderer::DefaultRenderer(ShaderType _shader, ProjectionType _projectionType) : Renderer(_shader, _projectionType)
 {
@@ -38,6 +39,11 @@ void DefaultRenderer::Update()
 
 void DefaultRenderer::Render()
 {
+	if (mesh == nullptr) 
+	{
+		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
+	}
+
 	InitializeRenderingInfo();
 
 	//Draw Renderable

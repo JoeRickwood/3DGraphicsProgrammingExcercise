@@ -1,4 +1,5 @@
 #include "InstancedRenderer.h"
+#include <iostream>
 
 InstancedRenderer::InstancedRenderer(ShaderType _shader, ProjectionType _projectionType) : Renderer(_shader, _projectionType)
 {
@@ -61,6 +62,11 @@ void InstancedRenderer::InitInstancing()
 
 void InstancedRenderer::Render()
 {
+	if (mesh == nullptr)
+	{
+		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
+	}
+
 	InitializeRenderingInfo();
 
 	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;

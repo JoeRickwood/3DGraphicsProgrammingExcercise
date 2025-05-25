@@ -4,52 +4,35 @@
 #include "Time.h"
 #include "PerlinNoise.h"
 
-//Forward Declare Functions For Later
-void InitialSetup();
-void Update();
-void Render();
-void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height);
-
-int main() 
+//On Window Resized Callback Links To The glfwWindowSizefun
+void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
-	//We Initialize The Renderable Loader BEFORE We Set Our Rendereable Instances On Screen
-	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
-	MeshLoader::Instance().Init();
+	glViewport(0, 0, _Width, _Height);
 
+	GraphicsLoader::Instance().windowSize.x = (float)_Width;
+	GraphicsLoader::Instance().windowSize.y = (float)_Height;
+}
+
+//Sets Up Objects + Other GLFW Parameters
+void InitialSetup() 
+{
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
-	
+
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
-	skybox->AddComponent<Skybox>(0, ShaderType::Cubemap);
-
-	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
-	ground->AddComponent<PlayerController>(15, 1, 50, 0, 0);
-	auto groundRenderer = ground->AddComponent<DefaultRenderer>(ShaderType::Texture, ProjectionType::Perspective);
-	groundRenderer->SetMesh(MeshLoader::Instance().GetMesh(1));
-	groundRenderer->AddTexture("Texture0", 0, Texture2D);
-
-
-	//Add All Objects To The Current Scene
-	Scene::Current().AddObject(skybox);
-	Scene::Current().AddObject(ground);
-
-
 	//Create Window
 	GraphicsLoader::Instance().currentWindow = glfwCreateWindow((int)GraphicsLoader::Instance().windowSize.x, (int)GraphicsLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
 
-	if(GraphicsLoader::Instance().currentWindow == NULL)
+	if (GraphicsLoader::Instance().currentWindow == NULL)
 	{
 		std::cout << "Error Creating GraphicsLoader::Instance().currentWindow, GLFW Failed To Initialize, Terminating Program" << std::endl;
-		system("pause");
 
 		glfwTerminate();
-		return -1;
+		return;
 	}
 
 	//Make The Window The Current Context Of GLFW
@@ -61,59 +44,23 @@ int main()
 		system("pause");
 
 		glfwTerminate();
-		return -1;
+		return;
 	}
 
-	//Setup All Objects In Project
-	InitialSetup();
-
-	MeshLoader::Instance().LinkMeshes();
-
-	Scene::Current().ShaderInit();
-
-	//Application Loop Runs Until The Window Is Set To close
-	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)
-	{
-		Time::Instance().Update();
-
-		//std::cout << "Game Window (" + to_string((int)round(1.f / Time::Instance().deltaTime)) + " FPS) \n";
-
-		Update();
-
-		Camera::CalculateProjectionMatrix();
-		Camera::CalculateViewMatrix();
-
-		Render();
-	}
-
-	glfwTerminate();
-	return 0;
-}
-
-//Sets Up Objects + Other GLFW Parameters
-void InitialSetup() 
-{
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glEnable(GL_MULTISAMPLE);
 
 	glDepthFunc(GL_LESS);
-	glEnable(GL_BLEND);
-
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
-	glEnable(GL_CULL_FACE);
 
-	glEnable(GL_MULTISAMPLE);
 
 	glfwSwapInterval(0);
 
-	glClearColor(0.6f, 0.6f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);
-
-	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
-	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
-
-	Time::Instance().Init();
-
 	glfwSetWindowSizeCallback(GraphicsLoader::Instance().currentWindow, (GLFWwindowsizefun)OnWindowResized);
 }
 
@@ -135,11 +82,73 @@ void Render()
 	glfwSwapBuffers(GraphicsLoader::Instance().currentWindow);
 }
 
-//On Window Resized Callback Links To The glfwWindowSizefun
-void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height) 
+//Creates All Objects In The Scene
+void LoadScene()
 {
-	glViewport(0, 0, _Width, _Height);
+	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
+	skybox->AddComponent<Skybox>(0, ShaderType::Cubemap);
 
-	GraphicsLoader::Instance().windowSize.x = (float)_Width;
-	GraphicsLoader::Instance().windowSize.y = (float)_Height;
+	ObjectInstance* cam = new ObjectInstance("Camera");
+	cam->AddComponent<PlayerController>(15, 1, 10, 0, 0);
+
+	//Object Which Shows What A Regular Object With Animation Looks Like
+	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
+	auto groundRenderer = ground->AddComponent<DefaultRenderer>(ShaderType::Texture, ProjectionType::Perspective);
+	groundRenderer->SetMesh(MeshLoader::Instance().GetMesh(1));
+	groundRenderer->AddTexture("Texture0", 0, Texture2D);
+
+	ObjectInstance* instancedCubes = new ObjectInstance("Instanced Cubes");
+	auto cubesRenderer = instancedCubes->AddComponent<InstancedRenderer>(ShaderType::Instanced, ProjectionType::Perspective);
+	cubesRenderer->SetMesh(MeshLoader::Instance().GetMesh(1));
+	cubesRenderer->AddTexture("Texture0", 1, Texture2D);
+
+	//Add All Objects To The Current Scene
+	Scene::Current().AddObject(skybox);
+	Scene::Current().AddObject(ground);
+	Scene::Current().AddObject(instancedCubes);
+	Scene::Current().AddObject(cam);
+
+	for (int i = 0; i < 500; ++i)
+	{
+		glm::vec3 pos = glm::vec3((rand() % 100) - 50, 0.f, (rand() % 100) - 50);
+
+
+		cubesRenderer->AddInstance(pos, glm::vec3(0.f, rand() % 360, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	}
+
+	cubesRenderer->InitInstancing();
+}
+
+int main()
+{
+	//Setup All Objects In Project
+	InitialSetup();
+
+	//We Initialize The Renderable Loader BEFORE We Set Our Rendereable Instances On Screen
+	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (Quads)
+	MeshLoader::Instance().Init();
+	MeshLoader::Instance().LinkMeshes();
+
+	GraphicsLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
+	GraphicsLoader::Instance().InitializeTextures(); //Generates The Textures Used
+
+	Time::Instance().Init();
+
+	LoadScene();
+
+	//Application Loop Runs Until The Window Is Set To close
+	while (glfwWindowShouldClose(GraphicsLoader::Instance().currentWindow) == false)
+	{
+		Time::Instance().Update();
+
+		Camera::CalculateProjectionMatrix();
+		Camera::CalculateViewMatrix();
+
+		Update();
+
+		Render();
+	}
+
+	glfwTerminate();
+	return 0;
 }
