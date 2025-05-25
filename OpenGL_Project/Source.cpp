@@ -29,37 +29,15 @@ int main()
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
-	auto groundRenderer = ground->AddComponent<DefaultRenderer>(1, ShaderType::Texture, 0, ProjectionType::Perspective);
-	groundRenderer->textureTiling = glm::vec2(20.f, 20.f);
-
-	ObjectInstance* artifact = new ObjectInstance("Artifact", glm::vec3(0.0f, 5.f, 0.0f), glm::vec3(0.f), glm::vec3(10.f, 10.f, 10.f));
-	artifact->AddComponent<DefaultRenderer>(4, ShaderType::TextureReflective, 3, ProjectionType::Perspective, 4);
-
-	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto grassRenderer = grass->AddComponent<InstancedRenderer>(3, ShaderType::GrassSway, 2, ProjectionType::Perspective);
-
-	ObjectInstance* player = new ObjectInstance("Player", glm::vec3(-10.f, 10.f, -10.f), glm::vec3(0.f), glm::vec3(10.f, 10.f, 10.f));
-	player->AddComponent<DefaultRenderer>(2, ShaderType::Texture, 1, ProjectionType::Perspective);
-	player->AddComponent<PlayerController>(10.f, 0.2f, 100.f, 1, 7);
-
-	//Button Toggles The Texture Of the Player tree Object
-	ObjectInstance* button = new ObjectInstance("Button", glm::vec3(-0.85f, 0.85f, 0.f), glm::vec3(0.f), glm::vec3(0.2f, 0.2f, 0.2f));
-	button->AddComponent<DefaultRenderer>(5, ShaderType::TextureUnlit, 5, ProjectionType::Orthographic);
-	auto btnComp = button->AddComponent<Button>(5, 6);
-	btnComp->AddListener( //Adds A Listener To The Button Component To Target The Toggle Texture On The Player Controller
-	[player]()
-	{
-			player->GetComponent<PlayerController>()->ToggleTexture();
-	});
+	ground->AddComponent<PlayerController>(15, 1, 50, 0, 0);
+	auto groundRenderer = ground->AddComponent<DefaultRenderer>(ShaderType::Texture, ProjectionType::Perspective);
+	groundRenderer->SetMesh(MeshLoader::Instance().GetMesh(1));
+	groundRenderer->AddTexture("Texture0", 0, Texture2D);
 
 
 	//Add All Objects To The Current Scene
 	Scene::Current().AddObject(skybox);
 	Scene::Current().AddObject(ground);
-	Scene::Current().AddObject(artifact);
-	Scene::Current().AddObject(player);
-	Scene::Current().AddObject(grass);
-	Scene::Current().AddObject(button);
 
 
 	//Create Window
@@ -90,20 +68,6 @@ int main()
 	InitialSetup();
 
 	MeshLoader::Instance().LinkMeshes();
-
-	for (int i = 0; i < 500000; ++i)
-	{
-		float x = Noise(3, i, i + 3434) * 100.f;
-		float y = Noise(7, i - 231276, i + 3213) * 100.f;
-
-		float scale = (((rand() % 100) / 100.f) + 0.5f) * 0.5f;
-		float rot = (float)(rand() % 360);
-
-		grassRenderer->AddInstance(glm::vec3(x, 0.f, y), glm::vec3(0.f, rot, 0.f), glm::vec3(scale, scale * 1.5f, scale));
-	}
-
-	grassRenderer->InitInstancing();
-
 
 	Scene::Current().ShaderInit();
 

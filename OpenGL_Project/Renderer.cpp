@@ -1,23 +1,13 @@
 #include "Renderer.h"
 #include "Time.h"
 #include "Scene.h"
+#include <iostream>
 
-Renderer::Renderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType, int _reflectionTexID)
+Renderer::Renderer(ShaderType _shader, ProjectionType _projectionType)
 {
-	mesh = MeshLoader::Instance().GetMesh(_type);
-
 	shader = _shader;
-
-	textureID = _textureID;
-	reflectionTexID = _reflectionTexID;
-
 	projection = _projectionType;
-
-	cameraLoc = NULL;
-	timeLoc = NULL;
-	mainTexLoc = NULL;
-	mainTextureTilingLoc = NULL;
-	skyboxLoc = NULL;
+	mesh = nullptr;
 }
 
 Renderer::~Renderer()
@@ -25,18 +15,9 @@ Renderer::~Renderer()
 
 }
 
-
-//Uses This Function To Store The Uniform Locations Of The Shader
-void Renderer::ShaderInit()
+void Renderer::Update()
 {
-	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(shader);
 
-	cameraLoc = glGetUniformLocation(prgm, "CameraPos");
-	timeLoc = glGetUniformLocation(prgm, "Time");
-	mainTexLoc = glGetUniformLocation(prgm, "Texture0");
-	mainTextureTilingLoc = glGetUniformLocation(prgm, "Tiling");
-	skyboxLoc = glGetUniformLocation(prgm, "SkyboxTex");
-	reflectionTexLoc = glGetUniformLocation(prgm, "ReflectionTex");
 }
 
 void Renderer::InitializeRenderingInfo()
@@ -47,36 +28,23 @@ void Renderer::InitializeRenderingInfo()
 	glUseProgram(prgm);
 
 	//Pass In Uniforms
-	glUniform3f(cameraLoc, Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
-	glUniform1f(timeLoc, Time::Instance().time);
-	glUniform2f(mainTextureTilingLoc, textureTiling.x, textureTiling.y);
+	glUniform3f(glGetUniformLocation(prgm, "CameraPos"), Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
+	glUniform1f(glGetUniformLocation(prgm, "Time"), Time::Instance().time);
+	glUniform2f(glGetUniformLocation(prgm, "Tiling"), textureTiling.x, textureTiling.y);
 
-	//Set The Active Textrure Slot
-	glActiveTexture(GL_TEXTURE0);
-	///Set The Texture Mode To Repeat
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//Bind Texture To Opengl
-	glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(textureID));
-	//Pass It Into The Uniform
-	glUniform1i(mainTexLoc, 0);
-
-	//Now The Cubemap
-	glActiveTexture(GL_TEXTURE1);
-	Skybox* skybox = Scene::Current().FindObject("Skybox")->GetComponent<Skybox>();
-	//Bind Texture To Opengl
-	glBindTexture(GL_TEXTURE_CUBE_MAP, GraphicsLoader::Instance().GetSkybox(skybox->skyboxTexID));
-	//Pass It Into Uniform
-	glUniform1i(skyboxLoc, 1);
-
-
-	//Only Send In Reflection Map If It Exists On The Renderer
-	if (reflectionTexID != -1) 
+	for (int i = 0; i < textures.size(); ++i)
 	{
-		//Set The Reflection Map Now
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, GraphicsLoader::Instance().GetTexture(reflectionTexID));
-		glUniform1i(reflectionTexLoc, 2);
+		glActiveTexture(GL_TEXTURE0 + i);
+
+		glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		GLuint tex = GraphicsLoader::Instance().GetTexture(textures[i].texID);
+		glBindTexture(textures[i].type, tex);
+		
+		GLint loc = glGetUniformLocation(prgm, textures[i].locationName.c_str());
+
+		glUniform1i(loc, i);
 	}
 
 	parent->ShaderUpdate();
@@ -87,16 +55,17 @@ void Renderer::Render()
 
 }
 
-void Renderer::Update()
+void Renderer::AddTexture(std::string _location, int _texID, TextureType _type)
 {
+	textures.push_back(TexturePass(_location, _texID, _type));
 }
 
-
-const Bounds Renderer::GetWorldBounds()
+void Renderer::SetMesh(Mesh* _mesh)
 {
-	float x = parent->position.x;
-	float y = -parent->position.y;
+	mesh = _mesh;
+}
 
-	Bounds ret = Bounds((-0.5f * parent->scale.x) + x, (-0.5f * parent->scale.y) + y, (0.5f * parent->scale.x) + x, (0.5f * parent->scale.y) + y);
-	return ret;
+void Renderer::SetShader(ShaderType _shader)
+{
+	shader = _shader;
 }

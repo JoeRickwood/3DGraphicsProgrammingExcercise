@@ -95,7 +95,7 @@ void Button::Update()
 	//If It Does Intersects, Change The TextureID to the alternate texture
 	if (mouseOver) 
 	{
-		parent->GetComponent<Renderer>()->textureID = textureID1;
+		//parent->GetComponent<Renderer>()->textureID = textureID1;
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && pressLock == false)
 		{
@@ -105,7 +105,7 @@ void Button::Update()
 	}
 	else //If It Does Not Intersect, Change The TextureID to the base Texture
 	{
-		parent->GetComponent<Renderer>()->textureID = textureID0;
+		//parent->GetComponent<Renderer>()->textureID = textureID0;
 	}
 
 	//Reset Press Lock If The Mouse Button Is Released

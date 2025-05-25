@@ -128,10 +128,7 @@ void PlayerController::Update()
 		velocity = lerp(velocity, glm::vec3(0.f, 0.f, 0.f), Time::Instance().deltaTime * 5.f);
 	}
 
-
-
-
-	parent->position += velocity * Time::Instance().deltaTime;
+	parent->position += -velocity * Time::Instance().deltaTime;
 
 
 	//Camera Controlling
@@ -153,7 +150,7 @@ void PlayerController::ToggleTexture()
 {
 	texToggle = !texToggle;
 
-	parent->GetComponent<Renderer>()->textureID = texToggle ? tex0 : tex1;
+	//parent->GetComponent<Renderer>()->textureID = texToggle ? tex0 : tex1;
 
 
 }

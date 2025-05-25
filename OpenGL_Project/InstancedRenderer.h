@@ -17,7 +17,7 @@ private:
 	GLuint VBO_Instanced;
 
 public:
-	InstancedRenderer(int _type = 0, ShaderType _shader = ShaderType::Texture, int _textureID = 0, ProjectionType _projectionType = ProjectionType::Perspective);
+	InstancedRenderer(ShaderType _shader, ProjectionType _projectionType);
 	~InstancedRenderer();
 
 	void AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);

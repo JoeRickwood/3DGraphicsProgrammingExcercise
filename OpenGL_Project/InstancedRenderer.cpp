@@ -1,6 +1,6 @@
 #include "InstancedRenderer.h"
 
-InstancedRenderer::InstancedRenderer(int _type, ShaderType _shader, int _textureID, ProjectionType _projectionType) : Renderer(_type, _shader, _textureID, _projectionType)
+InstancedRenderer::InstancedRenderer(ShaderType _shader, ProjectionType _projectionType) : Renderer(_shader, _projectionType)
 {
 	drawCount = 1;
 
