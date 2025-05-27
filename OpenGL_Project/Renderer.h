@@ -54,4 +54,5 @@ public:
 	void AddTexture(std::string _location, int _texID, TextureType _type);
 	void SetMesh(Mesh* _mesh);
 	void SetShader(ShaderType _shader);
+	void SetTextureTiling(glm::vec2 _tiling);
 };
