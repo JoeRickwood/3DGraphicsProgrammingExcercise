@@ -93,11 +93,11 @@ AssetLoader::AssetLoader(void)
 
 AssetLoader::~AssetLoader(void) {}
 
-void AssetLoader::CreateShaderProgram(const char* vertexShaderFilename, const char* fragmentShaderFilename, std::string _shaderKey)
+void AssetLoader::CreateShaderProgram(const char* _filename, std::string _shaderKey)
 {
 	// Create the shaders from the filepath
-	GLuint vertShader = CreateShader(GL_VERTEX_SHADER, vertexShaderFilename);
-	GLuint fragShader = CreateShader(GL_FRAGMENT_SHADER, fragmentShaderFilename);
+	GLuint vertShader = CreateShader(GL_VERTEX_SHADER, _filename);
+	GLuint fragShader = CreateShader(GL_FRAGMENT_SHADER, _filename);
 
 	// Create the program handle, attach the shaders and link it
 	GLuint program = glCreateProgram();
@@ -106,13 +106,12 @@ void AssetLoader::CreateShaderProgram(const char* vertexShaderFilename, const ch
 
 	glLinkProgram(program);
 
-
 	// Check for link errors
 	int link_result = 0;
 	glGetProgramiv(program, GL_LINK_STATUS, &link_result);
 	if (link_result == GL_FALSE)
 	{
-		std::string programName = vertexShaderFilename + *fragmentShaderFilename;
+		std::string programName = _filename;
 		PrintErrorDetails(false, program, programName.c_str());
 		return;
 	}
@@ -123,7 +122,23 @@ void AssetLoader::CreateShaderProgram(const char* vertexShaderFilename, const ch
 GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 {
 	// Read the shader files and save the source code as strings
-	std::string shaderTxt = ReadShaderFile(shaderName).c_str();
+	std::string shaderTxt = ReadShaderFile(shaderName);
+	const char* define = "";
+
+	if (shaderType == GL_VERTEX_SHADER) 
+	{
+		 define = "#version 460 core\n#define COMPILING_VS\n";
+	}
+	else if(shaderType == GL_FRAGMENT_SHADER)
+	{
+		define = "#version 460 core\n#define COMPILING_FS\n";
+	}
+
+	const char* sources[] =
+	{
+		define,
+		shaderTxt.c_str()
+	};
 
 
 	// Create the shader ID and create pointers for source code string and length
@@ -134,9 +149,7 @@ GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 	int shaderLength = (int)shaderTxt.size();
 	
 	// Populate the Shader Object (ID) and compile
-	glShaderSource(shaderID, 1, &shaderChars, &shaderLength);
-
-
+	glShaderSource(shaderID, 2, sources, nullptr);
 	glCompileShader(shaderID);
 
 	// Check for errors
@@ -147,6 +160,7 @@ GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 		PrintErrorDetails(true, shaderID, shaderName);
 		return 0;
 	}
+
 	return shaderID;
 }
 
@@ -346,47 +360,6 @@ void AssetLoader::LoadMesh(std::string _filepath, std::string _meshKey)
 	AssetLoader::Instance().meshes.emplace(_meshKey, mesh);
 }
 
-
-void AssetLoader::InitializeShaderPrograms()
-{
-	CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpace.frag", "Default");
-	CreateShaderProgram("Resources/Shaders/ClipSpaceInstanced.vert", "Resources/Shaders/TextureSpace.frag", "DefaultInstanced");
-	CreateShaderProgram("Resources/Shaders/GrassSway.vert", "Resources/Shaders/Grass.frag", "GrassInstanced");
-	CreateShaderProgram("Resources/Shaders/Skybox.vert", "Resources/Shaders/Skybox.frag", "Skybox");
-	CreateShaderProgram("Resources/Shaders/ClipSpace.vert", "Resources/Shaders/TextureSpaceReflective.frag", "DefaultReflections");
-	CreateShaderProgram("Resources/Shaders/ScreenSpace.vert", "Resources/Shaders/TextureSpaceUnlit.frag", "DefaultUI");
-}
-
-void AssetLoader::InitializeTextures()
-{
-	CreateTexture("Resources/Prototype.png", "Prototype");
-	CreateTexture("Resources/Tree.png", "Tree");
-	CreateTexture("Resources/Grass.png", "Grass");
-
-	std::string skyboxPaths[6] = 
-	{
-		"Resources/Skybox/Front.png",
-		"Resources/Skybox/Back.png",
-		"Resources/Skybox/Top.png",
-		"Resources/Skybox/Bottom.png",
-		"Resources/Skybox/Right.png",
-		"Resources/Skybox/Left.png"
-	};
-
-	CreateSkybox(skyboxPaths, "MainSkybox");
-
-}
-
-void AssetLoader::InitializeMeshes()
-{
-	/*
-	LoadMesh("Resources/Cube_InvertedNormals.obj", "Cubemap");
-	LoadMesh("Resources/Cube.obj", "Cube");
-	LoadMesh("Resources/Tree.obj", "Tree");
-	LoadMesh("Resources/Grass.obj", "Grass");
-	*/
-}
-
 GLuint AssetLoader::GetShaderProgram(std::string _key)
 {
 	return shaderPrograms[_key];
@@ -411,11 +384,10 @@ void AssetLoader::LoadAssets(const char* folderPath)
 {
 	std::string path = folderPath;
 
-	for (const auto& file : std::filesystem::directory_iterator(path)) 
+	for (const auto& file : std::filesystem::recursive_directory_iterator(path)) 
 	{
 		std::string extension = std::filesystem::path(file).extension().string();
 		std::filesystem::path name = std::filesystem::path(file).filename();
-
 
 		extension.erase(std::remove_if(extension.begin(), extension.end(), ::isspace), extension.end());
 
@@ -440,6 +412,25 @@ void AssetLoader::LoadAssets(const char* folderPath)
 				std::cout << "Created Model : " << name << "\n";
 			}
 		}
+
+		for (int i = 0; i < std::size(supportedShaderFileExtensions); i++)
+		{
+			if (supportedShaderFileExtensions[i] == extension)
+			{
+				std::filesystem::path fullPath = std::filesystem::path(file);
+				name.replace_extension("");
+
+
+				std::cout << "Loading Shader File: " << fullPath << ", Key: " << name.string() << "\n";
+
+
+				CreateShaderProgram(std::filesystem::path(file).string().c_str(), name.string());
+				std::cout << "Created Shader : " << name << "\n";
+			}
+		}
+
 	}
+
+
 
 }

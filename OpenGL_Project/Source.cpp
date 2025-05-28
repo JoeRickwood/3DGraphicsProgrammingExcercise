@@ -87,7 +87,7 @@ void LoadScene()
 {
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.4f, -1.0f, 0.4f), glm::vec3(0.05f, 0.05f, 0.15f), 1.0f);
+	skybox->AddComponent<DirectionalLight>(glm::vec3(0.4f, -1.0f, 0.4f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
 
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 10.f, 0.f));
 	cam->AddComponent<PlayerController>(0.003f, 15);
@@ -101,7 +101,7 @@ void LoadScene()
 	groundRenderer->SetTextureTiling(glm::vec2(25, 25));
 
 	ObjectInstance* instancedGrass = new ObjectInstance("Grass");
-	auto grassRenderer = instancedGrass->AddComponent<InstancedRenderer>("GrassInstanced", ProjectionType::Perspective);
+	auto grassRenderer = instancedGrass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
 	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
 	grassRenderer->AddTexture("Texture0", "Grass", Texture2D);
 	grassRenderer->SetRenderType(RenderBoth);
@@ -120,7 +120,7 @@ void LoadScene()
 	Scene::Current().AddObject(instancedTrees);
 
 	Scene::Current().SetAmbientLightStength(0.2f);
-	Scene::Current().SetAmbientLightColor(glm::vec3(0.01f, 0.05f, 0.5f));
+	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
 	for (int i = 0; i < 500000; ++i)
 	{
@@ -142,6 +142,18 @@ void LoadScene()
 
 	grassRenderer->InitInstancing();
 	treesRenderer->InitInstancing();
+
+	std::string skyboxPaths[6] =
+	{
+		"Resources/Skybox/Front.png",
+		"Resources/Skybox/Back.png",
+		"Resources/Skybox/Top.png",
+		"Resources/Skybox/Bottom.png",
+		"Resources/Skybox/Right.png",
+		"Resources/Skybox/Left.png"
+	};
+
+	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
 }
 
 int main()
@@ -152,11 +164,6 @@ int main()
 	//We Initialize The Renderable Loader BEFORE We Set Our Object Instances On Screen
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (None)
 	AssetLoader::Instance().LoadAssets("Resources");
-
-	//AssetLoader::Instance().InitializeMeshes();
-
-	AssetLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
-	//AssetLoader::Instance().InitializeTextures(); //Generates The Textures Used
 
 	Time::Instance().Init();
 

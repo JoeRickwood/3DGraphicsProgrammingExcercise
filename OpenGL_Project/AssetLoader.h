@@ -72,11 +72,9 @@ public:
 	GLuint GetSkybox(std::string _key);
 	Mesh* GetMesh(std::string _key);
 
-	void LoadAssets(const char* folderPath);
+	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
 
-	void InitializeShaderPrograms();
-	void InitializeTextures();
-	void InitializeMeshes();
+	void LoadAssets(const char* folderPath);
 	
 	glm::vec2 windowSize = glm::vec2(1920, 1080);
 
@@ -94,14 +92,14 @@ protected:
 
 	const std::string supportedImageFileExtensions[2] = { ".png", ".jpg" };
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
+	const std::string supportedShaderFileExtensions[1] = { ".shader" };
 
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
 	static std::string ReadShaderFile(const char* filename);
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
 
-	static void CreateShaderProgram(const char* vertexShaderFilename, const char* fragmentShaderFilename, std::string _shaderKey);
+	static void CreateShaderProgram(const char* _filename, std::string _shaderKey);
 	static void CreateTexture(std::string _filename, std::string _shaderKey);
-	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
 	static void LoadMesh(std::string _filepath, std::string _meshKey);
 };
 

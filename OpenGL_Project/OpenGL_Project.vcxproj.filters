@@ -109,34 +109,22 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\TextureSpace.frag">
+    <None Include="Resources\Shaders\Default.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\ClipSpace.vert">
+    <None Include="Resources\Shaders\Defaultlnstanced.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\ClipSpaceInstanced.vert">
+    <None Include="Resources\Shaders\DefaultReflections.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\GrassSway.vert">
+    <None Include="Resources\Shaders\DefaultUI.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\Skybox.vert">
+    <None Include="Resources\Shaders\Grass.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\Skybox.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\TextureSpaceReflective.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\ScreenSpace.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\TextureSpaceUnlit.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Grass.frag">
+    <None Include="Resources\Shaders\Skybox.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

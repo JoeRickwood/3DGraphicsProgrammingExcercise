@@ -179,16 +179,12 @@
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\ClipSpace.vert" />
-    <None Include="Resources\Shaders\ClipSpaceInstanced.vert" />
-    <None Include="Resources\Shaders\Grass.frag" />
-    <None Include="Resources\Shaders\GrassSway.vert" />
-    <None Include="Resources\Shaders\ScreenSpace.vert" />
-    <None Include="Resources\Shaders\Skybox.frag" />
-    <None Include="Resources\Shaders\Skybox.vert" />
-    <None Include="Resources\Shaders\TextureSpace.frag" />
-    <None Include="Resources\Shaders\TextureSpaceReflective.frag" />
-    <None Include="Resources\Shaders\TextureSpaceUnlit.frag" />
+    <None Include="Resources\Shaders\Default.shader" />
+    <None Include="Resources\Shaders\Defaultlnstanced.shader" />
+    <None Include="Resources\Shaders\DefaultReflections.shader" />
+    <None Include="Resources\Shaders\DefaultUI.shader" />
+    <None Include="Resources\Shaders\Grass.shader" />
+    <None Include="Resources\Shaders\Skybox.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
