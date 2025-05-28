@@ -10,7 +10,7 @@ private:
 	glm::mat4 modelMat;
 
 public:
-	DefaultRenderer(ShaderType _shader, ProjectionType _projectionType);
+	DefaultRenderer(std::string _shaderKey, ProjectionType _projectionType);
 	~DefaultRenderer();
 
 	void InitializeRenderingInfo() override;

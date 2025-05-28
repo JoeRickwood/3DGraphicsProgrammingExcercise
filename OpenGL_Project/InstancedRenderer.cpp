@@ -1,7 +1,7 @@
 #include "InstancedRenderer.h"
 #include <iostream>
 
-InstancedRenderer::InstancedRenderer(ShaderType _shader, ProjectionType _projectionType) : Renderer(_shader, _projectionType)
+InstancedRenderer::InstancedRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
 {
 	drawCount = 1;
 
@@ -71,7 +71,7 @@ void InstancedRenderer::Render()
 
 	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
 
-	GLint VPLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "VP");
+	GLint VPLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "VP");
 	glUniformMatrix4fv(VPLoc, 1, GL_FALSE, glm::value_ptr(VP));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

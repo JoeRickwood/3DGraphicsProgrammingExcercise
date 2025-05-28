@@ -1,7 +1,7 @@
 #include "DefaultRenderer.h"
 #include <iostream>
 
-DefaultRenderer::DefaultRenderer(ShaderType _shader, ProjectionType _projectionType) : Renderer(_shader, _projectionType)
+DefaultRenderer::DefaultRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
 {
 	translationMat = glm::mat4();
 	rotationMat = glm::mat4();
@@ -17,13 +17,13 @@ void DefaultRenderer::InitializeRenderingInfo()
 {
 	Renderer::InitializeRenderingInfo();
 
-	GLint ModelMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ModelMatrix");
+	GLint ModelMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ModelMatrix");
 	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
 
-	GLint ViewMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ViewMatrix");
+	GLint ViewMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ViewMatrix");
 	glUniformMatrix4fv(ViewMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().viewMatrix));
 
-	GLint ProjectionMatLoc = glGetUniformLocation(GraphicsLoader::Instance().GetShaderProgram(shader), "ProjectionMatrix");
+	GLint ProjectionMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ProjectionMatrix");
 	glUniformMatrix4fv(ProjectionMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().GetProjectionMatrix(projection)));
 
 }

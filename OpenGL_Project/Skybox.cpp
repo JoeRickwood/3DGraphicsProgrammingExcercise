@@ -1,13 +1,13 @@
 #include "Skybox.h"
 
 
-Skybox::Skybox(int _skybox, int _shader)
+Skybox::Skybox(std::string _skyboxShaderKey, std::string _skyboxTextureKey)
 {
 	//0 Is The Skybox Model
-	mesh = MeshLoader::Instance().GetMesh(0);
+	mesh = AssetLoader::Instance().GetMesh("Cubemap");
 
-	skyboxShader = _shader;
-	skyboxTexID = _skybox;
+	skyboxShaderKey = _skyboxShaderKey;
+	skyboxTextureKey = _skyboxTextureKey;
 }
 
 Skybox::~Skybox()
@@ -16,12 +16,12 @@ Skybox::~Skybox()
 
 void Skybox::Render()
 {
-	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(skyboxShader);
+	GLuint prgm = AssetLoader::Instance().GetShaderProgram(skyboxShaderKey);
 
 	glUseProgram(prgm);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, GraphicsLoader::Instance().GetSkybox(skyboxTexID));
+	glBindTexture(GL_TEXTURE_CUBE_MAP, AssetLoader::Instance().GetSkybox(skyboxTextureKey));
 	glUniform1i(glGetUniformLocation(prgm, "Texture_Skybox"), 0);
 
 	//truncate values

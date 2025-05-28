@@ -24,12 +24,12 @@ void Camera::CalculateViewMatrix()
 //Calcualtes The Projection Matrix Used By Objects And Passed Into The Model Matrix
 void Camera::CalculateProjectionMatrix()
 {
-	float halfWidth = GraphicsLoader::Instance().windowSize.x / 2.0f;
-	float halfheight = GraphicsLoader::Instance().windowSize.y / 2.0f;
+	float halfWidth = AssetLoader::Instance().windowSize.x / 2.0f;
+	float halfheight = AssetLoader::Instance().windowSize.y / 2.0f;
 
 	Camera::Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, Camera::Instance().nearPlane, Camera::Instance().farPlane);
 
-	float aspectRatio = GraphicsLoader::Instance().windowSize.x / GraphicsLoader::Instance().windowSize.y;
+	float aspectRatio = AssetLoader::Instance().windowSize.x / AssetLoader::Instance().windowSize.y;
 
 	Camera::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, Camera::Instance().nearPlane, Camera::Instance().farPlane);
 }

@@ -1,17 +1,16 @@
 #pragma once
 #include "ObjectInstance.h"
-#include "MeshLoader.h"
+#include "AssetLoader.h"
 
 class Skybox : public Component
 {
-private:
+protected:
 	Mesh* mesh;
-	int skyboxShader;
+	std::string skyboxShaderKey;
+	std::string skyboxTextureKey;
 
 public:
-	int skyboxTexID;
-
-	Skybox(int _skybox, int _shader);
+	Skybox(std::string _skyboxShaderKey, std::string _skyboxTextureKey);
 	~Skybox();
 
 	void Render()override;

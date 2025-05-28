@@ -3,9 +3,9 @@
 #include "Scene.h"
 #include <iostream>
 
-Renderer::Renderer(ShaderType _shader, ProjectionType _projectionType)
+Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectionType = ProjectionType::Perspective)
 {
-	shader = _shader;
+	shaderKey = _shaderKey;
 	projection = _projectionType;
 	mesh = nullptr;
 }
@@ -22,7 +22,7 @@ void Renderer::Update()
 
 void Renderer::InitializeRenderingInfo()
 {
-	GLuint prgm = GraphicsLoader::Instance().GetShaderProgram(shader);
+	GLuint prgm = AssetLoader::Instance().GetShaderProgram(shaderKey);
 
 	//Set The New Shader Program
 	glUseProgram(prgm);
@@ -35,46 +35,57 @@ void Renderer::InitializeRenderingInfo()
 
 	//Pass In Point Lights
 	glUniform1ui(glGetUniformLocation(prgm, "PointLightCount"), Scene::Current().GetPointLightCount());
-	PointLight* pointLights = Scene::Current().GetPointLights();
+	PointLight** pointLights = Scene::Current().GetPointLights();
 
 	for (int i = 0; i < MAX_POINT_LIGHTS; i++)
 	{
+		if (pointLights[i] == nullptr)
+		{
+			continue;
+		}
+
 		std::string loc = ("PointLights[" + std::to_string(i) + "].");
 
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i].position));
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Color").c_str()), 1, glm::value_ptr(pointLights[i].color));
-		glUniform1f(glGetUniformLocation(prgm, (loc + "SpecularStrength").c_str()), pointLights[i].specularStrength);
+		glUniform3fv(glGetUniformLocation(prgm, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i]->parent->position));
+		glUniform3fv(glGetUniformLocation(prgm, (loc + "Color").c_str()), 1, glm::value_ptr(pointLights[i]->color));
+		glUniform1f(glGetUniformLocation(prgm, (loc + "SpecularStrength").c_str()), pointLights[i]->specularStrength);
 	
-		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationConstant").c_str()), pointLights[i].attenuationConstant);
-		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationLinear").c_str()), pointLights[i].attenuationLinear);
-		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationExponent").c_str()), pointLights[i].attenuationExponent);
+		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationConstant").c_str()), pointLights[i]->attenuationConstant);
+		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationLinear").c_str()), pointLights[i]->attenuationLinear);
+		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationExponent").c_str()), pointLights[i]->attenuationExponent);
 	}
 
 	//Pass In Spot Lights
 	glUniform1ui(glGetUniformLocation(prgm, "SpotLightCount"), Scene::Current().GetSpotLightCount());
-	SpotLight* spotLights = Scene::Current().GetSpotLights();
+	SpotLight** spotLights = Scene::Current().GetSpotLights();
 
 	for (int i = 0; i < MAX_SPOT_LIGHTS; i++)
 	{
+		if (spotLights[i] == nullptr)
+		{
+			continue;
+		}
+
 		std::string loc = ("SpotLights[" + std::to_string(i) + "].");
 
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i].position));
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Direction").c_str()), 1, glm::value_ptr(spotLights[i].direction));
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Color").c_str()), 1, glm::value_ptr(spotLights[i].color));
+		glUniform3fv(glGetUniformLocation(prgm, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i]->parent->position));
+		glUniform3fv(glGetUniformLocation(prgm, (loc + "Direction").c_str()), 1, glm::value_ptr(spotLights[i]->direction));
+		glUniform3fv(glGetUniformLocation(prgm, (loc + "Color").c_str()), 1, glm::value_ptr(spotLights[i]->color));
 
-		glUniform1f(glGetUniformLocation(prgm, (loc + "InnerCone").c_str()), glm::radians(spotLights[i].innerCone));
-		glUniform1f(glGetUniformLocation(prgm, (loc + "OuterCone").c_str()), glm::radians(spotLights[i].outerCone));
+		glUniform1f(glGetUniformLocation(prgm, (loc + "InnerCone").c_str()), glm::radians(spotLights[i]->innerCone));
+		glUniform1f(glGetUniformLocation(prgm, (loc + "OuterCone").c_str()), glm::radians(spotLights[i]->outerCone));
 	}
 
 
-	DirectionalLight dirLight = Scene::Current().GetDirectionalLight();
+	DirectionalLight* dirLight = Scene::Current().GetDirectionalLight();
 
 	//Pass In Directional Light
-	glUniform3fv(glGetUniformLocation(prgm, "DirLight.Direction"), 1, glm::value_ptr(dirLight.direction));
-	glUniform3fv(glGetUniformLocation(prgm, "DirLight.Color"), 1, glm::value_ptr(dirLight.color));
-	glUniform1f(glGetUniformLocation(prgm, "DirLight.SpecularStrength"), dirLight.specularStrength);
-
-
+	if (dirLight != nullptr) 
+	{
+		glUniform3fv(glGetUniformLocation(prgm, "DirLight.Direction"), 1, glm::value_ptr(dirLight->direction));
+		glUniform3fv(glGetUniformLocation(prgm, "DirLight.Color"), 1, glm::value_ptr(dirLight->color));
+		glUniform1f(glGetUniformLocation(prgm, "DirLight.SpecularStrength"), dirLight->specularStrength);
+	}
 
 	//Pass In Textures
 	for (int i = 0; i < textures.size(); ++i)
@@ -84,7 +95,7 @@ void Renderer::InitializeRenderingInfo()
 		glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		GLuint tex = GraphicsLoader::Instance().GetTexture(textures[i].texID);
+		GLuint tex = AssetLoader::Instance().GetTexture(textures[i].textureKey);
 		glBindTexture(textures[i].type, tex);
 		
 		GLint loc = glGetUniformLocation(prgm, textures[i].locationName.c_str());
@@ -100,9 +111,9 @@ void Renderer::Render()
 
 }
 
-void Renderer::AddTexture(std::string _location, int _texID, TextureType _type)
+void Renderer::AddTexture(std::string _location, std::string _texKey, TextureType _type)
 {
-	textures.push_back(TexturePass(_location, _texID, _type));
+	textures.push_back(TexturePass(_location, _texKey, _type));
 }
 
 void Renderer::SetMesh(Mesh* _mesh)
@@ -110,9 +121,9 @@ void Renderer::SetMesh(Mesh* _mesh)
 	mesh = _mesh;
 }
 
-void Renderer::SetShader(ShaderType _shader)
+void Renderer::SetShader(std::string _shaderKey)
 {
-	shader = _shader;
+	shaderKey = _shaderKey;
 }
 
 void Renderer::SetTextureTiling(glm::vec2 _tiling)

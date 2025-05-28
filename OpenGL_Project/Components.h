@@ -4,3 +4,6 @@
 
 #include "PlayerController.h"
 #include "Button.h"
+
+#include "Lights.h"
+#include "Skybox.h"

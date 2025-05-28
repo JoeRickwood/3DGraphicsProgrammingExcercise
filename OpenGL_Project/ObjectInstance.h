@@ -1,5 +1,5 @@
 #pragma once
-#include "MeshLoader.h"
+#include "Camera.h"
 
 class Component;
 

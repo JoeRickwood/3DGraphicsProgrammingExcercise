@@ -58,14 +58,14 @@ Button::~Button()
 void Button::Update()
 {
 	//Create A Toggle-Action State Of The '3' 
-	if (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_PRESS && debugToggleLock == false)
+	if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_PRESS && debugToggleLock == false)
 	{
 		debugToggle = !debugToggle;
 		debugToggleLock = true;
 		DebugPos();
 	}
 
-	if (glfwGetKey(GraphicsLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_RELEASE && debugToggleLock)
+	if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_RELEASE && debugToggleLock)
 	{
 		debugToggleLock = false;
 	}

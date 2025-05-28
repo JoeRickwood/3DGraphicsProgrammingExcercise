@@ -28,7 +28,7 @@ void Scene::RemoveObject(ObjectInstance* _obj)
 	}
 }
 
-void Scene::SetPointLight(PointLight _light, int _index)
+void Scene::SetPointLight(PointLight* _light, int _index)
 {
 	//Does Not Set The Light If Index Does Not Exist
 	if (_index < 0 || _index >= MAX_POINT_LIGHTS) 
@@ -39,7 +39,7 @@ void Scene::SetPointLight(PointLight _light, int _index)
 	pointLights[_index] = _light;
 }
 
-void Scene::AddPointLight(PointLight _light)
+void Scene::AddPointLight(PointLight* _light)
 {
 	//Sets The Point Light Of The Current Index
 	pointLights[pointLightCount] = _light;
@@ -51,7 +51,7 @@ void Scene::AddPointLight(PointLight _light)
 	}
 }
 
-PointLight* Scene::GetPointLights()
+PointLight** Scene::GetPointLights()
 {
 	//Returns The Current Array Of Point Lights
 	return pointLights;
@@ -62,7 +62,7 @@ int Scene::GetPointLightCount()
 	return pointLightCount;
 }
 
-void Scene::SetSpotLight(SpotLight _light, int _index)
+void Scene::SetSpotLight(SpotLight* _light, int _index)
 {
 	//Does Not Set The Light If Index Does Not Exist
 	if (_index < 0 || _index >= MAX_SPOT_LIGHTS)
@@ -73,7 +73,7 @@ void Scene::SetSpotLight(SpotLight _light, int _index)
 	spotLights[_index] = _light;
 }
 
-void Scene::AddSpotLight(SpotLight _light)
+void Scene::AddSpotLight(SpotLight* _light)
 {
 	//Sets The Spot Light Of The Current Index
 	spotLights[spotLightCount] = _light;
@@ -85,7 +85,7 @@ void Scene::AddSpotLight(SpotLight _light)
 	}
 }
 
-SpotLight* Scene::GetSpotLights()
+SpotLight** Scene::GetSpotLights()
 {
 	return spotLights;
 }
@@ -95,12 +95,12 @@ int Scene::GetSpotLightCount()
 	return spotLightCount;
 }
 
-void Scene::SetDirectionalLight(DirectionalLight _directionalLight)
+void Scene::SetDirectionalLight(DirectionalLight* _directionalLight)
 {
 	directionalLight = _directionalLight;
 }
 
-DirectionalLight Scene::GetDirectionalLight()
+DirectionalLight* Scene::GetDirectionalLight()
 {
 	return directionalLight;
 }
@@ -133,7 +133,7 @@ void Scene::Update()
 
 void Scene::Render()
 {
-	glViewport(0, 0, (GLsizei)GraphicsLoader::Instance().windowSize.x, (GLsizei)GraphicsLoader::Instance().windowSize.y);
+	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < objects.size(); ++i)
