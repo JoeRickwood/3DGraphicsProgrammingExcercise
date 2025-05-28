@@ -31,6 +31,7 @@ struct SpotLight
 
 	float InnerCone;
 	float OuterCone;
+    float Range;
 };
 
 
@@ -45,11 +46,10 @@ out vec4 FinalColor;
 uniform sampler2D Texture0;
 uniform vec2 Tiling;
 
-uniform float AmbientStrength            = 0.5f;
-uniform vec3 AmbientColor                = vec3(1.f, 1.f, 1.f);
+uniform vec3 Ambient;
 
 uniform vec3 CameraPos;
-uniform float Smoothness                 = 15f;
+uniform float Smoothness                 = 5f;
 
 
 //LIGHTS
@@ -83,19 +83,20 @@ vec3 CalculateLightPoint(unsigned int index)
 
 vec3 CalculateLightDirectional() 
 {
-    vec3 Normal = normalize(FragNormal);
+    vec3 normal = normalize(FragNormal);
+    vec3 lightDir = normalize(-DirLight.Direction); // assumes DirLight.Direction points *from* light
+    vec3 viewDir = normalize(CameraPos - FragPos);
 
-    vec3 LightDir = normalize(DirLight.Direction);
+    // Diffuse
+    float diffuseStrength = max(dot(normal, lightDir), 0.0);
+    vec3 diffuse = diffuseStrength * DirLight.Color;
 
-    float DiffuseStrength = max(dot(Normal, -LightDir), 0.0f);
-    vec3 Diffuse = DiffuseStrength * DirLight.Color;
+    // Specular (Blinn-Phong)
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), Smoothness);
+    vec3 specular = spec * DirLight.SpecularStrength * DirLight.Color;
 
-    vec3 ReverseViewDir = normalize(CameraPos - FragPos);
-    vec3 HalfwayVector = normalize(-LightDir + ReverseViewDir);
-    float SpecularReflectivity = pow(max(dot(Normal, HalfwayVector), 0.0f), Smoothness);
-    vec3 Specular = DirLight.SpecularStrength * SpecularReflectivity * DirLight.Color;
-
-    return (Diffuse + Specular);
+    return diffuse + specular;
 }
 
 vec3 CalculateSpotLight(unsigned int index) 
@@ -119,14 +120,13 @@ vec3 CalculateSpotLight(unsigned int index)
         intensity = clamp((theta - outer) / epsilon, 0.0, 1.0);
     }
 
+    intensity *= min(1.0f, SpotLights[index].Range / length(SpotLights[index].Position - FragPos));
+
     return SpotLights[index].Color * intensity;
 }
 
 void main() 
 {
-    vec3 Ambient = AmbientStrength * AmbientColor;
-
-
     //Calculate Total Light Amount
     vec3 TotalLight = vec3(0.0f, 0.0f, 0.0f);
 
@@ -141,6 +141,7 @@ void main()
     }
 
     TotalLight += CalculateLightDirectional();
+    TotalLight += Ambient;
 
     vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 

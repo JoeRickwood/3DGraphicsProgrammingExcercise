@@ -72,6 +72,8 @@ public:
 	GLuint GetSkybox(std::string _key);
 	Mesh* GetMesh(std::string _key);
 
+	void LoadAssets(const char* folderPath);
+
 	void InitializeShaderPrograms();
 	void InitializeTextures();
 	void InitializeMeshes();
@@ -88,6 +90,10 @@ protected:
 	std::map<std::string, GLuint> textures;
 	std::map<std::string, GLuint> skyboxes;
 	std::map<std::string, Mesh*> meshes;
+
+
+	const std::string supportedImageFileExtensions[2] = { ".png", ".jpg" };
+	const std::string supportedModelFileExtensions[1] = { ".obj" };
 
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
 	static std::string ReadShaderFile(const char* filename);

@@ -46,12 +46,14 @@ void DirectionalLight::Init()
 
 // SPOT LIGHT
 
-SpotLight::SpotLight(glm::vec3 _color, float _innerCone, float _outerCone)
+SpotLight::SpotLight(glm::vec3 _color, float _innerCone, float _outerCone, float _range)
 {
 	color = _color;
 
 	innerCone = _innerCone;
 	outerCone = _outerCone;
+
+	range = _range;
 
 	direction = glm::vec3(0.f, 0.f, 1.0f);
 }

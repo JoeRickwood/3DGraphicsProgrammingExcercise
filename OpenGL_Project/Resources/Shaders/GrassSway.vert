@@ -36,6 +36,6 @@ void main()
 	gl_Position = VP * worldPos;
 
 	FragTexCoords = TexCoords;
-	FragNormal = mat3(transpose(inverse(Model))) * Normal;
+	FragNormal = normalize(mat3(transpose(inverse(Model))) * Normal);
 	FragPos = vec3(worldPos);
 }

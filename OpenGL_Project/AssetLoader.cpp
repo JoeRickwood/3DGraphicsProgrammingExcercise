@@ -1,6 +1,7 @@
 #pragma once
 #include "AssetLoader.h" 
 #include <iostream>
+#include <filesystem>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
@@ -199,7 +200,7 @@ void AssetLoader::CreateTexture(std::string filename, std::string textureKey)
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &components, 0);
 
 	if (data == nullptr) {
-		std::cout << "Texture Not Loaded";
+		std::cout << "Texture Not Loaded : " << filename << "\n";
 	}
 
 	GLuint ret = NULL;
@@ -378,10 +379,12 @@ void AssetLoader::InitializeTextures()
 
 void AssetLoader::InitializeMeshes()
 {
+	/*
 	LoadMesh("Resources/Cube_InvertedNormals.obj", "Cubemap");
 	LoadMesh("Resources/Cube.obj", "Cube");
 	LoadMesh("Resources/Tree.obj", "Tree");
 	LoadMesh("Resources/Grass.obj", "Grass");
+	*/
 }
 
 GLuint AssetLoader::GetShaderProgram(std::string _key)
@@ -402,4 +405,41 @@ GLuint AssetLoader::GetSkybox(std::string _key)
 Mesh* AssetLoader::GetMesh(std::string _meshKey)
 {
 	return meshes[_meshKey];
+}
+
+void AssetLoader::LoadAssets(const char* folderPath)
+{
+	std::string path = folderPath;
+
+	for (const auto& file : std::filesystem::directory_iterator(path)) 
+	{
+		std::string extension = std::filesystem::path(file).extension().string();
+		std::filesystem::path name = std::filesystem::path(file).filename();
+
+
+		extension.erase(std::remove_if(extension.begin(), extension.end(), ::isspace), extension.end());
+
+		for (int i = 0; i < std::size(supportedImageFileExtensions); i++)
+		{
+			//std::cout << supportedImageFileExtensions[i] << " : " << extension << "\n";
+
+			if (supportedImageFileExtensions[i] == extension)
+			{
+				name.replace_extension("");
+				CreateTexture(std::filesystem::path(file).string(), name.string());
+				std::cout << "Created Texture : " << name << "\n";
+			}
+		}
+
+		for (int i = 0; i < std::size(supportedModelFileExtensions); i++)
+		{
+			if (supportedModelFileExtensions[i] == extension)
+			{
+				name.replace_extension("");
+				LoadMesh(std::filesystem::path(file).string(), name.string());
+				std::cout << "Created Model : " << name << "\n";
+			}
+		}
+	}
+
 }

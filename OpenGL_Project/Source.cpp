@@ -87,40 +87,61 @@ void LoadScene()
 {
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.2f, -0.8f, 0.2f), glm::vec3(1.f, 1.f, 0.3f), 2.f);
+	skybox->AddComponent<DirectionalLight>(glm::vec3(0.4f, -1.0f, 0.4f), glm::vec3(0.05f, 0.05f, 0.15f), 1.0f);
 
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 10.f, 0.f));
-	cam->AddComponent<PlayerController>(2, 15);
-	cam->AddComponent<SpotLight>(glm::vec3(1.0f, 1.0f, 1.0f), 15.0f, 18.0f);
+	cam->AddComponent<PlayerController>(0.003f, 15);
+	cam->AddComponent<SpotLight>(glm::vec3(1.0f, 1.0f, 1.0f), 15.0f, 18.0f, 250.0f);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
-	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(100.f, 10.f, 100.f));
+	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(250.f, 10.f, 250.f));
 	auto groundRenderer = ground->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
 	groundRenderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
 	groundRenderer->AddTexture("Texture0", "Prototype", Texture2D);
 	groundRenderer->SetTextureTiling(glm::vec2(25, 25));
 
-	ObjectInstance* instancedCubes = new ObjectInstance("Trees");
-	auto cubesRenderer = instancedCubes->AddComponent<InstancedRenderer>("DefaultInstanced", ProjectionType::Perspective);
-	cubesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
-	cubesRenderer->AddTexture("Texture0", "Tree", Texture2D);
+	ObjectInstance* instancedGrass = new ObjectInstance("Grass");
+	auto grassRenderer = instancedGrass->AddComponent<InstancedRenderer>("GrassInstanced", ProjectionType::Perspective);
+	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
+	grassRenderer->AddTexture("Texture0", "Grass", Texture2D);
+	grassRenderer->SetRenderType(RenderBoth);
+
+	ObjectInstance* instancedTrees = new ObjectInstance("Trees");
+	auto treesRenderer = instancedTrees->AddComponent<InstancedRenderer>("DefaultInstanced", ProjectionType::Perspective);
+	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
+	treesRenderer->AddTexture("Texture0", "Tree", Texture2D);
 
 	//Add All Objects To The Current Scene
+	Scene::Current().AddObject(cam);
+
 	Scene::Current().AddObject(skybox);
 	Scene::Current().AddObject(ground);
-	Scene::Current().AddObject(instancedCubes);
-	Scene::Current().AddObject(cam);
+	Scene::Current().AddObject(instancedGrass);
+	Scene::Current().AddObject(instancedTrees);
+
+	Scene::Current().SetAmbientLightStength(0.2f);
+	Scene::Current().SetAmbientLightColor(glm::vec3(0.01f, 0.05f, 0.5f));
+
+	for (int i = 0; i < 500000; ++i)
+	{
+		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 750.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 750.f);
+		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
+		glm::vec3 scale = glm::vec3(0.5f, 0.5f, 0.5f) * (((float)(rand() % 100) / 100.f) + 0.5f);
+
+		grassRenderer->AddInstance(pos, rot, scale);
+	}
 
 	for (int i = 0; i < 500; ++i)
 	{
-		glm::vec3 pos = glm::vec3((rand() % 200) - 100, 0.f, (rand() % 200) - 100);
+		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 500.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 500.f);
 		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
 		glm::vec3 scale = glm::vec3(3.0f, 3.0f, 3.0f) * (((float)(rand() % 100) / 100.f) + 0.5f);
 
-		cubesRenderer->AddInstance(pos, rot, scale);
+		treesRenderer->AddInstance(pos, rot, scale);
 	}
 
-	cubesRenderer->InitInstancing();
+	grassRenderer->InitInstancing();
+	treesRenderer->InitInstancing();
 }
 
 int main()
@@ -130,10 +151,12 @@ int main()
 
 	//We Initialize The Renderable Loader BEFORE We Set Our Object Instances On Screen
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (None)
-	AssetLoader::Instance().InitializeMeshes();
+	AssetLoader::Instance().LoadAssets("Resources");
+
+	//AssetLoader::Instance().InitializeMeshes();
 
 	AssetLoader::Instance().InitializeShaderPrograms(); // Generates The Shader Programs To Be Used By Renderables
-	AssetLoader::Instance().InitializeTextures(); //Generates The Textures Used
+	//AssetLoader::Instance().InitializeTextures(); //Generates The Textures Used
 
 	Time::Instance().Init();
 

@@ -8,6 +8,8 @@ Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectio
 	shaderKey = _shaderKey;
 	projection = _projectionType;
 	mesh = nullptr;
+	renderType = RenderFront;
+	doubleSided = false;
 }
 
 Renderer::~Renderer()
@@ -26,6 +28,18 @@ void Renderer::InitializeRenderingInfo()
 
 	//Set The New Shader Program
 	glUseProgram(prgm);
+
+	if (doubleSided) 
+	{
+		glDisable(GL_CULL_FACE);
+	}
+	else 
+	{
+		glEnable(GL_CULL_FACE);
+	}
+
+	glCullFace(renderType);
+
 
 	//Pass In Uniforms
 	glUniform3f(glGetUniformLocation(prgm, "CameraPos"), Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
@@ -74,6 +88,7 @@ void Renderer::InitializeRenderingInfo()
 
 		glUniform1f(glGetUniformLocation(prgm, (loc + "InnerCone").c_str()), glm::radians(spotLights[i]->innerCone));
 		glUniform1f(glGetUniformLocation(prgm, (loc + "OuterCone").c_str()), glm::radians(spotLights[i]->outerCone));
+		glUniform1f(glGetUniformLocation(prgm, (loc + "Range").c_str()), glm::radians(spotLights[i]->range));
 	}
 
 
@@ -86,6 +101,9 @@ void Renderer::InitializeRenderingInfo()
 		glUniform3fv(glGetUniformLocation(prgm, "DirLight.Color"), 1, glm::value_ptr(dirLight->color));
 		glUniform1f(glGetUniformLocation(prgm, "DirLight.SpecularStrength"), dirLight->specularStrength);
 	}
+
+	//Pass In Ambient Light
+	glUniform3fv(glGetUniformLocation(prgm, "Ambient"), 1, glm::value_ptr(Scene::Current().GetAmbientLight()));
 
 	//Pass In Textures
 	for (int i = 0; i < textures.size(); ++i)
@@ -129,4 +147,18 @@ void Renderer::SetShader(std::string _shaderKey)
 void Renderer::SetTextureTiling(glm::vec2 _tiling)
 {
 	textureTiling = _tiling;
+}
+
+void Renderer::SetRenderType(RenderType _type)
+{
+	if (_type == RenderBoth) 
+	{
+		renderType = RenderFront;
+		doubleSided = true;
+	}
+	else 
+	{
+		doubleSided = false;
+		renderType = _type;
+	}
 }

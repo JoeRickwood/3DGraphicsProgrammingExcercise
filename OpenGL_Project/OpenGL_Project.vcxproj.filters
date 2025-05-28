@@ -121,9 +121,6 @@
     <None Include="Resources\Shaders\GrassSway.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\Grass.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\Shaders\Skybox.vert">
       <Filter>Resource Files</Filter>
     </None>
@@ -137,6 +134,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\TextureSpaceUnlit.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\Grass.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -1,10 +1,30 @@
 #include "Scene.h"
 #include "Time.h"
 
+void Scene::SetAmbientLightStength(float _strength)
+{
+	ambientStrength = _strength;
+}
+
+void Scene::SetAmbientLightColor(glm::vec3 _color)
+{
+	ambientColor = _color;
+}
+
+glm::vec3 Scene::GetAmbientLight()
+{
+	return ambientColor * ambientStrength;
+}
+
 Scene::Scene()
 {
 	pointLightCount = 0;
 	spotLightCount = 0;
+
+	ambientColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	ambientStrength = 0.2f;
+
+	directionalLight = nullptr;
 }
 
 Scene::~Scene()

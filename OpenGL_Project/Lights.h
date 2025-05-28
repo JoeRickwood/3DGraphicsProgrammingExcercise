@@ -41,8 +41,9 @@ public:
 
 	float innerCone;
 	float outerCone;
+	float range;
 
-	SpotLight(glm::vec3 _color = glm::vec3(1.0f, 1.0f, 1.0f), float _innerCone = 45.f, float _outerCone = 75.f);
+	SpotLight(glm::vec3 _color = glm::vec3(1.0f, 1.0f, 1.0f), float _innerCone = 45.f, float _outerCone = 75.f, float _range = 100.f);
 
 	~SpotLight();
 
