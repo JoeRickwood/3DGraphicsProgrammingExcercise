@@ -4,6 +4,8 @@
 #include "Time.h"
 #include "PerlinNoise.h"
 
+#include "RenderingPipeline.h"
+
 //On Window Resized Callback Links To The glfwWindowSizefun
 void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
@@ -72,44 +74,33 @@ void Update()
 	glfwPollEvents();
 }
 
-//Render Is Called After Update And Draws Objects To The Screen
-void Render() 
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Scene::Current().Render();
-
-	glfwSwapBuffers(AssetLoader::Instance().currentWindow);
-}
-
 //Creates All Objects In The Scene
 void LoadScene()
 {
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.4f, -1.0f, 0.4f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
+	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -1.0f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f);
 
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 10.f, 0.f));
 	cam->AddComponent<PlayerController>(0.003f, 15);
-	cam->AddComponent<SpotLight>(glm::vec3(1.0f, 1.0f, 1.0f), 15.0f, 18.0f, 250.0f);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(250.f, 10.f, 250.f));
 	auto groundRenderer = ground->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
 	groundRenderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	groundRenderer->AddTexture("Texture0", "Prototype", Texture2D);
+	groundRenderer->AddTexturePass("Texture0", "Prototype", Texture2D);
 	groundRenderer->SetTextureTiling(glm::vec2(25, 25));
 
 	ObjectInstance* instancedGrass = new ObjectInstance("Grass");
 	auto grassRenderer = instancedGrass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
 	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
-	grassRenderer->AddTexture("Texture0", "Grass", Texture2D);
-	grassRenderer->SetRenderType(RenderBoth);
+	grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D);
+	grassRenderer->SetRenderType(RenderFront);
 
 	ObjectInstance* instancedTrees = new ObjectInstance("Trees");
 	auto treesRenderer = instancedTrees->AddComponent<InstancedRenderer>("DefaultInstanced", ProjectionType::Perspective);
 	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
-	treesRenderer->AddTexture("Texture0", "Tree", Texture2D);
+	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D);
 
 	//Add All Objects To The Current Scene
 	Scene::Current().AddObject(cam);
@@ -179,7 +170,7 @@ int main()
 
 		Update();
 
-		Render();
+		RenderingPipeline::Render();
 	}
 
 	glfwTerminate();

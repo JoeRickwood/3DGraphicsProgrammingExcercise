@@ -22,13 +22,8 @@ void Renderer::Update()
 
 }
 
-void Renderer::InitializeRenderingInfo()
+void Renderer::InitializeRenderingInfo(GLuint program)
 {
-	GLuint prgm = AssetLoader::Instance().GetShaderProgram(shaderKey);
-
-	//Set The New Shader Program
-	glUseProgram(prgm);
-
 	if (doubleSided) 
 	{
 		glDisable(GL_CULL_FACE);
@@ -42,13 +37,13 @@ void Renderer::InitializeRenderingInfo()
 
 
 	//Pass In Uniforms
-	glUniform3f(glGetUniformLocation(prgm, "CameraPos"), Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
-	glUniform1f(glGetUniformLocation(prgm, "Time"), Time::Instance().time);
-	glUniform2f(glGetUniformLocation(prgm, "Tiling"), textureTiling.x, textureTiling.y);
+	glUniform3f(glGetUniformLocation(program, "CameraPos"), Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
+	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
+	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
 
 
 	//Pass In Point Lights
-	glUniform1ui(glGetUniformLocation(prgm, "PointLightCount"), Scene::Current().GetPointLightCount());
+	glUniform1ui(glGetUniformLocation(program, "PointLightCount"), Scene::Current().GetPointLightCount());
 	PointLight** pointLights = Scene::Current().GetPointLights();
 
 	for (int i = 0; i < MAX_POINT_LIGHTS; i++)
@@ -60,17 +55,17 @@ void Renderer::InitializeRenderingInfo()
 
 		std::string loc = ("PointLights[" + std::to_string(i) + "].");
 
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i]->parent->position));
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Color").c_str()), 1, glm::value_ptr(pointLights[i]->color));
-		glUniform1f(glGetUniformLocation(prgm, (loc + "SpecularStrength").c_str()), pointLights[i]->specularStrength);
+		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i]->parent->position));
+		glUniform3fv(glGetUniformLocation(program, (loc + "Color").c_str()), 1, glm::value_ptr(pointLights[i]->color));
+		glUniform1f(glGetUniformLocation(program, (loc + "SpecularStrength").c_str()), pointLights[i]->specularStrength);
 	
-		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationConstant").c_str()), pointLights[i]->attenuationConstant);
-		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationLinear").c_str()), pointLights[i]->attenuationLinear);
-		glUniform1f(glGetUniformLocation(prgm, (loc + "AttenuationExponent").c_str()), pointLights[i]->attenuationExponent);
+		glUniform1f(glGetUniformLocation(program, (loc + "AttenuationConstant").c_str()), pointLights[i]->attenuationConstant);
+		glUniform1f(glGetUniformLocation(program, (loc + "AttenuationLinear").c_str()), pointLights[i]->attenuationLinear);
+		glUniform1f(glGetUniformLocation(program, (loc + "AttenuationExponent").c_str()), pointLights[i]->attenuationExponent);
 	}
 
 	//Pass In Spot Lights
-	glUniform1ui(glGetUniformLocation(prgm, "SpotLightCount"), Scene::Current().GetSpotLightCount());
+	glUniform1ui(glGetUniformLocation(program, "SpotLightCount"), Scene::Current().GetSpotLightCount());
 	SpotLight** spotLights = Scene::Current().GetSpotLights();
 
 	for (int i = 0; i < MAX_SPOT_LIGHTS; i++)
@@ -82,13 +77,13 @@ void Renderer::InitializeRenderingInfo()
 
 		std::string loc = ("SpotLights[" + std::to_string(i) + "].");
 
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i]->parent->position));
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Direction").c_str()), 1, glm::value_ptr(spotLights[i]->direction));
-		glUniform3fv(glGetUniformLocation(prgm, (loc + "Color").c_str()), 1, glm::value_ptr(spotLights[i]->color));
+		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i]->parent->position));
+		glUniform3fv(glGetUniformLocation(program, (loc + "Direction").c_str()), 1, glm::value_ptr(spotLights[i]->direction));
+		glUniform3fv(glGetUniformLocation(program, (loc + "Color").c_str()), 1, glm::value_ptr(spotLights[i]->color));
 
-		glUniform1f(glGetUniformLocation(prgm, (loc + "InnerCone").c_str()), glm::radians(spotLights[i]->innerCone));
-		glUniform1f(glGetUniformLocation(prgm, (loc + "OuterCone").c_str()), glm::radians(spotLights[i]->outerCone));
-		glUniform1f(glGetUniformLocation(prgm, (loc + "Range").c_str()), glm::radians(spotLights[i]->range));
+		glUniform1f(glGetUniformLocation(program, (loc + "InnerCone").c_str()), glm::radians(spotLights[i]->innerCone));
+		glUniform1f(glGetUniformLocation(program, (loc + "OuterCone").c_str()), glm::radians(spotLights[i]->outerCone));
+		glUniform1f(glGetUniformLocation(program, (loc + "Range").c_str()), glm::radians(spotLights[i]->range));
 	}
 
 
@@ -97,13 +92,13 @@ void Renderer::InitializeRenderingInfo()
 	//Pass In Directional Light
 	if (dirLight != nullptr) 
 	{
-		glUniform3fv(glGetUniformLocation(prgm, "DirLight.Direction"), 1, glm::value_ptr(dirLight->direction));
-		glUniform3fv(glGetUniformLocation(prgm, "DirLight.Color"), 1, glm::value_ptr(dirLight->color));
-		glUniform1f(glGetUniformLocation(prgm, "DirLight.SpecularStrength"), dirLight->specularStrength);
+		glUniform3fv(glGetUniformLocation(program, "DirLight.Direction"), 1, glm::value_ptr(dirLight->direction));
+		glUniform3fv(glGetUniformLocation(program, "DirLight.Color"), 1, glm::value_ptr(dirLight->color));
+		glUniform1f(glGetUniformLocation(program, "DirLight.SpecularStrength"), dirLight->specularStrength);
 	}
 
 	//Pass In Ambient Light
-	glUniform3fv(glGetUniformLocation(prgm, "Ambient"), 1, glm::value_ptr(Scene::Current().GetAmbientLight()));
+	glUniform3fv(glGetUniformLocation(program, "Ambient"), 1, glm::value_ptr(Scene::Current().GetAmbientLight()));
 
 	//Pass In Textures
 	for (int i = 0; i < textures.size(); ++i)
@@ -116,7 +111,7 @@ void Renderer::InitializeRenderingInfo()
 		GLuint tex = AssetLoader::Instance().GetTexture(textures[i].textureKey);
 		glBindTexture(textures[i].type, tex);
 		
-		GLint loc = glGetUniformLocation(prgm, textures[i].locationName.c_str());
+		GLint loc = glGetUniformLocation(program, textures[i].locationName.c_str());
 
 		glUniform1i(loc, i);
 	}
@@ -124,12 +119,17 @@ void Renderer::InitializeRenderingInfo()
 	parent->ShaderUpdate();
 }
 
+void Renderer::Render(std::string _shaderKeyOverride)
+{
+
+}
+
 void Renderer::Render()
 {
 
 }
 
-void Renderer::AddTexture(std::string _location, std::string _texKey, TextureType _type)
+void Renderer::AddTexturePass(std::string _location, std::string _texKey, TextureType _type)
 {
 	textures.push_back(TexturePass(_location, _texKey, _type));
 }

@@ -15,8 +15,6 @@ public:
 	ObjectInstance* FindObject(std::string _name);
 
 	void Update();
-	void Render();
-	void ShaderUpdate();
 
 	//Lighting
 	void SetPointLight(PointLight* _light, int _index);

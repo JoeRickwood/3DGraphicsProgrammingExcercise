@@ -16,13 +16,19 @@ private:
 
 	GLuint VBO_Instanced;
 
+	void InitializeRenderingInfo(GLuint program)override;
+
+
 public:
 	InstancedRenderer(std::string _shaderKey, ProjectionType _projectionType);
 	~InstancedRenderer();
 
+	void Init()override;
 	void AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
 
 	void InitInstancing();
-	void Render()override;
+
+	void Render() override;
+	void Render(std::string _shaderKeyOverride) override;
 };
 

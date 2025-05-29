@@ -1,4 +1,5 @@
 #include "DefaultRenderer.h"
+#include "RenderingPipeline.h"
 #include <iostream>
 
 DefaultRenderer::DefaultRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
@@ -11,11 +12,17 @@ DefaultRenderer::DefaultRenderer(std::string _shaderKey, ProjectionType _project
 
 DefaultRenderer::~DefaultRenderer()
 {
+	RenderingPipeline::RemoveRenderer(this);
 }
 
-void DefaultRenderer::InitializeRenderingInfo()
+void DefaultRenderer::Init() 
 {
-	Renderer::InitializeRenderingInfo();
+	RenderingPipeline::AddRenderer(this);
+}
+
+void DefaultRenderer::InitializeRenderingInfo(GLuint program)
+{
+	Renderer::InitializeRenderingInfo(program);
 
 	GLint ModelMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ModelMatrix");
 	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
@@ -44,7 +51,35 @@ void DefaultRenderer::Render()
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
 	}
 
-	InitializeRenderingInfo();
+	GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKey);
+
+	//Set The New Shader Program
+	glUseProgram(program);
+
+	InitializeRenderingInfo(program);
+
+	//Draw Renderable
+	glBindVertexArray(mesh->VAO);
+
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh->data.size());
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void DefaultRenderer::Render(std::string _shaderKeyOverride)
+{
+	if (mesh == nullptr)
+	{
+		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
+	}
+
+	GLuint program = AssetLoader::Instance().GetShaderProgram(_shaderKeyOverride);
+
+	//Set The New Shader Program
+	glUseProgram(program);
+
+	InitializeRenderingInfo(program);
 
 	//Draw Renderable
 	glBindVertexArray(mesh->VAO);

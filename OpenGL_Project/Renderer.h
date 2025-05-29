@@ -51,16 +51,18 @@ protected:
 
 	std::vector<TexturePass> textures;
 		
+	virtual void InitializeRenderingInfo(GLuint program);
+
 public:
 	Renderer(std::string _shaderKey, ProjectionType _projectionType);
 	~Renderer();
 
-	virtual void InitializeRenderingInfo();
-
 	void Update() override;
-	void Render() override;
 
-	void AddTexture(std::string _location, std::string _texKey, TextureType _type);
+	virtual void Render();
+	virtual void Render(std::string _shaderKeyOverride);
+
+	void AddTexturePass(std::string _location, std::string _texKey, TextureType _type);
 	void SetMesh(Mesh* _mesh);
 	void SetShader(std::string _shaderKey);
 	void SetTextureTiling(glm::vec2 _tiling);

@@ -1,4 +1,5 @@
 #include "InstancedRenderer.h"
+#include "RenderingPipeline.h"
 #include <iostream>
 
 InstancedRenderer::InstancedRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
@@ -11,6 +12,7 @@ InstancedRenderer::InstancedRenderer(std::string _shaderKey, ProjectionType _pro
 
 InstancedRenderer::~InstancedRenderer()
 {
+	RenderingPipeline::RemoveRenderer(this);
 }
 
 void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
@@ -22,6 +24,11 @@ void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 	scales.push_back(scale);
 
 	ModelMatrixes.push_back(glm::mat4());
+}
+
+void InstancedRenderer::Init()
+{
+	RenderingPipeline::AddRenderer(this);
 }
 
 void InstancedRenderer::InitInstancing()
@@ -60,21 +67,21 @@ void InstancedRenderer::InitInstancing()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void InstancedRenderer::Render()
+void InstancedRenderer::Render(std::string _shaderKeyOverride)
 {
 	if (mesh == nullptr)
 	{
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
 	}
 
-	InitializeRenderingInfo();
+	GLuint program = AssetLoader::Instance().GetShaderProgram(_shaderKeyOverride);
 
-	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
+	//Set The New Shader Program
+	glUseProgram(program);
 
-	GLint VPLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "VP");
-	glUniformMatrix4fv(VPLoc, 1, GL_FALSE, glm::value_ptr(VP));
+	InitializeRenderingInfo(program);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Draw Renderable
 	glBindVertexArray(mesh->VAO);
@@ -83,4 +90,40 @@ void InstancedRenderer::Render()
 
 	glBindVertexArray(0);
 	glUseProgram(0);
+}
+
+void InstancedRenderer::Render()
+{
+	if (mesh == nullptr)
+	{
+		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
+		return;
+	}
+
+	GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKey);
+
+	//Set The New Shader Program
+	glUseProgram(program);
+
+	InitializeRenderingInfo(program);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Draw Renderable
+	glBindVertexArray(mesh->VAO);
+
+	glDrawArraysInstanced(GL_TRIANGLES, 0, (GLsizei)mesh->data.size(), drawCount);
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void InstancedRenderer::InitializeRenderingInfo(GLuint program)
+{
+	Renderer::InitializeRenderingInfo(program);
+
+	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
+
+	GLint VPLoc = glGetUniformLocation(program, "VP");
+	glUniformMatrix4fv(VPLoc, 1, GL_FALSE, glm::value_ptr(VP));
 }

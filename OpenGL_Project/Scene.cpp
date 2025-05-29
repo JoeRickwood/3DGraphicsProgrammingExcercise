@@ -150,22 +150,3 @@ void Scene::Update()
 		obj->Update();
 	}
 }
-
-void Scene::Render()
-{
-	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	for (int i = 0; i < objects.size(); ++i)
-	{
-		objects[i]->Render();
-	}
-}
-
-void Scene::ShaderUpdate()
-{
-	for (int i = 0; i < objects.size(); ++i)
-	{
-		objects[i]->ShaderUpdate();
-	}
-}

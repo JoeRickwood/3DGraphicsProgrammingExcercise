@@ -76,9 +76,6 @@ public:
 	//Called When Shaders Are Assigned To Object, Same Time Model Matrix Is Inputted
 	virtual void ShaderUpdate();
 
-	//Called On Render
-	virtual void Render();
-
 	//Called To Enable Or Disable A Component
 	void SetEnabledState(bool state);
 };

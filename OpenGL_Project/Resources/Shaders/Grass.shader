@@ -90,7 +90,7 @@
     uniform vec3 Ambient;
 
     uniform vec3 CameraPos;
-    uniform float Smoothness                 = 99f;
+    uniform float Smoothness                 = 1f;
 
 
     //LIGHTS
@@ -129,12 +129,12 @@
         vec3 viewDir = normalize(CameraPos - FragPos);
 
         // Diffuse
-        float diffuseStrength = max(dot(normal, lightDir), 0.5f);
+        float diffuseStrength = max(dot(normal, lightDir), 0.2f);
         vec3 diffuse = diffuseStrength * DirLight.Color;
 
         // Specular (Blinn-Phong)
         vec3 halfwayDir = normalize(lightDir + viewDir);
-        float spec = pow(max(dot(normal, halfwayDir), 0.5), Smoothness);
+        float spec = pow(max(dot(normal, halfwayDir), 0.2f), Smoothness);
         vec3 specular = spec * DirLight.SpecularStrength * DirLight.Color;
 
         return diffuse + specular;
@@ -187,7 +187,9 @@
         vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 
         if(mainCol.a < 0.5)
-            discard;
+            discard;    
+
+        mainCol.a *= 1f - clamp(0.2f / FragTexCoords.y, 0.f, 1.f);
 
         FinalColor = mainCol;
     }

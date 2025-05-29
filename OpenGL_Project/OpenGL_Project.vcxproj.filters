@@ -60,6 +60,9 @@
     <ClCompile Include="Lights.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderingPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h">
@@ -107,12 +110,12 @@
     <ClInclude Include="Lights.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="RenderingPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Defaultlnstanced.shader">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\DefaultReflections.shader">
@@ -125,6 +128,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\Skybox.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\DefaultInstanced.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

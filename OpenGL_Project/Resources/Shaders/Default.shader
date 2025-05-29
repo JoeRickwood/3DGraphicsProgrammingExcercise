@@ -22,6 +22,7 @@
 	}
 
 #elif defined(COMPILING_FS)
+
     #define MAX_POINT_LIGHTS 4
     #define MAX_SPOT_LIGHTS 4
 
@@ -71,7 +72,7 @@
     uniform vec3 Ambient;
 
     uniform vec3 CameraPos;
-    uniform float Smoothness                 = 5f;
+    uniform float Smoothness                 = 1f;
 
 
     //LIGHTS
@@ -118,7 +119,8 @@
         float spec = pow(max(dot(normal, halfwayDir), 0.0), Smoothness);
         vec3 specular = spec * DirLight.SpecularStrength * DirLight.Color;
 
-        return diffuse + specular;
+        //return diffuse + Specular;
+        return diffuse;
     }
 
     vec3 CalculateSpotLight(unsigned int index) 
@@ -147,6 +149,12 @@
         return SpotLights[index].Color * intensity;
     }
 
+    float linearize_depth(float d,float zNear,float zFar)
+    {
+        float z_n = 2.0 * d - 1.0;
+        return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
+    }
+
     void main() 
     {
         //Calculate Total Light Amount
@@ -170,6 +178,7 @@
         if(mainCol.a < 0.5)
             discard;
 
+        //FinalColor = vec4(vec3(linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f), 1.0f);
         FinalColor = mainCol;
     }
 

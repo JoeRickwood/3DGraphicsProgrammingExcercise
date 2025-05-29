@@ -13,8 +13,11 @@ public:
 	DefaultRenderer(std::string _shaderKey, ProjectionType _projectionType);
 	~DefaultRenderer();
 
-	void InitializeRenderingInfo() override;
+	void Init()override;
+	void InitializeRenderingInfo(GLuint program) override;
 	void Update()override;
+
+	void Render(std::string _shaderKeyOverride)override;
 	void Render()override;
 };
 
