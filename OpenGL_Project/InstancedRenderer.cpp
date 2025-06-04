@@ -23,7 +23,13 @@ void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 	rotations.push_back(rot);
 	scales.push_back(scale);
 
-	ModelMatrixes.push_back(glm::mat4());
+
+	glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(rot.y), glm::vec3(0.f, 1.f, 0.f));
+	glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), pos) * rotation * glm::scale(glm::mat4(1.0f), scale);
+
+	ModelMatrixes.push_back(modelMat);
+
+	InitInstancing();
 }
 
 void InstancedRenderer::Init()
@@ -32,22 +38,12 @@ void InstancedRenderer::Init()
 }
 
 void InstancedRenderer::InitInstancing()
-{
-	//Generate The Instanced VBO
-	for (int i = 0; i < drawCount - 1; ++i)
-	{
-		glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(rotations[i].y), glm::vec3(0.f, 1.f, 0.f));
-
-		glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), positions[i]) * rotation * glm::scale(glm::mat4(1.0f), scales[i]);
-
-		ModelMatrixes[i] = modelMat;
-	}
-
-	glBindVertexArray(mesh->VAO);
-
+{	
 	glGenBuffers(1, &VBO_Instanced);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_Instanced);
 	glBufferData(GL_ARRAY_BUFFER, ModelMatrixes.size() * sizeof(glm::mat4), ModelMatrixes.data(), GL_DYNAMIC_DRAW);
+
+	glBindVertexArray(mesh->VAO);
 
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(1 * sizeof(glm::vec4)));
@@ -64,6 +60,7 @@ void InstancedRenderer::InitInstancing()
 	glEnableVertexAttribArray(5);
 	glEnableVertexAttribArray(6);
 
+	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
