@@ -182,9 +182,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader" />
-    <None Include="Resources\Shaders\DefaultInstanced.shader" />
-    <None Include="Resources\Shaders\DefaultReflections.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
+    <None Include="Resources\Shaders\DepthTesting.shader" />
     <None Include="Resources\Shaders\Grass.shader" />
     <None Include="Resources\Shaders\Skybox.shader" />
   </ItemGroup>

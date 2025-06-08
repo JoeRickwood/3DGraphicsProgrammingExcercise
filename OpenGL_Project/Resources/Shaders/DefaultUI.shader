@@ -3,8 +3,7 @@
 	layout (location = 0) in vec3 Position;
 	layout (location = 1) in vec2 TexCoords;
 	layout (location = 2) in vec3 Normal;
-
-	uniform mat4 ModelMatrix;
+	layout (location = 3) in mat4 ModelMatrix;
 
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
@@ -36,9 +35,10 @@
 	void main() 
 	{
 		vec4 mainCol = texture(Texture0, FragTexCoords * Tiling);
+		mainCol.a = 1;
 
-		if(mainCol.a < 0.5)
-			discard;
+		//if(mainCol.a < 0.5)
+			//discard;
 
 		FinalColor = mainCol;
 	}

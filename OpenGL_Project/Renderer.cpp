@@ -2,6 +2,7 @@
 #include "Time.h"
 #include "Scene.h"
 #include <iostream>
+#include "RenderingPipeline.h"
 
 Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectionType = ProjectionType::Perspective)
 {
@@ -10,6 +11,8 @@ Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectio
 	mesh = nullptr;
 	renderType = RenderFront;
 	doubleSided = false;
+
+	VBO = NULL;
 }
 
 Renderer::~Renderer()
@@ -18,6 +21,11 @@ Renderer::~Renderer()
 }
 
 void Renderer::Update()
+{
+
+}
+
+void Renderer::InitVBO() 
 {
 
 }
@@ -36,11 +44,13 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glCullFace(renderType);
 
 
+	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
+
 	//Pass In Uniforms
 	glUniform3f(glGetUniformLocation(program, "CameraPos"), Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
 	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
 	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
-
 
 	//Pass In Point Lights
 	glUniform1ui(glGetUniformLocation(program, "PointLightCount"), Scene::Current().GetPointLightCount());
@@ -86,7 +96,6 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 		glUniform1f(glGetUniformLocation(program, (loc + "Range").c_str()), glm::radians(spotLights[i]->range));
 	}
 
-
 	DirectionalLight* dirLight = Scene::Current().GetDirectionalLight();
 
 	//Pass In Directional Light
@@ -115,6 +124,12 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 
 		glUniform1i(loc, i);
 	}
+
+	glm::mat4 lightVP = RenderingPipeline::GetLightVPMatrix();
+
+	//Pass In Light VP
+	glUniformMatrix4fv(glGetUniformLocation(program, "lightVP"), 1, GL_FALSE, glm::value_ptr(lightVP));
+	glUniform1i(glGetUniformLocation(program, "ShadowMap"), RenderingPipeline::GetShadowMap());
 
 	parent->ShaderUpdate();
 }

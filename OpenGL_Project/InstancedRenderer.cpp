@@ -6,8 +6,7 @@ InstancedRenderer::InstancedRenderer(std::string _shaderKey, ProjectionType _pro
 {
 	drawCount = 1;
 
-	VBO_Instanced = NULL;
-	VP = glm::mat4();
+	VBO = NULL;
 }
 
 InstancedRenderer::~InstancedRenderer()
@@ -23,13 +22,10 @@ void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 	rotations.push_back(rot);
 	scales.push_back(scale);
 
-
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(rot.y), glm::vec3(0.f, 1.f, 0.f));
 	glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), pos) * rotation * glm::scale(glm::mat4(1.0f), scale);
 
 	ModelMatrixes.push_back(modelMat);
-
-	InitInstancing();
 }
 
 void InstancedRenderer::Init()
@@ -37,12 +33,12 @@ void InstancedRenderer::Init()
 	RenderingPipeline::AddRenderer(this);
 }
 
-void InstancedRenderer::InitInstancing()
+void InstancedRenderer::InitVBO()
 {	
-	glGenBuffers(1, &VBO_Instanced);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_Instanced);
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, ModelMatrixes.size() * sizeof(glm::mat4), ModelMatrixes.data(), GL_DYNAMIC_DRAW);
-
+	
 	glBindVertexArray(mesh->VAO);
 
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);
@@ -113,14 +109,4 @@ void InstancedRenderer::Render()
 
 	glBindVertexArray(0);
 	glUseProgram(0);
-}
-
-void InstancedRenderer::InitializeRenderingInfo(GLuint program)
-{
-	Renderer::InitializeRenderingInfo(program);
-
-	VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
-
-	GLint VPLoc = glGetUniformLocation(program, "VP");
-	glUniformMatrix4fv(VPLoc, 1, GL_FALSE, glm::value_ptr(VP));
 }

@@ -37,7 +37,6 @@ public:
 	}
 };
 
-
 class Renderer : public Component
 {
 protected:
@@ -49,6 +48,8 @@ protected:
 
 	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
 
+	GLuint VBO;
+
 	std::vector<TexturePass> textures;
 		
 	virtual void InitializeRenderingInfo(GLuint program);
@@ -59,6 +60,7 @@ public:
 
 	void Update() override;
 
+	virtual void InitVBO();
 	virtual void Render();
 	virtual void Render(std::string _shaderKeyOverride);
 

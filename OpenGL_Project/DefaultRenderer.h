@@ -14,7 +14,7 @@ public:
 	~DefaultRenderer();
 
 	void Init()override;
-	void InitializeRenderingInfo(GLuint program) override;
+	void InitVBO()override;
 	void Update()override;
 
 	void Render(std::string _shaderKeyOverride)override;

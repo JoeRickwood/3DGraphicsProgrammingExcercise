@@ -71,6 +71,7 @@ public:
 	GLuint GetTexture(std::string _key);
 	GLuint GetSkybox(std::string _key);
 	Mesh* GetMesh(std::string _key);
+	void AddTexture(GLuint _tex, std::string _key);
 
 	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
 

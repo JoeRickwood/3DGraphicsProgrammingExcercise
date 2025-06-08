@@ -12,21 +12,14 @@ private:
 
 	std::vector<glm::mat4> ModelMatrixes;
 
-	glm::mat4 VP;
-
-	GLuint VBO_Instanced;
-
-	void InitializeRenderingInfo(GLuint program)override;
-
 
 public:
 	InstancedRenderer(std::string _shaderKey, ProjectionType _projectionType);
 	~InstancedRenderer();
 
 	void Init()override;
+	void InitVBO()override;
 	void AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
-
-	void InitInstancing();
 
 	void Render() override;
 	void Render(std::string _shaderKeyOverride) override;

@@ -20,19 +20,31 @@ void DefaultRenderer::Init()
 	RenderingPipeline::AddRenderer(this);
 }
 
-void DefaultRenderer::InitializeRenderingInfo(GLuint program)
+void DefaultRenderer::InitVBO() 
 {
-	Renderer::InitializeRenderingInfo(program);
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
 
-	GLint ModelMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ModelMatrix");
-	glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(modelMat));
+	glBindVertexArray(mesh->VAO);
 
-	GLint ViewMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ViewMatrix");
-	glUniformMatrix4fv(ViewMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().viewMatrix));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(1 * sizeof(glm::vec4)));
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(2 * sizeof(glm::vec4)));
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(3 * sizeof(glm::vec4)));
 
-	GLint ProjectionMatLoc = glGetUniformLocation(AssetLoader::Instance().GetShaderProgram(shaderKey), "ProjectionMatrix");
-	glUniformMatrix4fv(ProjectionMatLoc, 1, GL_FALSE, glm::value_ptr(Camera::Instance().GetProjectionMatrix(projection)));
+	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
+	glVertexAttribDivisor(5, 1);
+	glVertexAttribDivisor(6, 1);
 
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(5);
+	glEnableVertexAttribArray(6);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void DefaultRenderer::Update()
@@ -42,12 +54,16 @@ void DefaultRenderer::Update()
 	scaleMat = glm::scale(glm::mat4(1.0f), parent->scale);
 
 	modelMat = translationMat * rotationMat * scaleMat;
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void DefaultRenderer::Render()
 {
 	if (mesh == nullptr) 
-	{
+	{	
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
 	}
 

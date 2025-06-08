@@ -2,23 +2,25 @@
 	layout (location = 0) in vec3 Position;
 	layout (location = 1) in vec2 TexCoords;
 	layout (location = 2) in vec3 Normal;
+    layout (location = 3) in mat4 ModelMatrix;
 
-	uniform mat4 ModelMatrix;
-	uniform mat4 ViewMatrix;
-	uniform mat4 ProjectionMatrix;
+	uniform mat4 VP;
+    uniform mat4 lightVP;
 
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
 	out vec3 FragPos;
+    out vec4 FragPosLightSpace;
 
 
 	void main() 
 	{
-		gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(Position, 1.0f);
-
 		FragTexCoords = TexCoords;
 		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
 		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
+        FragPosLightSpace = lightVP * vec4(FragPos, 1.0);
+
+        gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
 	}
 
 #elif defined(COMPILING_FS)
@@ -62,12 +64,15 @@
     in vec2 FragTexCoords;
     in vec3 FragNormal;
     in vec3 FragPos;
+    in vec4 FragPosLightSpace;
 
     out vec4 FinalColor;
 
     //BASIC
     uniform sampler2D Texture0;
     uniform vec2 Tiling;
+
+    uniform sampler2D ShadowMap;
 
     uniform vec3 Ambient;
 
@@ -83,6 +88,19 @@
 
     uniform unsigned int SpotLightCount;
     uniform SpotLight SpotLights[MAX_SPOT_LIGHTS];
+
+    float ShadowCalculation(vec4 fragPosLightSpace)
+    {
+         vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+         projCoords = projCoords * 0.5 + 0.5; 
+
+         float closestDepth = texture(ShadowMap, projCoords.xy).r; 
+         float currentDepth = projCoords.z;  
+         float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
+
+         return shadow;
+    } 
 
     vec3 CalculateLightPoint(unsigned int index) 
     {
@@ -173,7 +191,7 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-        vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        vec4 mainCol = vec4(TotalLight * ShadowCalculation(FragPosLightSpace), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 
         if(mainCol.a < 0.5)
             discard;

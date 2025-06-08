@@ -380,6 +380,11 @@ Mesh* AssetLoader::GetMesh(std::string _meshKey)
 	return meshes[_meshKey];
 }
 
+void AssetLoader::AddTexture(GLuint _tex, std::string _key)
+{
+	textures.emplace(_key, _tex);
+}
+
 void AssetLoader::LoadAssets(const char* folderPath)
 {
 	std::string path = folderPath;

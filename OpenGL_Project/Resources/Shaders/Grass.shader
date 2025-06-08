@@ -6,6 +6,7 @@
 	layout (location = 3) in mat4 Model;
 
 	uniform mat4 VP;
+
 	uniform float Time;
 
 	out vec2 FragTexCoords;

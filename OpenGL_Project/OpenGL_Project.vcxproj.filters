@@ -118,9 +118,6 @@
     <None Include="Resources\Shaders\Default.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\DefaultReflections.shader">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\Shaders\DefaultUI.shader">
       <Filter>Resource Files</Filter>
     </None>
@@ -130,7 +127,7 @@
     <None Include="Resources\Shaders\Skybox.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\DefaultInstanced.shader">
+    <None Include="Resources\Shaders\DepthTesting.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -98,29 +98,39 @@ void LoadScene()
 	grassRenderer->SetRenderType(RenderFront);
 
 	ObjectInstance* instancedTrees = new ObjectInstance("Trees");
-	auto treesRenderer = instancedTrees->AddComponent<InstancedRenderer>("DefaultInstanced", ProjectionType::Perspective);
+	auto treesRenderer = instancedTrees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
 	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
 	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D);
+
+	ObjectInstance* depthMapVisual = new ObjectInstance("DepthMapVisual", glm::vec3(0.f, 100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(10.f, 10.f, 10.f));
+	auto depthMapRenderer = depthMapVisual->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
+	depthMapRenderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
+	depthMapRenderer->AddTexturePass("Texture0", "Tree", Texture2D);
+	depthMapRenderer->SetRenderType(RenderBoth);
 
 	//Add All Objects To The Current Scene
 	Scene::Current().AddObject(cam);
 
+
 	Scene::Current().AddObject(skybox);
+
+	Scene::Current().AddObject(depthMapVisual);
 	Scene::Current().AddObject(ground);
 	Scene::Current().AddObject(instancedGrass);
 	Scene::Current().AddObject(instancedTrees);
+	
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	/*for (int i = 0; i < 500000; ++i)
+	for (int i = 0; i < 500000; ++i)
 	{
 		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 750.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 750.f);
 		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
 		glm::vec3 scale = glm::vec3(0.5f, 0.5f, 0.5f) * (((float)(rand() % 100) / 100.f) + 0.5f);
 
 		grassRenderer->AddInstance(pos, rot, scale);
-	} */
+	}
 
 	for (int i = 0; i < 500; ++i)
 	{
@@ -130,6 +140,10 @@ void LoadScene()
 
 		treesRenderer->AddInstance(pos, rot, scale);
 	}
+
+	grassRenderer->InitVBO();
+	treesRenderer->InitVBO();
+	groundRenderer->InitVBO();
 
 	std::string skyboxPaths[6] =
 	{
@@ -157,6 +171,9 @@ int main()
 
 	LoadScene();
 
+
+	RenderingPipeline::InitShadowRendering();
+
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(AssetLoader::Instance().currentWindow) == false)
 	{
@@ -166,6 +183,8 @@ int main()
 		Camera::CalculateViewMatrix();
 
 		Update();
+
+		RenderingPipeline::ShadowPass();
 
 		RenderingPipeline::Render();
 	}
