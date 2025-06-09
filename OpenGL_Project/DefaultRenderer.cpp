@@ -67,41 +67,10 @@ void DefaultRenderer::Render()
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
 	}
 
-	GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKey);
-
-	//Set The New Shader Program
-	glUseProgram(program);
-
-	InitializeRenderingInfo(program);
-
 	//Draw Renderable
 	glBindVertexArray(mesh->VAO);
 
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh->data.size());
 
 	glBindVertexArray(0);
-	glUseProgram(0);
-}
-
-void DefaultRenderer::Render(std::string _shaderKeyOverride)
-{
-	if (mesh == nullptr)
-	{
-		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
-	}
-
-	GLuint program = AssetLoader::Instance().GetShaderProgram(_shaderKeyOverride);
-
-	//Set The New Shader Program
-	glUseProgram(program);
-
-	InitializeRenderingInfo(program);
-
-	//Draw Renderable
-	glBindVertexArray(mesh->VAO);
-
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh->data.size());
-
-	glBindVertexArray(0);
-	glUseProgram(0);
 }

@@ -114,8 +114,17 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 
-		glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		switch (textures[i].tilingType)
+		{
+		case TilingType::ClampEdges:
+			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			break;
+		case TilingType::Repeat:
+			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			break;
+		}
 
 		GLuint tex = AssetLoader::Instance().GetTexture(textures[i].textureKey);
 		glBindTexture(textures[i].type, tex);
@@ -125,28 +134,21 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 		glUniform1i(loc, i);
 	}
 
-	glm::mat4 lightVP = RenderingPipeline::GetLightVPMatrix();
-
-	//Pass In Light VP
-	glUniformMatrix4fv(glGetUniformLocation(program, "lightVP"), 1, GL_FALSE, glm::value_ptr(lightVP));
-	glUniform1i(glGetUniformLocation(program, "ShadowMap"), RenderingPipeline::GetShadowMap());
+	//Pass In Light VP + Shadow Map
+	glUniformMatrix4fv(glGetUniformLocation(program, "LightVP"), 1, GL_FALSE, glm::value_ptr(RenderingPipeline::GetLightVPMatrix()));
 
 	parent->ShaderUpdate();
 }
 
-void Renderer::Render(std::string _shaderKeyOverride)
-{
-
-}
 
 void Renderer::Render()
 {
 
 }
 
-void Renderer::AddTexturePass(std::string _location, std::string _texKey, TextureType _type)
+void Renderer::AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType = TilingType::Repeat)
 {
-	textures.push_back(TexturePass(_location, _texKey, _type));
+	textures.push_back(TexturePass(_location, _texKey, _type, _tilingType));
 }
 
 void Renderer::SetMesh(Mesh* _mesh)

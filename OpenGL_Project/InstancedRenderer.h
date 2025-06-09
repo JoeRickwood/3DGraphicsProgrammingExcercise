@@ -22,6 +22,5 @@ public:
 	void AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
 
 	void Render() override;
-	void Render(std::string _shaderKeyOverride) override;
 };
 

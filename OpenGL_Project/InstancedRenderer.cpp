@@ -60,31 +60,6 @@ void InstancedRenderer::InitVBO()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void InstancedRenderer::Render(std::string _shaderKeyOverride)
-{
-	if (mesh == nullptr)
-	{
-		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
-	}
-
-	GLuint program = AssetLoader::Instance().GetShaderProgram(_shaderKeyOverride);
-
-	//Set The New Shader Program
-	glUseProgram(program);
-
-	InitializeRenderingInfo(program);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//Draw Renderable
-	glBindVertexArray(mesh->VAO);
-
-	glDrawArraysInstanced(GL_TRIANGLES, 0, (GLsizei)mesh->data.size(), drawCount);
-
-	glBindVertexArray(0);
-	glUseProgram(0);
-}
-
 void InstancedRenderer::Render()
 {
 	if (mesh == nullptr)
@@ -92,14 +67,6 @@ void InstancedRenderer::Render()
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
 		return;
 	}
-
-	GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKey);
-
-	//Set The New Shader Program
-	glUseProgram(program);
-
-	InitializeRenderingInfo(program);
-
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Draw Renderable
@@ -108,5 +75,4 @@ void InstancedRenderer::Render()
 	glDrawArraysInstanced(GL_TRIANGLES, 0, (GLsizei)mesh->data.size(), drawCount);
 
 	glBindVertexArray(0);
-	glUseProgram(0);
 }

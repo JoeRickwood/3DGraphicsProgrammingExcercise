@@ -1,5 +1,6 @@
 #include "RenderingPipeline.h"
 #include "Camera.h"
+#include <iostream>
 #include "Scene.h"
 
 RenderingPipeline::RenderingPipeline()
@@ -34,7 +35,14 @@ void RenderingPipeline::Render()
 
 	for (int i = 0; i < Current().renderers.size(); ++i)
 	{
+		GLuint program = AssetLoader::Instance().GetShaderProgram(Current().renderers[i]->shaderKey);
+		glUseProgram(program);
+
+		Current().renderers[i]->InitializeRenderingInfo(program);
+
 		Current().renderers[i]->Render();
+
+		glUseProgram(0);
 	}
 
 	glfwSwapBuffers(AssetLoader::Instance().currentWindow);
@@ -47,17 +55,57 @@ void RenderingPipeline::Render(std::string shaderKeyOverride)
 
 	for (int i = 0; i < Current().renderers.size(); ++i)
 	{
-		Current().renderers[i]->Render(shaderKeyOverride);
+		GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKeyOverride);
+		glUseProgram(program);
+
+		Current().renderers[i]->InitializeRenderingInfo(program);
+
+		Current().renderers[i]->Render();
+
+		glUseProgram(0);
 	}
 
 	glfwSwapBuffers(AssetLoader::Instance().currentWindow);
 }
 
+void RenderingPipeline::ShadowPass()
+{
+	GLuint program = AssetLoader::Instance().GetShaderProgram("DepthTesting");
+
+	glUseProgram(program);
+
+
+	glCullFace(GL_FRONT);
+
+	glUniformMatrix4fv(glGetUniformLocation(program, "LightVP"), 1, GL_FALSE, glm::value_ptr(GetLightVPMatrix()));
+	glBindTexture(GL_TEXTURE_2D, Current().depthMap);
+
+	glViewport(0, 0, Current().SHADOW_WIDTH, Current().SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, Current().depthMapFBO);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) 
+	{
+		std::cerr << "Framebuffer not complete!" << std::endl;
+	}
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	for (int i = 0; i < Current().renderers.size(); ++i)
+	{
+		Current().renderers[i]->Render();
+	}
+
+	glCullFace(GL_BACK);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glUseProgram(0);
+}
+
 glm::mat4 RenderingPipeline::GetLightVPMatrix()
 {
-	Current().lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, Camera::Instance().nearPlane, Camera::Instance().farPlane);
+	Current().lightProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, Camera::Instance().nearPlane, Camera::Instance().farPlane);
 
-	Current().lightView = glm::lookAt(Camera::Instance().cameraPosition + (Scene::Current().GetDirectionalLight()->direction * -10.f),
+	Current().lightView = glm::lookAt(Camera::Instance().cameraPosition + Scene::Current().GetDirectionalLight()->direction * -10.f,
 		Camera::Instance().cameraPosition,
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -66,6 +114,7 @@ glm::mat4 RenderingPipeline::GetLightVPMatrix()
 
 void RenderingPipeline::InitShadowRendering()
 {
+	//Generate Frame Buffer + Depth Map Textures
 	glGenFramebuffers(1, &Current().depthMapFBO);
 
 	glGenTextures(1, &Current().depthMap);
@@ -74,30 +123,21 @@ void RenderingPipeline::InitShadowRendering()
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+	float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, Current().depthMapFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, Current().depthMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	AssetLoader::Instance().AddTexture(Current().depthMap, "DepthMap");
-}
-
-void RenderingPipeline::ShadowPass()
-{
-	glViewport(0, 0, Current().SHADOW_WIDTH, Current().SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, Current().depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	for (int i = 0; i < Current().renderers.size(); ++i)
-	{
-		Current().renderers[i]->Render("DepthTesting");
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 GLuint RenderingPipeline::GetShadowMap()

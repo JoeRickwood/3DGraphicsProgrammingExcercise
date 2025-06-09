@@ -11,13 +11,9 @@
 
 #elif defined(COMPILING_FS)
 
-	out vec4 FinalColor;
-
     void main() 
     {
-		gl_FragDepth = gl_FragCoord.z;
 
-		FinalColor = vec4(vec3(gl_FragCoord.z), 1.0f); 
     }
 
 #endif

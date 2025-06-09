@@ -15,6 +15,12 @@ enum RenderType
 	RenderBoth = GL_CULL_FACE
 };
 
+enum TilingType 
+{
+	ClampEdges,
+	Repeat
+};
+
 
 struct TexturePass 
 {
@@ -22,13 +28,15 @@ public:
 	std::string locationName;
 	std::string textureKey;
 	TextureType type;
+	TilingType tilingType;
 
-	TexturePass(std::string _location, std::string _texKey, TextureType _type)
+	TexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType)
 	{
 		locationName = _location;
 
 		textureKey = _texKey;
 		type = _type;
+		tilingType = _tilingType;
 	}
 
 	~TexturePass() 
@@ -51,6 +59,8 @@ protected:
 	GLuint VBO;
 
 	std::vector<TexturePass> textures;
+
+	friend class RenderingPipeline;
 		
 	virtual void InitializeRenderingInfo(GLuint program);
 
@@ -62,9 +72,8 @@ public:
 
 	virtual void InitVBO();
 	virtual void Render();
-	virtual void Render(std::string _shaderKeyOverride);
 
-	void AddTexturePass(std::string _location, std::string _texKey, TextureType _type);
+	void AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType);
 	void SetMesh(Mesh* _mesh);
 	void SetShader(std::string _shaderKey);
 	void SetTextureTiling(glm::vec2 _tiling);

@@ -11,6 +11,7 @@ public:
 	Skybox(std::string _skyboxShaderKey, std::string _skyboxTextureKey);
 	~Skybox();
 
+	void InitializeRenderingInfo(GLuint program)override;
 	void Init()override;
 
 	void Render()override;

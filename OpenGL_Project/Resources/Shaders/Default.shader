@@ -5,20 +5,19 @@
     layout (location = 3) in mat4 ModelMatrix;
 
 	uniform mat4 VP;
-    uniform mat4 lightVP;
+    uniform mat4 LightVP;
 
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
 	out vec3 FragPos;
     out vec4 FragPosLightSpace;
 
-
 	void main() 
 	{
 		FragTexCoords = TexCoords;
 		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
 		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
-        FragPosLightSpace = lightVP * vec4(FragPos, 1.0);
+        FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
 
         gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
 	}
@@ -95,11 +94,31 @@
 
          projCoords = projCoords * 0.5 + 0.5; 
 
-         float closestDepth = texture(ShadowMap, projCoords.xy).r; 
          float currentDepth = projCoords.z;  
-         float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
 
-         return shadow;
+
+         float bias = 0.010f;  
+         float shadow = 0.0f;  
+
+         int sampleRadius = 2;
+         vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
+         for(int x = -sampleRadius; x <= sampleRadius; ++x)
+         {
+             for(int y = -sampleRadius; y <= sampleRadius; ++y)
+             {
+                 float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+                 shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+             }    
+         }
+         shadow /= pow((sampleRadius * 2) + 1, 2);
+
+
+         if(projCoords.z > 1.0) 
+         {
+            shadow = 0.0;
+         }
+
+         return shadow * 0.5f;
     } 
 
     vec3 CalculateLightPoint(unsigned int index) 
@@ -191,7 +210,8 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-        vec4 mainCol = vec4(TotalLight * ShadowCalculation(FragPosLightSpace), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        //vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 
         if(mainCol.a < 0.5)
             discard;

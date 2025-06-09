@@ -17,7 +17,6 @@ public:
 	void InitVBO()override;
 	void Update()override;
 
-	void Render(std::string _shaderKeyOverride)override;
 	void Render()override;
 };
 
