@@ -70,47 +70,134 @@ void RenderingPipeline::Render(std::string shaderKeyOverride)
 
 void RenderingPipeline::ShadowPass()
 {
+	//Use The Shadow Program
 	GLuint program = AssetLoader::Instance().GetShaderProgram("DepthTesting");
 
 	glUseProgram(program);
 
-
-	glCullFace(GL_FRONT);
-
+	//Pass The Light VP Into The Shader Uniform
 	glUniformMatrix4fv(glGetUniformLocation(program, "LightVP"), 1, GL_FALSE, glm::value_ptr(GetLightVPMatrix()));
-	glBindTexture(GL_TEXTURE_2D, Current().depthMap);
 
+	//Set The Viewport To Be The Same Size As The Shadow Texture
 	glViewport(0, 0, Current().SHADOW_WIDTH, Current().SHADOW_HEIGHT);
+
+
 	glBindFramebuffer(GL_FRAMEBUFFER, Current().depthMapFBO);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) 
-	{
-		std::cerr << "Framebuffer not complete!" << std::endl;
-	}
-
 	glClear(GL_DEPTH_BUFFER_BIT);
+
+
+	//Cull Front Faces For Peter Panning
+	glCullFace(GL_FRONT);
 
 	for (int i = 0; i < Current().renderers.size(); ++i)
 	{
+		if (!Current().renderers[i]->renderShadows) 
+		{
+			continue;
+		}
+
 		Current().renderers[i]->Render();
 	}
 
 	glCullFace(GL_BACK);
 
+	//Bind The Current Frame Buffer And The Shader Program Back To Defaults
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glUseProgram(0);
 }
 
+
+
+
+std::vector<glm::vec4> RenderingPipeline::GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
+{
+	const auto inv = glm::inverse(proj * view);
+
+	std::vector<glm::vec4> frustumCorners;
+	for (unsigned int x = 0; x < 2; ++x)
+	{
+		for (unsigned int y = 0; y < 2; ++y)
+		{
+			for (unsigned int z = 0; z < 2; ++z)
+			{
+				const glm::vec4 pt =
+					inv * glm::vec4(
+						2.0f * x - 1.0f,
+						2.0f * y - 1.0f,
+						2.0f * z - 1.0f,
+						1.0f);
+				frustumCorners.push_back(pt / pt.w);
+			}
+		}
+	}
+
+	return frustumCorners;
+} 
+
 glm::mat4 RenderingPipeline::GetLightVPMatrix()
 {
-	Current().lightProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, Camera::Instance().nearPlane, Camera::Instance().farPlane);
+	std::vector<glm::vec4> corners = Current().GetFrustumCornersWorldSpace(Camera::Instance().GetProjectionMatrix(ShadowPerspective), Camera::Instance().viewMatrix);
 
-	Current().lightView = glm::lookAt(Camera::Instance().cameraPosition + Scene::Current().GetDirectionalLight()->direction * -10.f,
-		Camera::Instance().cameraPosition,
-		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 center = glm::vec3(0, 0, 0);
+	for (const auto& v : corners)
+	{
+		center += glm::vec3(v);
+	}
+	center /= corners.size();
 
-	return Current().lightProjection * Current().lightView;
-}
+	const auto lightView = glm::lookAt(
+		center + -Scene::Current().GetDirectionalLight()->direction,
+		center,
+		glm::vec3(0.0f, 1.0f, 0.0f)
+	);
+
+	float minX = std::numeric_limits<float>::max();
+	float maxX = std::numeric_limits<float>::lowest();
+	float minY = std::numeric_limits<float>::max();
+	float maxY = std::numeric_limits<float>::lowest();
+	float minZ = std::numeric_limits<float>::max();
+	float maxZ = std::numeric_limits<float>::lowest();
+	for (const auto& v : corners)
+	{
+		const auto trf = lightView * v;
+		minX = std::min(minX, trf.x);
+		maxX = std::max(maxX, trf.x);
+		minY = std::min(minY, trf.y);
+		maxY = std::max(maxY, trf.y);
+		minZ = std::min(minZ, trf.z);
+		maxZ = std::max(maxZ, trf.z);
+	}
+
+	const float zNearOffset = 5.0f;
+	const float zFarOffset = 5.0f;
+
+	constexpr float zMult = 10.0f;
+	if (minZ < 0)
+	{
+		minZ *= zMult;
+	}
+	else
+	{
+		minZ /= zMult;
+	}
+	if (maxZ < 0)
+	{
+		maxZ /= zMult;
+	}
+	else
+	{
+		maxZ *= zMult;
+	}
+
+	minZ -= zNearOffset;
+	maxZ += zFarOffset;
+
+
+	const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+
+	return lightProjection * lightView;
+}  
+
 
 void RenderingPipeline::InitShadowRendering()
 {

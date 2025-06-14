@@ -6,12 +6,14 @@
 	layout (location = 3) in mat4 Model;
 
 	uniform mat4 VP;
+    uniform mat4 LightVP;
 
 	uniform float Time;
 
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
 	out vec3 FragPos;
+    out vec4 FragPosLightSpace;
 
 
 	float power(float inVal, int inPow) 
@@ -39,6 +41,7 @@
 		FragTexCoords = TexCoords;
 		FragNormal = normalize(mat3(transpose(inverse(Model))) * Normal);
 		FragPos = vec3(worldPos);
+        FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
 	}
 
 #elif defined(COMPILING_FS)
@@ -81,12 +84,15 @@
     in vec2 FragTexCoords;
     in vec3 FragNormal;
     in vec3 FragPos;
+    in vec4 FragPosLightSpace;
 
     out vec4 FinalColor;
 
     //BASIC
     uniform sampler2D Texture0;
     uniform vec2 Tiling;
+
+    uniform sampler2D ShadowMap;
 
     uniform vec3 Ambient;
 
@@ -102,6 +108,41 @@
 
     uniform unsigned int SpotLightCount;
     uniform SpotLight SpotLights[MAX_SPOT_LIGHTS];
+
+    float ShadowCalculation(vec4 fragPosLightSpace)
+    {
+         vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+         projCoords = projCoords * 0.5 + 0.5; 
+
+         float currentDepth = projCoords.z;  
+
+
+         //float bias = max(0.05 * (1.0 - dot(FragNormal, DirLight.Direction)), 0.005); 
+         float bias = 0.0001f;
+         float shadow = 0.0f;  
+
+         int sampleRadius = 2;
+         vec2 texelSize = 1.0 / vec2(textureSize(ShadowMap, 0));
+         for(int x = -sampleRadius; x <= sampleRadius; ++x)
+         {
+             for(int y = -sampleRadius; y <= sampleRadius; ++y)
+             {
+                 float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+                 shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+             }    
+         }
+         shadow /= pow((sampleRadius * 2) + 1, 2);
+
+
+         if(projCoords.z > 1.0) 
+         {
+            shadow = 0.0;
+         }
+
+         return shadow * 0.75f;
+    } 
+
 
     vec3 CalculateLightPoint(unsigned int index) 
     {
@@ -185,12 +226,12 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-        vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        vec4 mainCol = vec4(TotalLight * 0.5f * (1 - ShadowCalculation(FragPosLightSpace)), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 
         if(mainCol.a < 0.5)
             discard;    
 
-        mainCol.a *= 1f - clamp(0.2f / FragTexCoords.y, 0.f, 1.f);
+        //mainCol.a *= 1f - clamp(0.2f / FragTexCoords.y, 0.f, 1.f);
 
         FinalColor = mainCol;
     }

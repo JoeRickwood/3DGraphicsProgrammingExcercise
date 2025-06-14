@@ -97,11 +97,12 @@
          float currentDepth = projCoords.z;  
 
 
-         float bias = 0.010f;  
+         //float bias = max(0.05 * (1.0 - dot(FragNormal, DirLight.Direction)), 0.005); 
+         float bias = 0.001f;
          float shadow = 0.0f;  
 
          int sampleRadius = 2;
-         vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
+         vec2 texelSize = 1.0 / vec2(textureSize(ShadowMap, 0));
          for(int x = -sampleRadius; x <= sampleRadius; ++x)
          {
              for(int y = -sampleRadius; y <= sampleRadius; ++y)
@@ -112,13 +113,12 @@
          }
          shadow /= pow((sampleRadius * 2) + 1, 2);
 
-
          if(projCoords.z > 1.0) 
          {
             shadow = 0.0;
          }
 
-         return shadow * 0.5f;
+         return shadow * 0.75f;
     } 
 
     vec3 CalculateLightPoint(unsigned int index) 
@@ -216,7 +216,11 @@
         if(mainCol.a < 0.5)
             discard;
 
-        //FinalColor = vec4(vec3(linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f), 1.0f);
+
+        float col = linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f;
+
+
+        //FinalColor = vec4(vec3(floor(col * 10f) / 10f), 1.0f);
         FinalColor = mainCol;
     }
 

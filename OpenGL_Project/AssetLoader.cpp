@@ -298,10 +298,10 @@ void AssetLoader::LoadMesh(std::string _filepath, std::string _meshKey)
 		exit(1);
 	}
 
-	if (!reader.Warning().empty())
+	/*if (!reader.Warning().empty())
 	{
 		std::cout << "TINYOBJ :" << reader.Warning();
-	}
+	}*/
 
 	auto& attrib = reader.GetAttrib();
 	auto& shapes = reader.GetShapes();
@@ -395,47 +395,39 @@ void AssetLoader::LoadAssets(const char* folderPath)
 		std::filesystem::path name = std::filesystem::path(file).filename();
 
 		extension.erase(std::remove_if(extension.begin(), extension.end(), ::isspace), extension.end());
+		name.replace_extension("");
 
+
+		//Check The Extension For Supported Image Files
 		for (int i = 0; i < std::size(supportedImageFileExtensions); i++)
 		{
-			//std::cout << supportedImageFileExtensions[i] << " : " << extension << "\n";
-
 			if (supportedImageFileExtensions[i] == extension)
 			{
-				name.replace_extension("");
+
 				CreateTexture(std::filesystem::path(file).string(), name.string());
 				std::cout << "Created Texture : " << name << "\n";
 			}
 		}
 
+		//Check The Extension For Supported Model Files
 		for (int i = 0; i < std::size(supportedModelFileExtensions); i++)
 		{
 			if (supportedModelFileExtensions[i] == extension)
 			{
-				name.replace_extension("");
 				LoadMesh(std::filesystem::path(file).string(), name.string());
 				std::cout << "Created Model : " << name << "\n";
 			}
 		}
 
+		//Check The Extension For Supported Shader Files
 		for (int i = 0; i < std::size(supportedShaderFileExtensions); i++)
 		{
 			if (supportedShaderFileExtensions[i] == extension)
 			{
-				std::filesystem::path fullPath = std::filesystem::path(file);
-				name.replace_extension("");
-
-
-				std::cout << "Loading Shader File: " << fullPath << ", Key: " << name.string() << "\n";
-
-
 				CreateShaderProgram(std::filesystem::path(file).string().c_str(), name.string());
 				std::cout << "Created Shader : " << name << "\n";
 			}
 		}
 
 	}
-
-
-
 }

@@ -4,6 +4,8 @@ Camera::Camera()
 {
 	orthoProjectionMatrix = glm::mat4();
 	perspectiveProjectionMatrix = glm::mat4();
+	shadowProjectionPerspectiveMatrix = glm::mat4();
+
 	viewMatrix = glm::mat4();
 }
 
@@ -32,6 +34,7 @@ void Camera::CalculateProjectionMatrix()
 	float aspectRatio = AssetLoader::Instance().windowSize.x / AssetLoader::Instance().windowSize.y;
 
 	Camera::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, Camera::Instance().nearPlane, Camera::Instance().farPlane);
+	Camera::Instance().shadowProjectionPerspectiveMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, Camera::Instance().nearPlane, Camera::Instance().shadowFarPlane);
 }
 
 //Gets The Projection Matrix Of Either Orthographic Or Perspective, Returns Default Perspective
@@ -41,10 +44,10 @@ const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 	{
 	case Orthographic:
 		return orthoProjectionMatrix;
-		break;
 	case Perspective:
 		return perspectiveProjectionMatrix;
-		break;
+	case ShadowPerspective:
+		return shadowProjectionPerspectiveMatrix;
 	default:
 		return perspectiveProjectionMatrix;
 	}

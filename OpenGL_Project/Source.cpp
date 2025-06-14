@@ -58,7 +58,6 @@ void InitialSetup()
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-
 	glfwSwapInterval(0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -98,20 +97,28 @@ void LoadScene()
 	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
 	treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampEdges);
 
+	ObjectInstance* instancedGrass = new ObjectInstance("Grass");
+	auto grassRenderer = instancedGrass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
+	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
+	grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, TilingType::Repeat);
+	grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampEdges);
+	grassRenderer->SetShadowRendering(false);
+	grassRenderer->SetRenderType(RenderFront);
+
 
 	//Add All Objects To The Current Scene
 	Scene::Current().AddObject(cam);
 
-
 	Scene::Current().AddObject(skybox);
 	Scene::Current().AddObject(ground);
+	Scene::Current().AddObject(instancedGrass);
 	Scene::Current().AddObject(instancedTrees);
 	
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	for (int i = 0; i < 500; ++i)
+	for (int i = 0; i < 5000; ++i)
 	{
 		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 500.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 500.f);
 		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
@@ -120,7 +127,17 @@ void LoadScene()
 		treesRenderer->AddInstance(pos, rot, scale);
 	}
 
+	for (int i = 0; i < 200000; ++i)
+	{
+		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 500.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 500.f);
+		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
+		glm::vec3 scale = glm::vec3(0.5f, 0.5f, 0.5f) * (((float)(rand() % 100) / 100.f) + 0.5f);
+
+		grassRenderer->AddInstance(pos, rot, scale);
+	}
+
 	treesRenderer->InitVBO();
+	grassRenderer->InitVBO();
 	groundRenderer->InitVBO();
 
 	std::string skyboxPaths[6] =

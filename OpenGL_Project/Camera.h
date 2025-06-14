@@ -21,14 +21,16 @@ public:
 	glm::vec3 cameraUpDir = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	float nearPlane = 0.1f;
-	float farPlane = 100.f;
+	float farPlane = 1000.f;
+	float shadowFarPlane = 100.f;
 	float fieldOfView = 45.f;
 
-private:
+protected:
 	Camera();
 	~Camera();
 
 	glm::mat4 orthoProjectionMatrix;
 	glm::mat4 perspectiveProjectionMatrix;
+	glm::mat4 shadowProjectionPerspectiveMatrix;
 };
 

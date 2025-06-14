@@ -59,7 +59,8 @@ public:
 enum ProjectionType
 {
 	Orthographic,
-	Perspective
+	Perspective,
+	ShadowPerspective
 };
 
 class AssetLoader

@@ -53,6 +53,7 @@ protected:
 	ProjectionType projection;
 	RenderType renderType;
 	bool doubleSided;
+	bool renderShadows;
 
 	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
 
@@ -78,4 +79,5 @@ public:
 	void SetShader(std::string _shaderKey);
 	void SetTextureTiling(glm::vec2 _tiling);
 	void SetRenderType(RenderType _type);
+	void SetShadowRendering(bool _on);
 };

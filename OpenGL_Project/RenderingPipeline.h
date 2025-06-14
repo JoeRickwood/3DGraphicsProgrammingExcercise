@@ -11,10 +11,7 @@ protected:
 
 	GLuint depthMapFBO;
 	GLuint depthMap;
-	const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
-
-	glm::mat4 lightProjection;
-	glm::mat4 lightView;
+	const unsigned int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
 
 public:
 	static RenderingPipeline& Current() { static RenderingPipeline scene; return scene; }
@@ -24,9 +21,10 @@ public:
 
 	static void Render();
 	static void Render(std::string shaderKeyOverride);
+	static void ShadowPass();
 
+	std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view);
 	static glm::mat4 GetLightVPMatrix();
 	static void InitShadowRendering();
-	static void ShadowPass();
 	static GLuint GetShadowMap();
 };

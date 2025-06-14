@@ -11,6 +11,7 @@ Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectio
 	mesh = nullptr;
 	renderType = RenderFront;
 	doubleSided = false;
+	renderShadows = true;
 
 	VBO = NULL;
 }
@@ -134,7 +135,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 		glUniform1i(loc, i);
 	}
 
-	//Pass In Light VP + Shadow Map
+	//Pass In Light VP
 	glUniformMatrix4fv(glGetUniformLocation(program, "LightVP"), 1, GL_FALSE, glm::value_ptr(RenderingPipeline::GetLightVPMatrix()));
 
 	parent->ShaderUpdate();
@@ -178,4 +179,9 @@ void Renderer::SetRenderType(RenderType _type)
 		doubleSided = false;
 		renderType = _type;
 	}
+}
+
+void Renderer::SetShadowRendering(bool _on)
+{
+	renderShadows = _on;
 }
