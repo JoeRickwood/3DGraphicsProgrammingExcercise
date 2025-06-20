@@ -27,8 +27,7 @@
 	in vec3 FragPos;
 
 	uniform sampler2D Texture0;
-
-	uniform vec2 Tiling;
+	uniform vec3 Color				= vec3(1.f, 1.f, 1.f);
 
 
 	out vec4 FinalColor;
@@ -36,11 +35,12 @@
 
 	void main() 
 	{
-		vec4 mainCol = texture(Texture0, FragTexCoords * Tiling);
-		mainCol.a = 1;
+		float a = texture(Texture0, FragTexCoords).r;
 
-		//if(mainCol.a < 0.5)
-			//discard;
+		if(a < 0.5)
+			discard;
+
+		vec4 mainCol = vec4(Color, 1.0f);
 
 		FinalColor = mainCol;
 	}

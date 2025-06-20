@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader" />
+    <None Include="Resources\Shaders\DefaultGlyph.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
     <None Include="Resources\Shaders\DepthTesting.shader" />
     <None Include="Resources\Shaders\Grass.shader" />

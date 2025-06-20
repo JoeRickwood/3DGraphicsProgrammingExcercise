@@ -67,7 +67,6 @@ void InstancedRenderer::Render()
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
 		return;
 	}
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Draw Renderable
 	glBindVertexArray(mesh->VAO);

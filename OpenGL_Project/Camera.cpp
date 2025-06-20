@@ -16,6 +16,7 @@ Camera::~Camera()
 //Calculates The View Matrix Of Camera, This Takes Into Count The Camera Position, And Direction Its Facing
 void Camera::CalculateViewMatrix()
 {
+	//Looks At The Camera View Direction
 	Camera::Instance().viewMatrix = glm::lookAt(
 		Camera::Instance().cameraPosition,
 		Camera::Instance().cameraPosition + Camera::Instance().cameraLookDir,
@@ -26,15 +27,18 @@ void Camera::CalculateViewMatrix()
 //Calcualtes The Projection Matrix Used By Objects And Passed Into The Model Matrix
 void Camera::CalculateProjectionMatrix()
 {
-	float halfWidth = AssetLoader::Instance().windowSize.x / 2.0f;
-	float halfheight = AssetLoader::Instance().windowSize.y / 2.0f;
+	//Value Of 120 Comes From 16:9 Aspect Ratio
+	//A Resolution Of 1920 horizontal / 16 = 120? 
+	
+	float aspect = AssetLoader::Instance().windowSize.x / AssetLoader::Instance().windowSize.y;
 
-	Camera::Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, Camera::Instance().nearPlane, Camera::Instance().farPlane);
+	float halfWidth = Instance().orthographicSize * aspect;
+	float halfheight = Instance().orthographicSize;
+	Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, Instance().nearPlane, Instance().farPlane);
 
 	float aspectRatio = AssetLoader::Instance().windowSize.x / AssetLoader::Instance().windowSize.y;
-
-	Camera::Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, Camera::Instance().nearPlane, Camera::Instance().farPlane);
-	Camera::Instance().shadowProjectionPerspectiveMatrix = glm::perspective(glm::radians(Camera::Instance().fieldOfView), aspectRatio, Camera::Instance().nearPlane, Camera::Instance().shadowFarPlane);
+	Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Instance().fieldOfView), aspectRatio, Instance().nearPlane, Instance().farPlane);
+	Instance().shadowProjectionPerspectiveMatrix = glm::perspective(glm::radians(Instance().fieldOfView), aspectRatio, Instance().nearPlane, Instance().shadowFarPlane);
 }
 
 //Gets The Projection Matrix Of Either Orthographic Or Perspective, Returns Default Perspective

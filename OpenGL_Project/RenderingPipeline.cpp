@@ -5,6 +5,8 @@
 
 RenderingPipeline::RenderingPipeline()
 {
+	depthMap = 0;
+	depthMapFBO = 0;
 }
 
 RenderingPipeline::~RenderingPipeline()
@@ -146,7 +148,7 @@ glm::mat4 RenderingPipeline::GetLightVPMatrix()
 	center /= corners.size();
 
 	const auto lightView = glm::lookAt(
-		center + -Scene::Current().GetDirectionalLight()->direction,
+		center + (Scene::Current().GetDirectionalLight() != nullptr ? - Scene::Current().GetDirectionalLight()->direction : glm::vec3(0.f)),
 		center,
 		glm::vec3(0.0f, 1.0f, 0.0f)
 	);

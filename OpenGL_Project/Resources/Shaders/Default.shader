@@ -107,8 +107,10 @@
          {
              for(int y = -sampleRadius; y <= sampleRadius; ++y)
              {
+                 float value = (projCoords.x > 0 && projCoords.x < 1 && projCoords.x > 0 && projCoords.y < 1) ? 1f : 0f;
+
                  float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-                 shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+                 shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0) * value;        
              }    
          }
          shadow /= pow((sampleRadius * 2) + 1, 2);

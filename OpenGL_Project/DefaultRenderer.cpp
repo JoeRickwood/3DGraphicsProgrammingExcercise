@@ -65,6 +65,7 @@ void DefaultRenderer::Render()
 	if (mesh == nullptr) 
 	{	
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
+		return;
 	}
 
 	//Draw Renderable

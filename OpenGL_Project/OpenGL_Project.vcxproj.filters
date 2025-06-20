@@ -130,5 +130,8 @@
     <None Include="Resources\Shaders\DepthTesting.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\DefaultGlyph.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
