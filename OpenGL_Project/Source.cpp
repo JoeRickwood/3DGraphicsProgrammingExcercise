@@ -108,11 +108,12 @@ void LoadScene()
 	cube3Renderer->SetTextureTiling(glm::vec2(15, 15));
 	cube3Renderer->SetRenderType(RenderFront);
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, -1.f), glm::vec3 (0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultGlyph", ProjectionType::Perspective);
+	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(500.f, 500.f, -1.f), glm::vec3 (0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->AddTexturePass("Texture0", "Glyph", Texture2D, TilingType::Repeat);
-	UIRenderer->SetShadowRendering(false);
+	UIRenderer->SetFont("AldotheApache");
+	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+	UIRenderer->SetText("WOOOO TEXT WORKS");
 	UIRenderer->SetRenderType(RenderBoth);
 
 	Scene::Current().SetAmbientLightStength(0.2f);

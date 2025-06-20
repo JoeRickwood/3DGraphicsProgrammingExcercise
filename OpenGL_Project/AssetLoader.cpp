@@ -360,6 +360,82 @@ void AssetLoader::LoadMesh(std::string _filepath, std::string _meshKey)
 	AssetLoader::Instance().meshes.emplace(_meshKey, mesh);
 }
 
+void AssetLoader::LoadFont(std::string _filepath, std::string _fontKey)
+{
+	//TEXT FONT LOADING
+	FT_Library fontLibrary;
+
+	if (FT_Init_FreeType(&fontLibrary))
+	{
+		std::cout << "Failed to Initialize The FreeType2 Library";
+	}
+
+	FT_Face face;
+	Instance().fonts.emplace(_fontKey, new Font());
+
+	if (FT_New_Face(fontLibrary, _filepath.c_str(), 0, &face))
+	{
+		std::cout << "Failed to load font : "<< _filepath << std::endl;
+		return;
+	}
+
+	FT_Set_Pixel_Sizes(face, 0, 48);
+
+	if (FT_Load_Char(face, 'X', FT_LOAD_RENDER)) 
+	{
+		std::cout << "Failed to load glyph in font : " << _filepath << std::endl;
+		return;
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
+
+	//First 128 Characters Of The ASCII Table
+	for (unsigned char c = 0; c < 128; c++)
+	{
+		// Load character glyph 
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+		{
+			std::cout << "Failed to load Glyph : " << c << std::endl;
+			continue;
+		}
+
+		//Generate texture for glyph
+		GLuint texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RED,
+			face->glyph->bitmap.width,
+			face->glyph->bitmap.rows,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			face->glyph->bitmap.buffer
+		);
+
+		// Set texture options
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		// Now store character for later use
+		TextCharacter character = {
+			texture,
+			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+			(unsigned int)face->glyph->advance.x
+		};
+
+		Instance().GetFont(_fontKey)->AddGlyph(character, c);
+	}
+
+	FT_Done_Face(face);
+	FT_Done_FreeType(fontLibrary);
+}
+
 GLuint AssetLoader::GetShaderProgram(std::string _key)
 {
 	return shaderPrograms[_key];
@@ -378,6 +454,23 @@ GLuint AssetLoader::GetSkybox(std::string _key)
 Mesh* AssetLoader::GetMesh(std::string _meshKey)
 {
 	return meshes[_meshKey];
+}
+
+Font* AssetLoader::GetFont(std::string _fontKey)
+{
+	return fonts[_fontKey];
+}
+
+TextCharacter AssetLoader::GetGlyph(std::string _fontKey, const char _glyph)
+{
+	if (GetFont(_fontKey)->GlyphExists(_glyph)) 
+	{
+		return GetFont(_fontKey)->GetGlyph(_glyph);
+	}
+	else {
+
+		return TextCharacter();
+	}
 }
 
 void AssetLoader::AddTexture(GLuint _tex, std::string _key)
@@ -426,6 +519,16 @@ void AssetLoader::LoadAssets(const char* folderPath)
 			{
 				CreateShaderProgram(std::filesystem::path(file).string().c_str(), name.string());
 				std::cout << "Created Shader : " << name << "\n";
+			}
+		}
+
+		//Check The Extension For Supported Shader Files
+		for (int i = 0; i < std::size(supportedFontFileExtensions); i++)
+		{
+			if (supportedFontFileExtensions[i] == extension)
+			{
+				LoadFont(std::filesystem::path(file).string(), name.string());
+				std::cout << "Created Font : " << name << "\n";
 			}
 		}
 

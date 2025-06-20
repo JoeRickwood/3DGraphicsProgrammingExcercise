@@ -12,6 +12,48 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+struct TextCharacter 
+{
+public:
+	GLuint textureID;  // ID handle of the glyph texture
+	glm::ivec2   size;       // Size of glyph
+	glm::ivec2   bearing;    // Offset from baseline to left/top of glyph
+	unsigned int advanceOffset;    // Offset to advance to next glyph
+
+	TextCharacter(GLuint _textureID = NULL, glm::ivec2 _size = glm::ivec2(0, 0), glm::ivec2 _bearing = glm::ivec2(0, 0), unsigned int _advanceOffset = 0)
+	{
+		textureID = _textureID;
+		size = _size;
+		bearing = _bearing;
+		advanceOffset = _advanceOffset;
+	}
+};
+
+struct Font 
+{
+private:
+	std::map<char, TextCharacter> fontGlyphs;
+
+public:
+	void AddGlyph(TextCharacter _textCharacter, char _key) 
+	{
+		fontGlyphs.emplace(_key, _textCharacter);
+	}
+
+	TextCharacter GetGlyph(char _key) 
+	{
+		return fontGlyphs[_key];
+	}
+
+	bool GlyphExists(char _key) 
+	{
+		return fontGlyphs.find(_key) != fontGlyphs.end();
+	}
+};
+
 struct VertexStandard
 {
 public:
@@ -72,6 +114,8 @@ public:
 	GLuint GetTexture(std::string _key);
 	GLuint GetSkybox(std::string _key);
 	Mesh* GetMesh(std::string _key);
+	Font* GetFont(std::string _fontKey);
+	TextCharacter GetGlyph(std::string _fontKey, const char _glyph);
 	void AddTexture(GLuint _tex, std::string _key);
 
 	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
@@ -90,19 +134,26 @@ protected:
 	std::map<std::string, GLuint> textures;
 	std::map<std::string, GLuint> skyboxes;
 	std::map<std::string, Mesh*> meshes;
-
+	std::map<std::string, Font*> fonts;
 
 	const std::string supportedImageFileExtensions[2] = { ".png", ".jpg" };
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
 	const std::string supportedShaderFileExtensions[1] = { ".shader" };
+	const std::string supportedFontFileExtensions[1] = { ".ttf" };
 
-	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
-	static std::string ReadShaderFile(const char* filename);
+	//Helpers
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
 
+	//Used For Asset Loading Indirectly
+	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
+	static std::string ReadShaderFile(const char* filename);
+
+
+	//Asset Loading + Creation From Filepaths
 	static void CreateShaderProgram(const char* _filename, std::string _shaderKey);
 	static void CreateTexture(std::string _filename, std::string _shaderKey);
 	static void LoadMesh(std::string _filepath, std::string _meshKey);
+	static void LoadFont(std::string _filepath, std::string _fontKey);
 };
 
 
