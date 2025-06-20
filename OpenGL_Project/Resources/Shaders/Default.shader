@@ -97,8 +97,8 @@
          float currentDepth = projCoords.z;  
 
 
-         //float bias = max(0.05 * (1.0 - dot(FragNormal, DirLight.Direction)), 0.005); 
-         float bias = 0.001f;
+         //float bias = max(0.05f * (1.0f - dot(FragNormal, DirLight.Direction)), 0.005f); 
+         float bias = 0.0001f;
          float shadow = 0.0f;  
 
          int sampleRadius = 2;

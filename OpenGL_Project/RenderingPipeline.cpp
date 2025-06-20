@@ -77,7 +77,7 @@ void RenderingPipeline::Render(std::string shaderKeyOverride)
 void RenderingPipeline::ShadowPass()
 {
 	//Use The Shadow Program
-	GLuint program = AssetLoader::Instance().GetShaderProgram("DepthTesting");
+	GLuint program = AssetLoader::Instance().GetShaderProgram("DepthDraw");
 
 	glUseProgram(program);
 

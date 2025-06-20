@@ -83,40 +83,19 @@ void LoadScene()
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 0.f, 0.f));
 	cam->AddComponent<PlayerController>(0.003f, 15);
 
-	//Object Which Shows What A Regular Object With Animation Looks Like
-	/*ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(250.f, 10.f, 250.f));
-	auto groundRenderer = ground->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
-	groundRenderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	groundRenderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
-	groundRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampEdges);
-	groundRenderer->SetTextureTiling(glm::vec2(25, 25));  */
-
-	/* ObjectInstance* instancedTrees = new ObjectInstance("Trees");
-	auto treesRenderer = instancedTrees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
-	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
-	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
-	treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampEdges);
-	treesRenderer->SetRenderType(RenderBoth); */
-
-	/* ObjectInstance* instancedGrass = new ObjectInstance("Grass");
-	auto grassRenderer = instancedGrass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
-	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
-	grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, TilingType::Repeat);
-	grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampEdges);
-	grassRenderer->SetShadowRendering(false);
-	grassRenderer->SetRenderType(RenderFront); */
-
 	ObjectInstance* cube1 = new ObjectInstance("Cube1", glm::vec3(-2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto cube1Renderer = cube1->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
 	cube1Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	cube1Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::ClampEdges);
+	cube1Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
+	cube1Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
 	cube1Renderer->SetShadowRendering(true);
 	cube1Renderer->SetRenderType(RenderFront);
 
 	ObjectInstance* cube2 = new ObjectInstance("Cube2", glm::vec3(2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto cube2Renderer = cube2->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
 	cube2Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	cube2Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::ClampEdges);
+	cube2Renderer->AddTexturePass("ShadowMap", "Prototype", Texture2D, TilingType::Repeat);
+	cube2Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
 	cube2Renderer->SetShadowRendering(true);
 	cube2Renderer->SetRenderType(RenderFront);
 
@@ -124,6 +103,7 @@ void LoadScene()
 	auto cube3Renderer = cube3->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
 	cube3Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
 	cube3Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
+	cube3Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
 	cube3Renderer->SetShadowRendering(true);
 	cube3Renderer->SetTextureTiling(glm::vec2(15, 15));
 	cube3Renderer->SetRenderType(RenderFront);
@@ -133,36 +113,10 @@ void LoadScene()
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	UIRenderer->AddTexturePass("Texture0", "Glyph", Texture2D, TilingType::Repeat);
 	UIRenderer->SetShadowRendering(false);
-	UIRenderer->SetRenderType(RenderFront);
+	UIRenderer->SetRenderType(RenderBoth);
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
-	/*for (int i = 0; i < 5000; ++i)
-	{
-		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 500.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 500.f);
-		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
-		glm::vec3 scale = glm::vec3(0.3f, 0.3f, 0.3f) * (((float)(rand() % 300) / 100.f) + 0.5f);
-
-		treesRenderer->AddInstance(pos, rot, scale);
-	} */
-
-	/*for (int i = 0; i < 200000; ++i)
-	{
-		glm::vec3 pos = glm::vec3(ValueNoise_2D(i + 2312, i - 23712) * 500.f, 0.f, ValueNoise_2D(i - 232312, i + 23712) * 500.f);
-		glm::vec3 rot = glm::vec3(0.0f, rand() % 360, 0.0f);
-		glm::vec3 scale = glm::vec3(0.5f, 0.5f, 0.5f) * (((float)(rand() % 100) / 100.f) + 0.5f);
-
-		grassRenderer->AddInstance(pos, rot, scale);
-	} */
-
-	//treesRenderer->InitVBO();
-	//grassRenderer->InitVBO();
-	//groundRenderer->InitVBO();
-	//UIRenderer->InitVBO();
-
-	//cube1Renderer->InitVBO();
-	//cube2Renderer->InitVBO();
 
 	std::string skyboxPaths[6] =
 	{
@@ -205,7 +159,7 @@ int main()
 
 		RenderingPipeline::ShadowPass();
 
-		RenderingPipeline::Render("DepthTesting");
+		RenderingPipeline::Render();
 	}
 
 	glfwTerminate();
