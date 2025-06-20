@@ -36,9 +36,15 @@ void InstancedRenderer::Init()
 void InstancedRenderer::InitVBO()
 {	
 	glGenBuffers(1, &VBO);
+	
+	BindVBOData();
+}
+
+void InstancedRenderer::BindVBOData() 
+{
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, ModelMatrixes.size() * sizeof(glm::mat4), ModelMatrixes.data(), GL_DYNAMIC_DRAW);
-	
+
 	glBindVertexArray(mesh->VAO);
 
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);

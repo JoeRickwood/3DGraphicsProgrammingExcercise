@@ -15,6 +15,7 @@ public:
 
 	void Init()override;
 	void InitVBO()override;
+	void BindVBOData()override;
 	void Update()override;
 
 	void Render()override;

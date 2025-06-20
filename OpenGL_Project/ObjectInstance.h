@@ -48,6 +48,7 @@ public:
 		return a;
 	}
 
+	void Init();
 	void Update();
 	void ShaderUpdate();
 	void Render();

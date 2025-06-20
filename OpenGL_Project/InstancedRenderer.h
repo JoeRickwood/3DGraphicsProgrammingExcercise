@@ -19,6 +19,7 @@ public:
 
 	void Init()override;
 	void InitVBO()override;
+	void BindVBOData()override;
 	void AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
 
 	void Render() override;

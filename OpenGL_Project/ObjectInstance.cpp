@@ -8,6 +8,8 @@ ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3
 	position = _position;
 	rotation = _rotation;
 	scale = _scale;
+
+	Scene::Current().AddObject(this);
 }
 
 ObjectInstance::~ObjectInstance()
@@ -29,6 +31,11 @@ void ObjectInstance::ShaderUpdate()
 	{
 		components[i]->ShaderUpdate();
 	}
+}
+
+void ObjectInstance::Init() 
+{
+	Scene::Current().AddObject(this);
 }
 
 

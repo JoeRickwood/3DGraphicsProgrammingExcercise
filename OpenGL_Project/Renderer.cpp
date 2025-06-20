@@ -31,6 +31,11 @@ void Renderer::InitVBO()
 
 }
 
+void Renderer::BindVBOData()
+{
+}
+
+
 void Renderer::InitializeRenderingInfo(GLuint program)
 {
 	if (doubleSided) 
@@ -126,6 +131,10 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_REPEAT);
 			break;
+		case TilingType::ClampBorder:
+			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			break;
 		}
 
 		GLuint tex = AssetLoader::Instance().GetTexture(textures[i].textureKey);
@@ -156,6 +165,8 @@ void Renderer::AddTexturePass(std::string _location, std::string _texKey, Textur
 void Renderer::SetMesh(Mesh* _mesh)
 {
 	mesh = _mesh;
+
+	InitVBO();
 }
 
 void Renderer::SetShader(std::string _shaderKey)

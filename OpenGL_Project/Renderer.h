@@ -18,7 +18,8 @@ enum RenderType
 enum TilingType 
 {
 	ClampEdges,
-	Repeat
+	Repeat,
+	ClampBorder
 };
 
 
@@ -72,6 +73,7 @@ public:
 	void Update() override;
 
 	virtual void InitVBO();
+	virtual void BindVBOData();
 	virtual void Render();
 
 	void AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType);

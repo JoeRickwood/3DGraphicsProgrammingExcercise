@@ -18,11 +18,19 @@ DefaultRenderer::~DefaultRenderer()
 void DefaultRenderer::Init() 
 {
 	RenderingPipeline::AddRenderer(this);
+
+	//InitVBO();
 }
 
 void DefaultRenderer::InitVBO() 
 {
 	glGenBuffers(1, &VBO);
+
+	BindVBOData();
+}
+
+void DefaultRenderer::BindVBOData() 
+{
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
 

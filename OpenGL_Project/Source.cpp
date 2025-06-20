@@ -76,12 +76,12 @@ void Update()
 //Creates All Objects In The Scene
 void LoadScene()
 {
-	/*ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
+	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -1.0f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); */
+	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -1.0f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
 
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 0.f, 0.f));
-	//cam->AddComponent<PlayerController>(0.003f, 15);
+	cam->AddComponent<PlayerController>(0.003f, 15);
 
 	//Object Which Shows What A Regular Object With Animation Looks Like
 	/*ObjectInstance* ground = new ObjectInstance("Ground", glm::vec3(0.0f, -10.f, 0.0f), glm::vec3(0.f), glm::vec3(250.f, 10.f, 250.f));
@@ -106,23 +106,34 @@ void LoadScene()
 	grassRenderer->SetShadowRendering(false);
 	grassRenderer->SetRenderType(RenderFront); */
 
+	ObjectInstance* cube1 = new ObjectInstance("Cube1", glm::vec3(-2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto cube1Renderer = cube1->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
+	cube1Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
+	cube1Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::ClampEdges);
+	cube1Renderer->SetShadowRendering(true);
+	cube1Renderer->SetRenderType(RenderFront);
+
+	ObjectInstance* cube2 = new ObjectInstance("Cube2", glm::vec3(2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto cube2Renderer = cube2->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
+	cube2Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
+	cube2Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::ClampEdges);
+	cube2Renderer->SetShadowRendering(true);
+	cube2Renderer->SetRenderType(RenderFront);
+
+	ObjectInstance* cube3 = new ObjectInstance("Cube3", glm::vec3(0.f, -1.5f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(10.f, 0.1f, 10.f));
+	auto cube3Renderer = cube3->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
+	cube3Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
+	cube3Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
+	cube3Renderer->SetShadowRendering(true);
+	cube3Renderer->SetTextureTiling(glm::vec2(15, 15));
+	cube3Renderer->SetRenderType(RenderFront);
+
 	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, -1.f), glm::vec3 (0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultGlyph", ProjectionType::Orthographic);
+	auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultGlyph", ProjectionType::Perspective);
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	UIRenderer->AddTexturePass("Texture0", "Glyph", Texture2D, TilingType::Repeat);
 	UIRenderer->SetShadowRendering(false);
 	UIRenderer->SetRenderType(RenderFront);
-
-	//Add All Objects To The Current Scene
-	Scene::Current().AddObject(cam);
-
-	//Scene::Current().AddObject(skybox);
-	//Scene::Current().AddObject(ground);
-	//Scene::Current().AddObject(instancedGrass);
-	//Scene::Current().AddObject(instancedTrees);
-
-	Scene::Current().AddObject(UIObjectTest);
-	
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -148,9 +159,12 @@ void LoadScene()
 	//treesRenderer->InitVBO();
 	//grassRenderer->InitVBO();
 	//groundRenderer->InitVBO();
-	UIRenderer->InitVBO();
+	//UIRenderer->InitVBO();
 
-	/*std::string skyboxPaths[6] =
+	//cube1Renderer->InitVBO();
+	//cube2Renderer->InitVBO();
+
+	std::string skyboxPaths[6] =
 	{
 		"Resources/Skybox/Front.png",
 		"Resources/Skybox/Back.png",
@@ -160,7 +174,7 @@ void LoadScene()
 		"Resources/Skybox/Left.png"
 	};
 
-	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); */
+	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); 
 }
 
 int main()
@@ -191,7 +205,7 @@ int main()
 
 		RenderingPipeline::ShadowPass();
 
-		RenderingPipeline::Render();
+		RenderingPipeline::Render("DepthTesting");
 	}
 
 	glfwTerminate();

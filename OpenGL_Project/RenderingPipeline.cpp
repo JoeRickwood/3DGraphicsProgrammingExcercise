@@ -40,6 +40,8 @@ void RenderingPipeline::Render()
 		GLuint program = AssetLoader::Instance().GetShaderProgram(Current().renderers[i]->shaderKey);
 		glUseProgram(program);
 
+		Current().renderers[i]->BindVBOData();
+
 		Current().renderers[i]->InitializeRenderingInfo(program);
 
 		Current().renderers[i]->Render();
@@ -59,6 +61,8 @@ void RenderingPipeline::Render(std::string shaderKeyOverride)
 	{
 		GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKeyOverride);
 		glUseProgram(program);
+
+		Current().renderers[i]->BindVBOData();
 
 		Current().renderers[i]->InitializeRenderingInfo(program);
 
@@ -97,6 +101,8 @@ void RenderingPipeline::ShadowPass()
 		{
 			continue;
 		}
+
+		Current().renderers[i]->BindVBOData();
 
 		Current().renderers[i]->Render();
 	}
