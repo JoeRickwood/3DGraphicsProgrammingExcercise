@@ -90,8 +90,10 @@ void TextRenderer::Render()
 
 	glBindVertexArray(mesh->VAO);
 
+    glDisable(GL_DEPTH_TEST);
+
     std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++)
+    for (c = text.begin(); c != text.end(); ++c)
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
 
@@ -100,6 +102,7 @@ void TextRenderer::Render()
 
         float width = ch.size.x * parent->scale.x;
         float height = ch.size.y * parent->scale.y;
+
         // update VBO for each character
         float vertices[6][4] = {
             { xpos,     ypos + height,   0.0f, 0.0f },
@@ -110,6 +113,7 @@ void TextRenderer::Render()
             { xpos + width, ypos,       1.0f, 1.0f },
             { xpos + width, ypos + height,   1.0f, 0.0f }
         };
+
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.textureID);
         // update content of VBO memory
@@ -121,6 +125,8 @@ void TextRenderer::Render()
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         x += (ch.advanceOffset >> 6) * parent->scale.x; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
+
+    glEnable(GL_DEPTH_TEST);
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);

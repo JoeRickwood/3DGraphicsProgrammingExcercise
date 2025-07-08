@@ -50,12 +50,13 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glCullFace(renderType);
 
 
-	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().viewMatrix;
+	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
 
 	//Pass In Uniforms
-	glUniform3f(glGetUniformLocation(program, "CameraPos"), Camera::Instance().cameraPosition.x, Camera::Instance().cameraPosition.y, Camera::Instance().cameraPosition.z);
+	glm::vec3 position = Camera::Instance().GetCameraPosition();
+	glUniform3f(glGetUniformLocation(program, "CameraPos"), position.x, position.y, position.z);
 	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
 	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
 

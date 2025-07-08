@@ -23,7 +23,7 @@ void Skybox::InitializeRenderingInfo(GLuint program)
 	glUniform1i(glGetUniformLocation(program, textures[0].locationName.c_str()), 0);
 
 	//truncate values
-	glm::mat4 matrix = Camera::Instance().GetProjectionMatrix(Perspective) * glm::mat4(glm::mat3(Camera::Instance().viewMatrix));
+	glm::mat4 matrix = Camera::Instance().GetProjectionMatrix(Perspective) * glm::mat4(glm::mat3(Camera::Instance().GetViewMatrix()));
 	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 

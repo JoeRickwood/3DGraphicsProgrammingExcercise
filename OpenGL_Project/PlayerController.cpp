@@ -55,13 +55,17 @@ void PlayerController::Update()
 
 		parent->rotation.y -= moveDir.x * mouseSensitivity * 0.5f;
 
-		Camera::Instance().cameraLookDir.x = cosf(parent->rotation.x) * sin(parent->rotation.y);
-		Camera::Instance().cameraLookDir.y = -sinf(parent->rotation.x);
-		Camera::Instance().cameraLookDir.z = cosf(parent->rotation.x) * cos(parent->rotation.y);
+		glm::vec3 cameraLookDir = glm::vec3(
+			cosf(parent->rotation.x) * sin(parent->rotation.y),
+			-sinf(parent->rotation.x),
+			cosf(parent->rotation.x) * cos(parent->rotation.y)
+		);
+
+		Camera::Instance().SetCameraLookDirection(cameraLookDir);
 
 		//Movement
-		glm::vec3 cameraRight = -glm::normalize(glm::cross(Camera::Instance().cameraLookDir, Camera::Instance().cameraUpDir));
-		glm::vec3 cameraForward = -glm::normalize(Camera::Instance().cameraLookDir * glm::vec3(1.f, 0.f, 1.f));
+		glm::vec3 cameraRight = -glm::normalize(glm::cross(cameraLookDir, Camera::Instance().GetCameraUpDirection()));
+		glm::vec3 cameraForward = -glm::normalize(cameraLookDir * glm::vec3(1.f, 0.f, 1.f));
 
 		//Setting Velocity With Input Multiplied By camera Vectors And Speeds
 		glm::vec3 targetVel =
@@ -99,5 +103,5 @@ void PlayerController::Update()
 
 	parent->position += -velocity * Time::Instance().deltaTime;
 
-	Camera::Instance().cameraPosition = parent->position;
+	Camera::Instance().SetCameraPosition(parent->position);
 }

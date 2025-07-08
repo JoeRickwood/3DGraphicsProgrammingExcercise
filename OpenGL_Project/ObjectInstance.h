@@ -5,6 +5,9 @@ class Component;
 
 class ObjectInstance
 {
+protected:
+	ObjectInstance* parent;
+
 public:
 	std::string name;
 
@@ -13,7 +16,6 @@ public:
 	glm::vec3 scale;
 
 	ObjectInstance(std::string _name, glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.f));
-
 	~ObjectInstance();
 
 

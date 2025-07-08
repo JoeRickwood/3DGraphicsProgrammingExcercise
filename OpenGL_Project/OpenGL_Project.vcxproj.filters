@@ -116,9 +116,6 @@
     <ClInclude Include="RenderingPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ft2build.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextRenderer.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>

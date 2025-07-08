@@ -56,3 +56,89 @@ const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 		return perspectiveProjectionMatrix;
 	}
 }
+
+const glm::mat4 Camera::GetViewMatrix()
+{
+	return viewMatrix;
+}
+
+const glm::vec3 Camera::GetCameraPosition()
+{
+	return cameraPosition;
+}
+
+void Camera::SetCameraPosition(glm::vec3 _position)
+{
+	cameraPosition = _position;
+}
+
+const glm::vec3 Camera::GetCameraLookDirection()
+{
+	return cameraLookDir;
+}
+
+void Camera::SetCameraLookDirection(glm::vec3 _direction)
+{
+	cameraLookDir = _direction;
+}
+
+const glm::vec3 Camera::GetCameraUpDirection()
+{
+	return cameraUpDir;
+}
+
+void Camera::SetCameraUpDirection(glm::vec3 _upDirection)
+{
+	cameraUpDir = _upDirection;
+}
+
+
+const float Camera::GetNearPlane()
+{
+	return nearPlane;
+}
+
+void Camera::SetNearPlane(float _nearPlane)
+{
+	nearPlane = _nearPlane;
+}
+
+const float Camera::GetFarPlane()
+{
+	return farPlane;
+}
+
+void Camera::SetFarPlane(float _farPlane)
+{
+	farPlane = _farPlane;
+}
+
+const float Camera::GetFieldOfView()
+{
+	return fieldOfView;
+}
+
+void Camera::SetFieldOfView(float _fieldOfView)
+{
+	fieldOfView = _fieldOfView;
+}
+
+const float Camera::GetShadowFarPlane()
+{
+	return shadowFarPlane;
+}
+
+void Camera::SetShadowFarPlane(float _shadowFarPlane)
+{
+	shadowFarPlane = _shadowFarPlane;
+}
+
+const float Camera::GetOrthographicSize()
+{
+	return orthographicSize;
+}
+
+void Camera::SetOrthographicSize(float _orthographicSize)
+{
+	orthographicSize = _orthographicSize;
+}

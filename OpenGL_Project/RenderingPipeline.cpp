@@ -144,7 +144,7 @@ std::vector<glm::vec4> RenderingPipeline::GetFrustumCornersWorldSpace(const glm:
 
 glm::mat4 RenderingPipeline::GetLightVPMatrix()
 {
-	std::vector<glm::vec4> corners = Current().GetFrustumCornersWorldSpace(Camera::Instance().GetProjectionMatrix(ShadowPerspective), Camera::Instance().viewMatrix);
+	std::vector<glm::vec4> corners = Current().GetFrustumCornersWorldSpace(Camera::Instance().GetProjectionMatrix(ShadowPerspective), Camera::Instance().GetViewMatrix());
 
 	glm::vec3 center = glm::vec3(0, 0, 0);
 	for (const auto& v : corners)
