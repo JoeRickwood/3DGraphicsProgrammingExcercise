@@ -12,6 +12,9 @@ PlayerController::PlayerController(float _mouseSensitivity = 3.f, float _cameraM
 
 	prevMousePos = glm::vec2(0.0f, 0.0f);
 	mousePos = glm::vec2(0.0f, 0.0f);
+
+	rotX = 0.f;
+	rotY = 0.f;
 }
 
 PlayerController::~PlayerController()
@@ -42,24 +45,28 @@ void PlayerController::Update()
 
 		glm::vec2 moveDir = mousePos - prevMousePos;
 
-		parent->rotation.x += moveDir.y * mouseSensitivity;
-		if (parent->rotation.x < glm::radians(-89.f))
+		glm::vec3 rotation = parent->GetRotation();
+
+		rotation.x += moveDir.y * mouseSensitivity;
+		if (rotation.x < glm::radians(-89.f))
 		{
-			parent->rotation.x = glm::radians(-89.f);
+			rotation.x = glm::radians(-89.f);
 		}
 
-		if (parent->rotation.x > glm::radians(89.f))
+		if (rotation.x > glm::radians(89.f))
 		{
-			parent->rotation.x = glm::radians(89.f);
+			rotation.x = glm::radians(89.f);
 		}
 
-		parent->rotation.y -= moveDir.x * mouseSensitivity * 0.5f;
+		rotation.y -= moveDir.x * mouseSensitivity * 0.5f;
 
 		glm::vec3 cameraLookDir = glm::vec3(
-			cosf(parent->rotation.x) * sin(parent->rotation.y),
-			-sinf(parent->rotation.x),
-			cosf(parent->rotation.x) * cos(parent->rotation.y)
+			cosf(rotation.x) * sin(rotation.y),
+			-sinf(rotation.x),
+			cosf(rotation.x) * cos(rotation.y)
 		);
+
+		parent->SetRotation(rotation);
 
 		Camera::Instance().SetCameraLookDirection(cameraLookDir);
 
@@ -101,7 +108,7 @@ void PlayerController::Update()
 		prevMousePos = mousePos;
 	}
 
-	parent->position += -velocity * Time::Instance().deltaTime;
+	parent->SetPosition(parent->GetPosition() + (-velocity * Time::Instance().deltaTime));
 
-	Camera::Instance().SetCameraPosition(parent->position);
+	Camera::Instance().SetCameraPosition(parent->GetPosition());
 }

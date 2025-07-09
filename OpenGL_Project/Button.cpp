@@ -6,11 +6,14 @@ const bool Button::Intersects(glm::vec3 _position) const
 {
 
 	//Calculate The Bounds Of The Button
-	float left = parent->position.x - (parent->scale.x / 2.f);
-	float right = parent->position.x + (parent->scale.x / 2.f);
+	glm::vec3 position = parent->GetPosition();
+	glm::vec3 scale = parent->GetScale();
 
-	float up = parent->position.y + (parent->scale.y / 2.f);
-	float down = parent->position.y - (parent->scale.y / 2.f);
+	float left = position.x - (scale.x / 2.f);
+	float right = position.x + (scale.x / 2.f);
+
+	float up = position.y + (scale.y / 2.f);
+	float down = position.y - (scale.y / 2.f);
 
 	//Compare To Mouse Pos
 	if (_position.x > left && _position.x < right && _position.y < up && _position.y > down) 

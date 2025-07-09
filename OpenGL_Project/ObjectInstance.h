@@ -8,20 +8,41 @@ class ObjectInstance
 protected:
 	ObjectInstance* parent;
 
-public:
-	std::string name;
-
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
 
+	std::string name;
+
+	std::vector<std::shared_ptr<Component>> components;
+
+public:
 	ObjectInstance(std::string _name, glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.f));
 	~ObjectInstance();
 
+	//Getters And Setters For Position
+	const glm::vec3 GetPosition();
+	void SetPosition(glm::vec3 _position);
+
+	//Getters And Setters For Rotation
+	const glm::vec3 GetRotation();
+	void SetRotation(glm::vec3 _rotation);
+
+	//Getters And Setters For Scale
+	const glm::vec3 GetScale();
+	void SetScale(glm::vec3 _scale);
+
+	//Getters And Setters For Name
+	const std::string GetName();
+	void SetName(std::string _name);
+
+	//Getters And Setters For Parent
+	const ObjectInstance* GetParent();
+	void SetParent(ObjectInstance* _parent);
 
 	//Gets The Component Of Type T And Returns The Pointer To It
 	template<typename T>
-	T *GetComponent()
+	T* GetComponent()
 	{
 		for (const auto& component : components)
 		{
@@ -54,9 +75,6 @@ public:
 	void Update();
 	void ShaderUpdate();
 	void Render();
-
-private:
-	std::vector<std::shared_ptr<Component>> components;
 };
 
 class Component
@@ -82,4 +100,3 @@ public:
 	//Called To Enable Or Disable A Component
 	void SetEnabledState(bool state);
 };
-

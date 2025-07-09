@@ -27,9 +27,6 @@ void Camera::CalculateViewMatrix()
 //Calcualtes The Projection Matrix Used By Objects And Passed Into The Model Matrix
 void Camera::CalculateProjectionMatrix()
 {
-	//Value Of 120 Comes From 16:9 Aspect Ratio
-	//A Resolution Of 1920 horizontal / 16 = 120? 
-	
 	float aspect = AssetLoader::Instance().windowSize.x / AssetLoader::Instance().windowSize.y;
 
 	float halfWidth = Instance().orthographicSize * aspect;
@@ -46,14 +43,14 @@ const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 {
 	switch (_type)
 	{
-	case Orthographic:
-		return orthoProjectionMatrix;
-	case Perspective:
-		return perspectiveProjectionMatrix;
-	case ShadowPerspective:
-		return shadowProjectionPerspectiveMatrix;
-	default:
-		return perspectiveProjectionMatrix;
+		case Orthographic:
+			return orthoProjectionMatrix;
+		case Perspective:
+			return perspectiveProjectionMatrix;
+		case ShadowPerspective:
+			return shadowProjectionPerspectiveMatrix;
+		default:
+			return perspectiveProjectionMatrix;
 	}
 }
 

@@ -73,7 +73,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 
 		std::string loc = ("PointLights[" + std::to_string(i) + "].");
 
-		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i]->parent->position));
+		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i]->parent->GetPosition()));
 		glUniform3fv(glGetUniformLocation(program, (loc + "Color").c_str()), 1, glm::value_ptr(pointLights[i]->color));
 		glUniform1f(glGetUniformLocation(program, (loc + "SpecularStrength").c_str()), pointLights[i]->specularStrength);
 	
@@ -95,7 +95,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 
 		std::string loc = ("SpotLights[" + std::to_string(i) + "].");
 
-		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i]->parent->position));
+		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i]->parent->GetPosition()));
 		glUniform3fv(glGetUniformLocation(program, (loc + "Direction").c_str()), 1, glm::value_ptr(spotLights[i]->direction));
 		glUniform3fv(glGetUniformLocation(program, (loc + "Color").c_str()), 1, glm::value_ptr(spotLights[i]->color));
 
@@ -104,7 +104,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 		glUniform1f(glGetUniformLocation(program, (loc + "Range").c_str()), glm::radians(spotLights[i]->range));
 	}
 
-	DirectionalLight* dirLight = Scene::Current().GetDirectionalLight();
+	const DirectionalLight* dirLight = Scene::Current().GetDirectionalLight();
 
 	//Pass In Directional Light
 	if (dirLight != nullptr) 

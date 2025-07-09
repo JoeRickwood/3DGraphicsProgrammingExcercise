@@ -40,9 +40,9 @@ void TextRenderer::BindVBOData()
 
 void TextRenderer::Update()
 {
-    translationMat = glm::translate(glm::mat4(1.0f), parent->position);
-    rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(parent->rotation.z), glm::vec3(0.f, 0.f, 1.f));
-    scaleMat = glm::scale(glm::mat4(1.0f), parent->scale);
+    translationMat = glm::translate(glm::mat4(1.0f), parent->GetPosition());
+    rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(parent->GetRotation().z), glm::vec3(0.f, 0.f, 1.f));
+    scaleMat = glm::scale(glm::mat4(1.0f), parent->GetScale());
 
     modelMat = translationMat * rotationMat * scaleMat;
 
@@ -85,8 +85,8 @@ void TextRenderer::Init()
 
 void TextRenderer::Render()
 {
-    int x = parent->position.x;
-    int y = parent->position.y;
+    int x = parent->GetPosition().x;
+    int y = parent->GetPosition().y;
 
 	glBindVertexArray(mesh->VAO);
 
@@ -97,11 +97,11 @@ void TextRenderer::Render()
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
 
-        float xpos = x + ch.bearing.x * parent->scale.x;
-        float ypos = y - (ch.size.y - ch.bearing.y) * parent->scale.y;
+        float xpos = x + ch.bearing.x * parent->GetScale().x;
+        float ypos = y - (ch.size.y - ch.bearing.y) * parent->GetScale().y;
 
-        float width = ch.size.x * parent->scale.x;
-        float height = ch.size.y * parent->scale.y;
+        float width = ch.size.x * parent->GetScale().x;
+        float height = ch.size.y * parent->GetScale().y;
 
         // update VBO for each character
         float vertices[6][4] = {
@@ -123,7 +123,7 @@ void TextRenderer::Render()
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.advanceOffset >> 6) * parent->scale.x; // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (ch.advanceOffset >> 6) * parent->GetScale().x; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glEnable(GL_DEPTH_TEST);

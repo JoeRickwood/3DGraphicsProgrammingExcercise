@@ -11,7 +11,7 @@ void Scene::SetAmbientLightColor(glm::vec3 _color)
 	ambientColor = _color;
 }
 
-glm::vec3 Scene::GetAmbientLight()
+const glm::vec3 Scene::GetAmbientLight()
 {
 	return ambientColor * ambientStrength;
 }
@@ -77,7 +77,7 @@ PointLight** Scene::GetPointLights()
 	return pointLights;
 }
 
-int Scene::GetPointLightCount()
+const int Scene::GetPointLightCount()
 {
 	return pointLightCount;
 }
@@ -110,7 +110,7 @@ SpotLight** Scene::GetSpotLights()
 	return spotLights;
 }
 
-int Scene::GetSpotLightCount()
+const int Scene::GetSpotLightCount()
 {
 	return spotLightCount;
 }
@@ -129,7 +129,7 @@ ObjectInstance* Scene::FindObject(std::string _name)
 {
 	for (auto& obj : objects)
 	{
-		if (obj->name == _name) 
+		if (obj->GetName() == _name)
 		{
 			return obj;
 		}

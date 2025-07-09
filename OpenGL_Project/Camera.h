@@ -22,7 +22,6 @@ public:
 	const glm::vec3 GetCameraUpDirection();
 	void SetCameraUpDirection(glm::vec3 _upDirection);
 
-
 	const float GetNearPlane();
 	void SetNearPlane(float _nearPlane);
 
@@ -51,7 +50,6 @@ protected:
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraLookDir = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 cameraUpDir = glm::vec3(0.0f, 1.0f, 0.0f);
-
 
 	float nearPlane = 0.1f;
 	float farPlane = 500.0f;

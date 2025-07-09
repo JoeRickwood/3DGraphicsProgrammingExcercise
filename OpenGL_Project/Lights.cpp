@@ -69,10 +69,12 @@ void SpotLight::Init()
 
 void SpotLight::Update() 
 {
+	glm::vec3 rotation = parent->GetRotation();
+
 	glm::vec3 tempDir(
-		cos(parent->rotation.x) * sin(parent->rotation.y),
-		-sin(parent->rotation.x),
-		cos(parent->rotation.x) * cos(parent->rotation.y)
+		cos(rotation.x) * sin(rotation.y),
+		-sin(rotation.x),
+		cos(rotation.x) * cos(rotation.y)
 	);
 
 	direction = glm::normalize(-tempDir);

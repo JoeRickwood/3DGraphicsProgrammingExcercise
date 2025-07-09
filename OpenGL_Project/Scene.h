@@ -20,21 +20,21 @@ public:
 	void SetPointLight(PointLight* _light, int _index);
 	void AddPointLight(PointLight* _light);
 	PointLight** GetPointLights();
-	int GetPointLightCount();
+	const int GetPointLightCount();
 
 	void SetSpotLight(SpotLight* _light, int _index);
 	void AddSpotLight(SpotLight* _light);
 	SpotLight** GetSpotLights();
-	int GetSpotLightCount();
+	const int GetSpotLightCount();
 
 	void SetDirectionalLight(DirectionalLight* _directionalLight);
 	DirectionalLight* GetDirectionalLight();
 
 	void SetAmbientLightStength(float _strength);
 	void SetAmbientLightColor(glm::vec3 _color);
-	glm::vec3 GetAmbientLight();
+	const glm::vec3 GetAmbientLight();
 
-private:
+protected:
 	Scene();
 	~Scene();
 
