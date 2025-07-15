@@ -91,30 +91,46 @@ void LoadScene()
 	cube1Renderer->SetShadowRendering(true);
 	cube1Renderer->SetRenderType(RenderFront);
 
-	ObjectInstance* cube2 = new ObjectInstance("Cube2", glm::vec3(2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto cube2Renderer = cube2->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
-	cube2Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	cube2Renderer->AddTexturePass("ShadowMap", "Prototype", Texture2D, TilingType::Repeat);
-	cube2Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	cube2Renderer->SetShadowRendering(true);
-	cube2Renderer->SetRenderType(RenderFront);
+	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
+	auto terrainRenderer = terrain->AddComponent<Terrain>(ProjectionType::Perspective, 256, 256, 10.0f);
+	terrainRenderer->SetTextureTiling(glm::vec2(1, 1));
+	terrainRenderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+	terrainRenderer->SetShadowRendering(true);
+	//terrainRenderer->LoadHeightMap("Resources/Heightmap0.raw");
+	terrainRenderer->LoadPerlinMap();
 
-	ObjectInstance* cube3 = new ObjectInstance("Cube3", glm::vec3(0.f, -1.5f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(10.f, 0.1f, 10.f));
-	auto cube3Renderer = cube3->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
-	cube3Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	cube3Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
-	cube3Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	cube3Renderer->SetShadowRendering(true);
-	cube3Renderer->SetTextureTiling(glm::vec2(15, 15));
-	cube3Renderer->SetRenderType(RenderFront);
+	//Create Trees On The Terrain
+	ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.f, 0.f, 0.f));
+	auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
+	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
+	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::ClampEdges);
+	treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+	treesRenderer->SetShadowRendering(true);
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(500.f, 500.f, -1.f), glm::vec3 (0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-	UIRenderer->SetText("WOOOO TEXT WORKS");
-	UIRenderer->SetRenderType(RenderBoth);
+	float treeSpacing = 2.75f;
+	int treeGridX = 100;
+	int treeGridY = 100;
+	for (int x = 0; x < treeGridX; x++)
+	{
+		for (int y = 0; y < treeGridY; y++)
+		{
+			float t = ValueNoise_2D(x * 15.f, y * 15.f);
+			
+			float offsetX = (((rand() % 100) / 100.f) - 0.5f) * 3;
+			float offsetY = (((rand() % 100) / 100.f) - 0.5f) * 3;
+			float randScale = ((rand() % 100) / 100.f) + 0.5f;
+
+			if (t >= 0.15f) 
+			{
+				float height = terrain->GetComponent<Terrain>()->SampleHeight(x * treeSpacing + offsetX, y * treeSpacing + offsetY);
+
+				treesRenderer->AddInstance(glm::vec3(x * treeSpacing + offsetX, height, y * treeSpacing + offsetY), glm::vec3(), glm::vec3(randScale, randScale, randScale) * 0.3f);
+			}
+		}
+	}
+
+	treesRenderer->InitVBO();
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -130,6 +146,15 @@ void LoadScene()
 	};
 
 	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); 
+
+	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
+	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	UIRenderer->SetFont("AldotheApache");
+	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+	UIRenderer->SetText("Terrain Scene Test 1");
+	UIRenderer->SetRenderType(RenderBoth);
+
 }
 
 int main()

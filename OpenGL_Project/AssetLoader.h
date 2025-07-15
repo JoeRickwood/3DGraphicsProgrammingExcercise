@@ -119,6 +119,7 @@ public:
 	void AddTexture(GLuint _tex, std::string _key);
 
 	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
+	static Mesh* CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> _texcoords);
 
 	void LoadAssets(const char* folderPath);
 	
@@ -147,7 +148,6 @@ protected:
 	//Used For Asset Loading Indirectly
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
 	static std::string ReadShaderFile(const char* filename);
-
 
 	//Asset Loading + Creation From Filepaths
 	static void CreateShaderProgram(const char* _filename, std::string _shaderKey);

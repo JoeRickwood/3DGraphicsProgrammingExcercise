@@ -66,6 +66,9 @@
     <ClCompile Include="TextRenderer.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h">
@@ -119,6 +122,9 @@
     <ClInclude Include="TextRenderer.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader">
@@ -143,6 +149,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\DefaultText.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\SteppedColor.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

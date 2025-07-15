@@ -4,7 +4,7 @@
 
 InstancedRenderer::InstancedRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
 {
-	drawCount = 1;
+	drawCount = 0;
 
 	VBO = NULL;
 }
@@ -14,7 +14,7 @@ InstancedRenderer::~InstancedRenderer()
 	RenderingPipeline::RemoveRenderer(this);
 }
 
-void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
+void InstancedRenderer::AddInstance(glm::vec3 pos = glm::vec3(), glm::vec3 rot = glm::vec3(), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f))
 {
 	++drawCount;
 
@@ -22,7 +22,10 @@ void InstancedRenderer::AddInstance(glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 	rotations.push_back(rot);
 	scales.push_back(scale);
 
-	glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(rot.y), glm::vec3(0.f, 1.f, 0.f));
+	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rot.z), glm::vec3(0.f, 0.f, 1.f))
+		* glm::rotate(glm::mat4(1.0f), glm::radians(rot.y), glm::vec3(0.f, 1.f, 0.f))
+		* glm::rotate(glm::mat4(1.0f), glm::radians(rot.x), glm::vec3(1.f, 0.f, 0.f));
+
 	glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), pos) * rotation * glm::scale(glm::mat4(1.0f), scale);
 
 	ModelMatrixes.push_back(modelMat);
@@ -42,6 +45,12 @@ void InstancedRenderer::InitVBO()
 
 void InstancedRenderer::BindVBOData() 
 {
+	if (drawCount <= 0 || ModelMatrixes.size() <= 0)
+	{
+		std::cerr << "Cannot Bind Data To The VBO, Instance Count Is Invalid Or None" << std::endl;
+		return;
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, ModelMatrixes.size() * sizeof(glm::mat4), ModelMatrixes.data(), GL_DYNAMIC_DRAW);
 
@@ -71,6 +80,12 @@ void InstancedRenderer::Render()
 	if (mesh == nullptr)
 	{
 		std::cerr << "Mesh In Invalid Or Missing" << std::endl;
+		return;
+	}
+
+	if(drawCount <= 0 || ModelMatrixes.size() <= 0)
+	{ 
+		std::cerr << "Instance Count Is Invalid Or None" << std::endl;
 		return;
 	}
 

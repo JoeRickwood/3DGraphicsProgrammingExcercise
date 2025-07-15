@@ -115,6 +115,11 @@ const int Scene::GetSpotLightCount()
 	return spotLightCount;
 }
 
+std::vector<ObjectInstance*> Scene::GetAllObjects()
+{
+	return objects;
+}
+
 void Scene::SetDirectionalLight(DirectionalLight* _directionalLight)
 {
 	directionalLight = _directionalLight;

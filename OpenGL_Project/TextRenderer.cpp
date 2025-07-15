@@ -41,7 +41,11 @@ void TextRenderer::BindVBOData()
 void TextRenderer::Update()
 {
     translationMat = glm::translate(glm::mat4(1.0f), parent->GetPosition());
-    rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(parent->GetRotation().z), glm::vec3(0.f, 0.f, 1.f));
+
+    rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(parent->GetRotation().z), glm::vec3(0.f, 0.f, 1.f))
+        * glm::rotate(glm::mat4(1.0f), glm::radians(parent->GetRotation().y), glm::vec3(0.f, 1.f, 0.f))
+        * glm::rotate(glm::mat4(1.0f), glm::radians(parent->GetRotation().x), glm::vec3(1.f, 0.f, 0.f));
+
     scaleMat = glm::scale(glm::mat4(1.0f), parent->GetScale());
 
     modelMat = translationMat * rotationMat * scaleMat;

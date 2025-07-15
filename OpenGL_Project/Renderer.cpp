@@ -53,7 +53,6 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
-
 	//Pass In Uniforms
 	glm::vec3 position = Camera::Instance().GetCameraPosition();
 	glUniform3f(glGetUniformLocation(program, "CameraPos"), position.x, position.y, position.z);

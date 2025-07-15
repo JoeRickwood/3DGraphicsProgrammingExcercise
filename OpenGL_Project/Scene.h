@@ -27,6 +27,8 @@ public:
 	SpotLight** GetSpotLights();
 	const int GetSpotLightCount();
 
+	std::vector<ObjectInstance*> GetAllObjects();
+
 	void SetDirectionalLight(DirectionalLight* _directionalLight);
 	DirectionalLight* GetDirectionalLight();
 

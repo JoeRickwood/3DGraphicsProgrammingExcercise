@@ -282,6 +282,27 @@ void AssetLoader::CreateSkybox(std::string _filepaths[6], std::string _skyboxKey
 	AssetLoader::Instance().skyboxes.emplace(_skyboxKey, skybox);
 }
 
+Mesh* AssetLoader::CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> _indices, std::vector<glm::vec3> _normals, std::vector<glm::vec2> _texcoords)
+{
+	std::vector<VertexStandard> vertices;
+
+	for (int i = 0; i < _indices.size(); i++)
+	{
+		VertexStandard vertex{};
+
+		vertex.position = _positions[_indices[i]];
+		vertex.normal = _normals[_indices[i]];
+		vertex.texcoord = _texcoords[_indices[i]];
+
+		vertices.push_back(vertex);
+	}
+
+	Mesh* mesh = new Mesh(vertices);
+	mesh->Init();
+
+	return mesh;
+}
+
 void AssetLoader::LoadMesh(std::string _filepath, std::string _meshKey)
 {
 	std::vector<VertexStandard> vertices;
