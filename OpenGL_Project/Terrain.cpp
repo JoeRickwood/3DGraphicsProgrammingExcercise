@@ -71,34 +71,12 @@ void Terrain::BindVBOData()
 
 float Terrain::SampleHeight(float _x, float _y)
 {
-	if (_x < 0) 
-	{
-		_x = 0;
-	}
+	return ValueNoise_2D(_x * 2.f, _y * 2.f) * 50.f;
+}
 
-	if (_x >= terrainSize.x) 
-	{
-		_x = terrainSize.x;
-	}
-
-	if (_y < 0)
-	{
-		_y = 0;
-	}
-
-	if (_y >= terrainSize.x)
-	{
-		_y = terrainSize.x;
-	}
-
-	int index = _x * terrainSize.y + _y;
-
-	if (index >= heights.size()) 
-	{
-		return 0.f;
-	}
-
-	return heights[index];
+float Terrain::GetCellSpacing()
+{
+	return cellSpacing;
 }
 
 glm::vec2 Terrain::GetSize()
@@ -106,57 +84,6 @@ glm::vec2 Terrain::GetSize()
 	return terrainSize;
 }
 
-void Terrain::LoadHeightMap(std::string filePath)
-{
-	heights.clear();
-
-	unsigned int vertexCount = terrainSize.x * terrainSize.y;
-
-	std::vector<unsigned char> heightValues(vertexCount);
-
-	std::ifstream File;
-	File.open(filePath, std::ios_base::binary);
-	if (File) 
-	{
-		File.read((char*)&heightValues[0], (std::streamsize)heightValues.size());
-		File.close();
-	}
-	else 
-	{
-		std:cout << "Heightmap Failed To Load";
-	}
-
-	heights.resize(vertexCount, 0);
-	for (int i = 0; i < positions.size(); i++)
-	{
-		if (heightValues.size() <= i)
-		{
-			break;
-		}
-
-		heights[i] = (float)heightValues[i];
-		positions[i].y = heights[i];
-	}
-
-	GenerateMesh();
-}
-
-void Terrain::LoadPerlinMap()
-{
-	heights.clear();
-
-	for (int x = 0; x < terrainSize.x; x++)
-	{
-		for (int y = 0;  y < terrainSize.y;  y++)
-		{
-			float height = ValueNoise_2D(x, y) * 50.f;
-
-			heights.push_back(height);
-		}
-	}
-
-	GenerateMesh();
-}
 
 void Terrain::Update()
 {
@@ -179,6 +106,7 @@ void Terrain::Render()
 	glBindVertexArray(0);
 }
 
+
 void Terrain::GenerateMesh()
 {
 	if (mesh)
@@ -195,7 +123,7 @@ void Terrain::GenerateMesh()
 	{
 		for (int y = 0; y < terrainSize.y; y++)
 		{
-			float height = SampleHeight(x, y);
+			float height = SampleHeight(x * cellSpacing, y * cellSpacing);
 
 			float posX = x * cellSpacing;
 			float posY = y * cellSpacing;

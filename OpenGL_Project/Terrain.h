@@ -19,8 +19,6 @@ protected:
 
 	glm::mat4 modelMat;
 
-	void GenerateMesh();
-
 public:
 	Terrain(ProjectionType _projection, int _sizeX, int _sizeY, float _cellSpacing);
 	~Terrain();
@@ -29,10 +27,11 @@ public:
 	void InitVBO()override;
 	void BindVBOData()override;
 
+	void GenerateMesh();
+
 	float SampleHeight(float _x, float _y);
+	float GetCellSpacing();
 	glm::vec2 GetSize();
-	void LoadHeightMap(std::string filePath);
-	void LoadPerlinMap();
 
 	void Update()override;
 	void Render()override;
