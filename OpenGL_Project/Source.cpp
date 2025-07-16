@@ -90,46 +90,17 @@ void LoadScene()
 	cube1Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
 	cube1Renderer->SetShadowRendering(true);
 	cube1Renderer->SetRenderType(RenderFront);
+	
 
 	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
 	auto terrainRenderer = terrain->AddComponent<Terrain>(ProjectionType::Perspective, 256, 256, 1.0f);
 	terrainRenderer->SetTextureTiling(glm::vec2(1, 1));
-	terrainRenderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureGrass", "Prototype", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureSand", "MuddySand", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
 	terrainRenderer->SetShadowRendering(true);
-	terrainRenderer->GenerateMesh();
-
-	//Create Trees On The Terrain
-	ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.f, 0.f, 0.f));
-	auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
-	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
-	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::ClampEdges);
-	treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	treesRenderer->SetShadowRendering(true);
-
-	float treeSpacing = 2.56f;
-	int treeGridX = 100;
-	int treeGridY = 100;
-	for (int x = 0; x < treeGridX; x++)
-	{
-		for (int y = 0; y < treeGridY; y++)
-		{
-			float t = ValueNoise_2D(x * 15.f, y * 15.f);
-
-			float offsetX = (((rand() % 100) / 100.f) - 0.5f) * 3;
-			float offsetY = (((rand() % 100) / 100.f) - 0.5f) * 3;
-			float randScale = ((rand() % 100) / 100.f) + 0.5f;
-
-			if (t >= 0.15f)
-			{
-				float height = terrain->GetComponent<Terrain>()->SampleHeight((x * treeSpacing) + offsetX, (y * treeSpacing + offsetY));
-
-				treesRenderer->AddInstance(glm::vec3((x * treeSpacing) + offsetX, height, (y * treeSpacing + offsetY)), glm::vec3(), glm::vec3(randScale, randScale, randScale) * 0.3f);
-			}
-		}
-	}
-
-	treesRenderer->InitVBO();
+	terrainRenderer->GenerateMesh(); 
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));

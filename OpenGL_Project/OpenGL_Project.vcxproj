@@ -190,6 +190,7 @@
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader" />
     <None Include="Resources\Shaders\DefaultGlyph.shader" />
+    <None Include="Resources\Shaders\DefaultTerrain.shader" />
     <None Include="Resources\Shaders\DefaultText.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
     <None Include="Resources\Shaders\DepthDraw.shader" />

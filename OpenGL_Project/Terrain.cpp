@@ -5,7 +5,7 @@
 #include "PerlinNoise.h"
 
 
-Terrain::Terrain(ProjectionType _projection, int _sizeX, int _sizeY, float _cellSpacing) : Renderer("Default", ProjectionType::Perspective)
+Terrain::Terrain(ProjectionType _projection, int _sizeX, int _sizeY, float _cellSpacing) : Renderer("DefaultTerrain", ProjectionType::Perspective)
 {
 	terrainID = -1;
 	terrainSize = glm::ivec2(_sizeX, _sizeY);

@@ -154,5 +154,8 @@
     <None Include="Resources\Shaders\SteppedColor.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\DefaultTerrain.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
