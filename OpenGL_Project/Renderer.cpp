@@ -117,7 +117,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glUniform3fv(glGetUniformLocation(program, "Ambient"), 1, glm::value_ptr(Scene::Current().GetAmbientLight()));
 
 	//Pass In Textures
-	for (int i = 0; i < textures.size(); ++i)
+	for (int i = 0; i < textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 
@@ -143,6 +143,8 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 		GLint loc = glGetUniformLocation(program, textures[i].locationName.c_str());
 
 		glUniform1i(loc, i);
+
+		glActiveTexture(0);
 	}
 
 	//Pass In Light VP

@@ -71,9 +71,11 @@
     uniform sampler2D TextureGrass;
     uniform sampler2D TextureSand;
     uniform sampler2D TextureRock;
+    uniform sampler2D ShadowMap;
+
     uniform vec2 Tiling;
 
-    uniform sampler2D ShadowMap;
+    
 
     uniform vec3 Ambient;
 
@@ -196,6 +198,13 @@
         return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
     }
 
+    float smoothstep(float edge0, float edge1, float x) 
+    {
+        // Scale, and clamp x to 0..1 range
+        x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+        return x * x * (3.0 - 2.0 * x);
+    }
+
     void main() 
     {
         //Calculate Total Light Amount
@@ -219,9 +228,13 @@
         vec4 sandCol = texture(TextureSand, FragTexCoords * Tiling);
         vec4 rockCol = texture(TextureRock, FragTexCoords * Tiling);
 
-        float angle = pow(dot(FragNormal, vec3(0, 1, 0)), 25);
+        float angle = dot(FragNormal, vec3(0, 1, 0));
+        angle = smoothstep(0.85f, 0.90f, angle);
+
+        float height = smoothstep(-5.0f, -3.0f, FragPos.y);
 
         vec4 combinedColor = mix(rockCol, grassCol, angle);
+        combinedColor = mix(sandCol, combinedColor, height);
 
         vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * combinedColor;
         //vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);

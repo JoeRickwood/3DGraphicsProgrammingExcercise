@@ -78,7 +78,7 @@ void LoadScene()
 {
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -1.0f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
+	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -0.8f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
 
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 0.f, 0.f));
 	cam->AddComponent<PlayerController>(0.003f, 15);
