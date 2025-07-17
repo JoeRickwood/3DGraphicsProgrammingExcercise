@@ -5,7 +5,7 @@
 #include "PerlinNoise.h"
 
 
-Terrain::Terrain(ProjectionType _projection, int _sizeX, int _sizeY, float _cellSpacing) : Renderer("DefaultTerrain", ProjectionType::Perspective)
+Terrain::Terrain(std::string _shaderKey, ProjectionType _projection, int _sizeX, int _sizeY, float _cellSpacing) : Renderer(_shaderKey, ProjectionType::Perspective)
 {
 	terrainID = -1;
 	terrainSize = glm::ivec2(_sizeX, _sizeY);
@@ -31,7 +31,7 @@ void Terrain::Init()
 		}
 	}
 
-	GenerateMesh();
+	GenerateMesh(0.0f);
 
 	RenderingPipeline::AddRenderer(this);
 }
@@ -71,7 +71,41 @@ void Terrain::BindVBOData()
 
 float Terrain::SampleHeight(float _x, float _y)
 {
-	return ValueNoise_2D(_x * 2.f, _y * 2.f) * 50.f;
+	float height = ValueNoise_2D(_x * 2.f, _y * 2.f) * terrainScale;
+
+	float multiplier = Smoothstep(-20, 25, height);
+
+	return height * multiplier;
+}
+
+float Terrain::SampleSteepness(float x, float y)
+{
+	float invCellSpacing = 1.0f / (2.0f * cellSpacing);
+
+	float rowNeg = SampleHeight(x - 1, y);
+	float rowPos = SampleHeight(x + 1, y);
+	float colNeg = SampleHeight(x, y - 1);
+	float colPos = SampleHeight(x, y + 1);
+
+	float X = rowNeg - rowPos;
+	if (x == 0 || x == terrainSize.x - 1)
+	{
+		X *= 2;
+	}
+
+	float Y = colPos - colNeg;
+	if (y == 0 || y == terrainSize.y - 1)
+	{
+		Y *= 2;
+	}
+
+	glm::vec3 tangentZ = glm::vec3(0.0f, X * invCellSpacing, 1.0f);
+	glm::vec3 tangentX = glm::vec3(1.0f, Y * invCellSpacing, 0.0f);
+
+	glm::vec3 normal = glm::cross(tangentZ, tangentX);
+	normal = glm::normalize(normal);
+
+	return glm::dot(normal, glm::vec3(0, 1, 0));
 }
 
 float Terrain::GetCellSpacing()
@@ -82,6 +116,24 @@ float Terrain::GetCellSpacing()
 glm::vec2 Terrain::GetSize()
 {
 	return terrainSize;
+}
+
+float Terrain::Smoothstep(float edge0, float edge1, float x)
+{
+	// Scale, and clamp x to 0..1 range
+	x = (x - edge0) / (edge1 - edge0);
+
+	if (x < 0) 
+	{
+		x = 0;
+	}
+
+	if (x > 1) 
+	{
+		x = 1;
+	}
+
+	return x * x * (3.0 - 2.0 * x);
 }
 
 
@@ -107,8 +159,10 @@ void Terrain::Render()
 }
 
 
-void Terrain::GenerateMesh()
+void Terrain::GenerateMesh(float _scale)
 {
+	terrainScale = _scale;
+
 	if (mesh)
 	{
 		delete mesh;

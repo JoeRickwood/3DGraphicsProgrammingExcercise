@@ -12,6 +12,7 @@ Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectio
 	renderType = RenderFront;
 	doubleSided = false;
 	renderShadows = true;
+	drawToDepthBuffer = true;
 
 	VBO = NULL;
 }
@@ -46,6 +47,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	{
 		glEnable(GL_CULL_FACE);
 	}
+	
 
 	glCullFace(renderType);
 
@@ -121,6 +123,9 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 
+		GLuint tex = AssetLoader::Instance().GetTexture(textures[i].textureKey);
+		glBindTexture(textures[i].type, tex);
+
 		switch (textures[i].tilingType)
 		{
 		case TilingType::ClampEdges:
@@ -136,9 +141,6 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 			break;
 		}
-
-		GLuint tex = AssetLoader::Instance().GetTexture(textures[i].textureKey);
-		glBindTexture(textures[i].type, tex);
 		
 		GLint loc = glGetUniformLocation(program, textures[i].locationName.c_str());
 
@@ -198,4 +200,9 @@ void Renderer::SetRenderType(RenderType _type)
 void Renderer::SetShadowRendering(bool _on)
 {
 	renderShadows = _on;
+}
+
+void Renderer::SetDrawToDepthBuffer(bool _on)
+{
+	drawToDepthBuffer = _on;
 }

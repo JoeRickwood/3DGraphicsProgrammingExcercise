@@ -157,5 +157,11 @@
     <None Include="Resources\Shaders\DefaultTerrain.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\Water.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\ScreenDepthDraw.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

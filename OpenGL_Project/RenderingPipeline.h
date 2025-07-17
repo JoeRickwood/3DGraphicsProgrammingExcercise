@@ -21,10 +21,12 @@ public:
 
 	static void Render();
 	static void Render(std::string shaderKeyOverride);
+
 	static void ShadowPass();
 
 	std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view);
 	static glm::mat4 GetLightVPMatrix();
+
 	static void InitShadowRendering();
 	static GLuint GetShadowMap();
 };

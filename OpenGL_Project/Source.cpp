@@ -90,17 +90,64 @@ void LoadScene()
 	cube1Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
 	cube1Renderer->SetShadowRendering(true);
 	cube1Renderer->SetRenderType(RenderFront);
-	
 
 	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
-	auto terrainRenderer = terrain->AddComponent<Terrain>(ProjectionType::Perspective, 256, 256, 1.0f);
+	auto terrainRenderer = terrain->AddComponent<Terrain>("DefaultTerrain", ProjectionType::Perspective, 256, 256, 1.0f);
 	terrainRenderer->SetTextureTiling(glm::vec2(1, 1));
 	terrainRenderer->AddTexturePass("TextureGrass", "Prototype", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureSand", "MuddySand", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+
 	terrainRenderer->SetShadowRendering(true);
-	terrainRenderer->GenerateMesh(); 
+	terrainRenderer->GenerateMesh(50.0f); 
+
+	ObjectInstance* terrainWater = new ObjectInstance("TerrainWater", glm::vec3(0.f, 0.f, 0.f));
+	auto terrainWaterRenderer = terrainWater->AddComponent<Terrain>("Water", ProjectionType::Perspective, 256, 256, 1.0f);
+	terrainWaterRenderer->SetTextureTiling(glm::vec2(1, 1));
+	terrainWaterRenderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
+	terrainWaterRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+	terrainWaterRenderer->SetShadowRendering(true);
+	terrainWaterRenderer->GenerateMesh(0.0f);
+	terrainWaterRenderer->SetDrawToDepthBuffer(false);
+
+
+	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.f, 0.f, 0.f));
+	auto grassRenderer = grass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
+	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
+	grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, Repeat);
+	grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, ClampBorder);
+	grassRenderer->SetShadowRendering(false);
+
+	float grassSpacing = 0.5f;
+	int grassGridX = 512;
+	int grassGridY = 512;
+
+	for (int x = 0; x < grassGridX; x++)
+	{
+		for (int y = 0; y < grassGridY; y++)
+		{
+			float height = terrainRenderer->SampleHeight(x * grassSpacing, y * grassSpacing);
+
+			if (height < 1) 
+			{
+				continue;
+			}
+
+			float steepness = terrainRenderer->SampleSteepness(x * grassSpacing, y * grassSpacing);
+
+			if (steepness < 0.9f) 
+			{
+				continue;
+			}
+
+			float rot = rand() % 360;
+
+			grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+		}
+	}
+
+
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));

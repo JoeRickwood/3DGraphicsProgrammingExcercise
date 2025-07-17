@@ -196,8 +196,10 @@
     <None Include="Resources\Shaders\DepthDraw.shader" />
     <None Include="Resources\Shaders\Grass.shader" />
     <None Include="Resources\Shaders\NormalDebug.shader" />
+    <None Include="Resources\Shaders\ScreenDepthDraw.shader" />
     <None Include="Resources\Shaders\Skybox.shader" />
     <None Include="Resources\Shaders\SteppedColor.shader" />
+    <None Include="Resources\Shaders\Water.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

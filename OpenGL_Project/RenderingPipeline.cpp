@@ -116,7 +116,6 @@ void RenderingPipeline::ShadowPass()
 
 
 
-
 std::vector<glm::vec4> RenderingPipeline::GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
 {
 	const auto inv = glm::inverse(proj * view);

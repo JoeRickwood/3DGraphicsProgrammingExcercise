@@ -7,19 +7,50 @@
 	uniform mat4 VP;
     uniform mat4 LightVP;
 
+    uniform float Time = 0;
+
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
 	out vec3 FragPos;
     out vec4 FragPosLightSpace;
 
+
+    float GetWaveHeight(float x) 
+    {
+        return sin((x * 0.5f) + Time) * 0.1f;
+    }
+
 	void main() 
 	{
-		FragTexCoords = TexCoords;
-		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
-		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
-        FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
+        vec3 Pos = Position;
 
-        gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
+        float waveHeight = GetWaveHeight(Pos.x);
+
+        Pos.y += waveHeight;
+
+		FragTexCoords = TexCoords;
+
+        float rowNeg = GetWaveHeight(Pos.x - 0.1f);
+        float rowPos = GetWaveHeight(Pos.x + 0.1f);
+        float colNeg = Pos.z;
+        float colPos = Pos.z;
+
+        float X = rowNeg - rowPos;
+        float Y = colPos - colNeg;
+
+        vec3 tangentZ = vec3(0.0f, X, 1.0f);
+        vec3 tangentX = vec3(1.0f, Y, 0.0f);
+
+        vec3 waterNormal = normalize(cross(tangentZ, tangentX));
+
+
+
+		FragNormal = waterNormal;
+		FragPos = vec3(ModelMatrix * vec4(Pos, 1.0f));
+        FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
+        
+
+        gl_Position = VP * ModelMatrix * vec4(Pos, 1.0f);
 	}
 
 #elif defined(COMPILING_FS)
@@ -68,12 +99,10 @@
     out vec4 FinalColor;
 
     //BASIC
-    uniform sampler2D TextureGrass;
-    uniform sampler2D TextureSand;
-    uniform sampler2D TextureRock;
-    uniform sampler2D ShadowMap;
-
+    uniform sampler2D Texture0;
     uniform vec2 Tiling;
+
+    uniform sampler2D ShadowMap;
 
     uniform vec3 Ambient;
 
@@ -196,11 +225,10 @@
         return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
     }
 
-    float smoothstep(float edge0, float edge1, float x) 
+    float CalculateDepth() 
     {
-        // Scale, and clamp x to 0..1 range
-        x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-        return x * x * (3.0 - 2.0 * x);
+        float val1 = linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f;
+        return val1;
     }
 
     void main() 
@@ -221,29 +249,13 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-
-        vec4 grassCol = texture(TextureGrass, FragTexCoords * Tiling);
-        vec4 sandCol = texture(TextureSand, FragTexCoords * Tiling);
-        vec4 rockCol = texture(TextureRock, FragTexCoords * Tiling);
-
-        float angle = dot(FragNormal, vec3(0, 1, 0));
-        angle = smoothstep(0.85f, 0.90f, angle);
-
-        float height = smoothstep(1.0f, 1.3f, FragPos.y);
-
-        vec4 combinedColor = mix(rockCol, grassCol, angle);
-        combinedColor = mix(sandCol, combinedColor, height);
-
-        vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * combinedColor;
-        //vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        //vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        vec4 mainCol = vec4(vec3(0.15f, 0.4f, 0.93f), 1.0f);
 
         if(mainCol.a < 0.5)
             discard;
 
-
-
-        //FinalColor = vec4(vec3(floor(col * 10f) / 10f), 1.0f);
-        FinalColor = mainCol;
+        FinalColor = vec4(1.0f, 1.0f, 1.0f, clamp(CalculateDepth(), 0.6f, 1.0f)) * mainCol;
     }
 
 #endif
