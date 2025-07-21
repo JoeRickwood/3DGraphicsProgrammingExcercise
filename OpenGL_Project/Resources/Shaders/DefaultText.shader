@@ -1,6 +1,6 @@
 #ifdef COMPILING_VS
 
-	layout (location = 0) in vec4 vertex;
+	layout (location = 8) in vec4 vertex;
 
 	uniform mat4 VP;
 

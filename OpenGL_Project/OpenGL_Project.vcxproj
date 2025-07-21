@@ -169,6 +169,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="DefaultRenderer.h" />
     <ClInclude Include="InstancedRenderer.h" />
+    <ClInclude Include="MathExtensions.h" />
     <ClInclude Include="ObjectInstance.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="AssetLoader.h" />

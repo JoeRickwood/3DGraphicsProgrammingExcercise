@@ -6,7 +6,7 @@
 #include "RenderingPipeline.h"
 
 //On Window Resized Callback Links To The glfwWindowSizefun
-void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
+static void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
 	glViewport(0, 0, _Width, _Height);
 
@@ -15,7 +15,7 @@ void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 }
 
 //Sets Up Objects + Other GLFW Parameters
-void InitialSetup() 
+static void InitialSetup() 
 {
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -65,7 +65,7 @@ void InitialSetup()
 }
 
 //Update Is Called Once Every Frame BEFORE Render
-void Update() 
+static void Update() 
 {
 	Scene::Current().Update();
 
@@ -73,18 +73,10 @@ void Update()
 }
 
 //Creates All Objects In The Scene
-void LoadScene()
+static void LoadScene()
 {
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
-	/*ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-	UIRenderer->SetText("Font Text Rendering Test");
-	UIRenderer->SetRenderType(RenderBoth);  */
 
 	{
 		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
@@ -95,12 +87,23 @@ void LoadScene()
 	}
 
 	{
-		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
+		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(25.f, 25.f, 25.f));
 		auto backgroundTestRenderer = backgroundTest->AddComponent<DefaultRenderer>("DefaultSprite", ProjectionType::Orthographic);
 		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		backgroundTestRenderer->AddTexturePass("Texture0", "Joe", Texture2D, Repeat);
+		backgroundTestRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
+		backgroundTestRenderer->SetTextureTiling(glm::vec2(25, 25));
 		backgroundTestRenderer->SetRenderType(RenderBoth);
 	}
+
+	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
+	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	UIRenderer->SetFont("AldotheApache");
+	UIRenderer->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	UIRenderer->SetText("Font Text Rendering Test");
+	UIRenderer->SetRenderType(RenderBoth);
+
+
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 	Camera::Instance().SetCameraUpDirection(glm::vec3(0.0f, 1.0f, 0.0f));
