@@ -16,21 +16,7 @@ public:
 
 	void Update();
 
-	//Lighting
-	void SetPointLight(PointLight* _light, int _index);
-	void AddPointLight(PointLight* _light);
-	PointLight** GetPointLights();
-	const int GetPointLightCount();
-
-	void SetSpotLight(SpotLight* _light, int _index);
-	void AddSpotLight(SpotLight* _light);
-	SpotLight** GetSpotLights();
-	const int GetSpotLightCount();
-
 	std::vector<ObjectInstance*> GetAllObjects();
-
-	void SetDirectionalLight(DirectionalLight* _directionalLight);
-	DirectionalLight* GetDirectionalLight();
 
 	void SetAmbientLightStength(float _strength);
 	void SetAmbientLightColor(glm::vec3 _color);
@@ -41,17 +27,6 @@ protected:
 	~Scene();
 
 	std::vector<ObjectInstance*> objects;
-
-	//Point Lights
-	PointLight* pointLights[MAX_POINT_LIGHTS];
-	int pointLightCount;
-
-	//Directional Light
-	DirectionalLight* directionalLight;
-
-	//Spot Lights
-	SpotLight* spotLights[MAX_SPOT_LIGHTS];
-	int spotLightCount;
 
 	//Ambient Color
 	glm::vec3 ambientColor;

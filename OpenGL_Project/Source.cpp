@@ -2,7 +2,6 @@
 
 #include "Scene.h"
 #include "Time.h"
-#include "PerlinNoise.h"
 
 #include "RenderingPipeline.h"
 
@@ -76,100 +75,15 @@ void Update()
 //Creates All Objects In The Scene
 void LoadScene()
 {
-	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
-	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -0.8f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
-
-	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 0.f, 0.f));
-	cam->AddComponent<PlayerController>(0.003f, 15);
-
-	ObjectInstance* cube1 = new ObjectInstance("Cube1", glm::vec3(-2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto cube1Renderer = cube1->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
-	cube1Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	cube1Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
-	cube1Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	cube1Renderer->SetShadowRendering(true);
-	cube1Renderer->SetRenderType(RenderFront);
-
-	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
-	auto terrainRenderer = terrain->AddComponent<Terrain>("DefaultTerrain", ProjectionType::Perspective, 256, 256, 1.0f);
-	terrainRenderer->SetTextureTiling(glm::vec2(1, 1));
-	terrainRenderer->AddTexturePass("TextureGrass", "Prototype", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureSand", "MuddySand", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-
-	terrainRenderer->SetShadowRendering(true);
-	terrainRenderer->GenerateMesh(50.0f); 
-
-	ObjectInstance* terrainWater = new ObjectInstance("TerrainWater", glm::vec3(0.f, 0.f, 0.f));
-	auto terrainWaterRenderer = terrainWater->AddComponent<Terrain>("Water", ProjectionType::Perspective, 256, 256, 1.0f);
-	terrainWaterRenderer->SetTextureTiling(glm::vec2(1, 1));
-	terrainWaterRenderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
-	terrainWaterRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	terrainWaterRenderer->SetShadowRendering(true);
-	terrainWaterRenderer->GenerateMesh(0.0f);
-	terrainWaterRenderer->SetDrawToDepthBuffer(false);
-
-
-	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.f, 0.f, 0.f));
-	auto grassRenderer = grass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
-	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
-	grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, Repeat);
-	grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, ClampBorder);
-	grassRenderer->SetShadowRendering(false);
-
-	float grassSpacing = 0.5f;
-	int grassGridX = 512;
-	int grassGridY = 512;
-
-	for (int x = 0; x < grassGridX; x++)
-	{
-		for (int y = 0; y < grassGridY; y++)
-		{
-			float height = terrainRenderer->SampleHeight(x * grassSpacing, y * grassSpacing);
-
-			if (height < 1) 
-			{
-				continue;
-			}
-
-			float steepness = terrainRenderer->SampleSteepness(x * grassSpacing, y * grassSpacing);
-
-			if (steepness < 0.9f) 
-			{
-				continue;
-			}
-
-			float rot = rand() % 360;
-
-			grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f));
-		}
-	}
-
-
-
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
-	std::string skyboxPaths[6] =
-	{
-		"Resources/Skybox/Front.png",
-		"Resources/Skybox/Back.png",
-		"Resources/Skybox/Top.png",
-		"Resources/Skybox/Bottom.png",
-		"Resources/Skybox/Right.png",
-		"Resources/Skybox/Left.png"
-	};
-
-	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); 
 
 	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	UIRenderer->SetFont("AldotheApache");
 	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-	UIRenderer->SetText("Terrain Scene Test 1");
+	UIRenderer->SetText("Font Text Rendering Test");
 	UIRenderer->SetRenderType(RenderBoth);
 
 }
@@ -187,9 +101,6 @@ int main()
 
 	LoadScene();
 
-
-	RenderingPipeline::InitShadowRendering();
-
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(AssetLoader::Instance().currentWindow) == false)
 	{
@@ -199,8 +110,6 @@ int main()
 		Camera::CalculateViewMatrix();
 
 		Update();
-
-		RenderingPipeline::ShadowPass();
 
 		RenderingPipeline::Render();
 	}

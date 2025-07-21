@@ -154,16 +154,12 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DefaultRenderer.cpp" />
     <ClCompile Include="InstancedRenderer.cpp" />
-    <ClCompile Include="Lights.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
-    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
     <ClCompile Include="RenderingPipeline.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
@@ -173,33 +169,19 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="DefaultRenderer.h" />
     <ClInclude Include="InstancedRenderer.h" />
-    <ClInclude Include="Lights.h" />
     <ClInclude Include="ObjectInstance.h" />
-    <ClInclude Include="PerlinNoise.h" />
-    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="RenderingPipeline.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Default.shader" />
     <None Include="Resources\Shaders\DefaultGlyph.shader" />
-    <None Include="Resources\Shaders\DefaultTerrain.shader" />
     <None Include="Resources\Shaders\DefaultText.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
-    <None Include="Resources\Shaders\DepthDraw.shader" />
-    <None Include="Resources\Shaders\Grass.shader" />
-    <None Include="Resources\Shaders\NormalDebug.shader" />
-    <None Include="Resources\Shaders\ScreenDepthDraw.shader" />
-    <None Include="Resources\Shaders\Skybox.shader" />
-    <None Include="Resources\Shaders\SteppedColor.shader" />
-    <None Include="Resources\Shaders\Water.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

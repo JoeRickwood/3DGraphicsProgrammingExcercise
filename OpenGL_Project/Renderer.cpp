@@ -61,60 +61,6 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
 	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
 
-	//Pass In Point Lights
-	glUniform1ui(glGetUniformLocation(program, "PointLightCount"), Scene::Current().GetPointLightCount());
-	PointLight** pointLights = Scene::Current().GetPointLights();
-
-	for (int i = 0; i < MAX_POINT_LIGHTS; i++)
-	{
-		if (pointLights[i] == nullptr)
-		{
-			continue;
-		}
-
-		std::string loc = ("PointLights[" + std::to_string(i) + "].");
-
-		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(pointLights[i]->parent->GetPosition()));
-		glUniform3fv(glGetUniformLocation(program, (loc + "Color").c_str()), 1, glm::value_ptr(pointLights[i]->color));
-		glUniform1f(glGetUniformLocation(program, (loc + "SpecularStrength").c_str()), pointLights[i]->specularStrength);
-	
-		glUniform1f(glGetUniformLocation(program, (loc + "AttenuationConstant").c_str()), pointLights[i]->attenuationConstant);
-		glUniform1f(glGetUniformLocation(program, (loc + "AttenuationLinear").c_str()), pointLights[i]->attenuationLinear);
-		glUniform1f(glGetUniformLocation(program, (loc + "AttenuationExponent").c_str()), pointLights[i]->attenuationExponent);
-	}
-
-	//Pass In Spot Lights
-	glUniform1ui(glGetUniformLocation(program, "SpotLightCount"), Scene::Current().GetSpotLightCount());
-	SpotLight** spotLights = Scene::Current().GetSpotLights();
-
-	for (int i = 0; i < MAX_SPOT_LIGHTS; i++)
-	{
-		if (spotLights[i] == nullptr)
-		{
-			continue;
-		}
-
-		std::string loc = ("SpotLights[" + std::to_string(i) + "].");
-
-		glUniform3fv(glGetUniformLocation(program, (loc + "Position").c_str()), 1, glm::value_ptr(spotLights[i]->parent->GetPosition()));
-		glUniform3fv(glGetUniformLocation(program, (loc + "Direction").c_str()), 1, glm::value_ptr(spotLights[i]->direction));
-		glUniform3fv(glGetUniformLocation(program, (loc + "Color").c_str()), 1, glm::value_ptr(spotLights[i]->color));
-
-		glUniform1f(glGetUniformLocation(program, (loc + "InnerCone").c_str()), glm::radians(spotLights[i]->innerCone));
-		glUniform1f(glGetUniformLocation(program, (loc + "OuterCone").c_str()), glm::radians(spotLights[i]->outerCone));
-		glUniform1f(glGetUniformLocation(program, (loc + "Range").c_str()), glm::radians(spotLights[i]->range));
-	}
-
-	const DirectionalLight* dirLight = Scene::Current().GetDirectionalLight();
-
-	//Pass In Directional Light
-	if (dirLight != nullptr) 
-	{
-		glUniform3fv(glGetUniformLocation(program, "DirLight.Direction"), 1, glm::value_ptr(dirLight->direction));
-		glUniform3fv(glGetUniformLocation(program, "DirLight.Color"), 1, glm::value_ptr(dirLight->color));
-		glUniform1f(glGetUniformLocation(program, "DirLight.SpecularStrength"), dirLight->specularStrength);
-	}
-
 	//Pass In Ambient Light
 	glUniform3fv(glGetUniformLocation(program, "Ambient"), 1, glm::value_ptr(Scene::Current().GetAmbientLight()));
 
@@ -148,9 +94,6 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 
 		glActiveTexture(0);
 	}
-
-	//Pass In Light VP
-	glUniformMatrix4fv(glGetUniformLocation(program, "LightVP"), 1, GL_FALSE, glm::value_ptr(RenderingPipeline::GetLightVPMatrix()));
 
 	parent->ShaderUpdate();
 }
