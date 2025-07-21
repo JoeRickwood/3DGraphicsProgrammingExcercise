@@ -47,7 +47,7 @@ const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 			return orthoProjectionMatrix;
 		case Perspective:
 			return perspectiveProjectionMatrix;
-		case ShadowPerspective:
+		case Screen_Orthographic:
 			return shadowProjectionPerspectiveMatrix;
 		default:
 			return perspectiveProjectionMatrix;

@@ -102,7 +102,7 @@ enum ProjectionType
 {
 	Orthographic,
 	Perspective,
-	ShadowPerspective
+	Screen_Orthographic
 };
 
 class AssetLoader

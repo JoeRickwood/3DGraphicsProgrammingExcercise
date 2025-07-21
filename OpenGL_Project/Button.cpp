@@ -24,34 +24,12 @@ const bool Button::Intersects(glm::vec3 _position) const
 	return false;
 }
 
-//Debugs The Current Position Of the Mouse In Screen Coordinates And Then Remapped To Be In The Same Space As The Button
-void Button::DebugPos()
+
+Button::Button()
 {
-	double x;
-	double y;
-
-	int windowSizeX;
-	int windowSizeY;
-
-	GLFWwindow* window = glfwGetCurrentContext();
-
-	glfwGetCursorPos(window, &x, &y);
-	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
-
-	std::cout << "Mouse Coordinates On Screen :" << x << "," << y << std::endl;
-	std::cout << "Mouse Coordinates Remapped :" << (x / windowSizeX) * 2.f - 1.f << "," << -((y / windowSizeY) * 2.f - 1.f) << std::endl << std::endl;
-}
-
-Button::Button(int _texID0, int _texID1)
-{
-	debugToggle = false;
-	debugToggleLock = false;
 	mousePos = glm::vec2(0.f, 0.f);
 
 	mouseOver = false;
-
-	textureID0 = _texID0;
-	textureID1 = _texID1;
 }
 
 Button::~Button()
@@ -60,21 +38,6 @@ Button::~Button()
 
 void Button::Update()
 {
-	//Create A Toggle-Action State Of The '3' 
-	if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_PRESS && debugToggleLock == false)
-	{
-		debugToggle = !debugToggle;
-		debugToggleLock = true;
-		DebugPos();
-	}
-
-	if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_RELEASE && debugToggleLock)
-	{
-		debugToggleLock = false;
-	}
-
-
-
 	double x;
 	double y;
 

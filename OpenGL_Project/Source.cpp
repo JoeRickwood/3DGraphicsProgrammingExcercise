@@ -95,13 +95,30 @@ static void LoadScene()
 		backgroundTestRenderer->SetRenderType(RenderBoth);
 	}
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	UIRenderer->SetText("Font Text Rendering Test");
-	UIRenderer->SetRenderType(RenderBoth);
+	{
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIButtonObjectTest", glm::vec3(1.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+		auto UIButtonRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::Orthographic);
+		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIButtonRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
+		UIButtonRenderer->SetTextureTiling(glm::vec2(1, 1));
+		UIButtonRenderer->SetRenderType(RenderBoth);
+		auto UIButton = UIObjectTest->AddComponent<Button>();
+		auto func = []()
+			{
+				std::cout << "Working!!!!";
+			};
+		UIButton->AddListener(func);
+	}
+
+	{
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+		UIRenderer->SetText("Font Text Rendering Test");
+		UIRenderer->SetRenderType(RenderBoth);
+	}
 
 
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
