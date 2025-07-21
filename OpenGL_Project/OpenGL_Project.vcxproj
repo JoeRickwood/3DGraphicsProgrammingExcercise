@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\DefaultGlyph.shader" />
+    <None Include="Resources\Shaders\DefaultSprite.shader" />
     <None Include="Resources\Shaders\DefaultText.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
   </ItemGroup>

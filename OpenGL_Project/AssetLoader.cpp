@@ -47,7 +47,7 @@ void Mesh::Init()
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(VertexStandard), data.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(VertexStandard), data.data(), GL_DYNAMIC_DRAW);
 
 	//Set Vertex Attribute Info, This Is How To Interpret The Vertex Data
 	glVertexAttribPointer(

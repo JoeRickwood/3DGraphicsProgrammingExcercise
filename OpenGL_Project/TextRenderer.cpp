@@ -49,10 +49,6 @@ void TextRenderer::Update()
     scaleMat = glm::scale(glm::mat4(1.0f), parent->GetScale());
 
     modelMat = translationMat * rotationMat * scaleMat;
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 TextRenderer::TextRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
@@ -74,7 +70,6 @@ TextRenderer::~TextRenderer()
 void TextRenderer::InitializeRenderingInfo(GLuint _program)
 {
 	glUniform3f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z);
-	glActiveTexture(GL_TEXTURE0);
 
     glm::mat4 projection = glm::ortho(0.0f, AssetLoader::Instance().windowSize.x, 0.0f, AssetLoader::Instance().windowSize.y);
 

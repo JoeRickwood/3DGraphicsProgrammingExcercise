@@ -78,14 +78,33 @@ void LoadScene()
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	/*ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	UIRenderer->SetFont("AldotheApache");
 	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
 	UIRenderer->SetText("Font Text Rendering Test");
-	UIRenderer->SetRenderType(RenderBoth);
+	UIRenderer->SetRenderType(RenderBoth);  */
 
+	{
+		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
+		auto backgroundTestRenderer = backgroundTest->AddComponent<DefaultRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		backgroundTestRenderer->AddTexturePass("Texture0", "Joe", Texture2D, Repeat);
+		backgroundTestRenderer->SetRenderType(RenderBoth);
+	}
+
+	{
+		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
+		auto backgroundTestRenderer = backgroundTest->AddComponent<DefaultRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		backgroundTestRenderer->AddTexturePass("Texture0", "Joe", Texture2D, Repeat);
+		backgroundTestRenderer->SetRenderType(RenderBoth);
+	}
+	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
+	Camera::Instance().SetCameraUpDirection(glm::vec3(0.0f, 1.0f, 0.0f));
+	Camera::Instance().SetOrthographicSize(10.0f);
 }
 
 int main()

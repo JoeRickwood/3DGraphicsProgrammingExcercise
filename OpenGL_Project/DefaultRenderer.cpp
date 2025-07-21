@@ -31,10 +31,10 @@ void DefaultRenderer::InitVBO()
 
 void DefaultRenderer::BindVBOData() 
 {
+	glBindVertexArray(mesh->VAO);
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
-
-	glBindVertexArray(mesh->VAO);
 
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)0);
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (void*)(1 * sizeof(glm::vec4)));
@@ -66,10 +66,6 @@ void DefaultRenderer::Update()
 	scaleMat = glm::scale(glm::mat4(1.0f), parent->GetScale());
 
 	modelMat = translationMat * rotationMat * scaleMat;
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void DefaultRenderer::Render()

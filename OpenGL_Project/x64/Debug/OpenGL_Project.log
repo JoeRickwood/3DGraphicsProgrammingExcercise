@@ -1,28 +1,3 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (OpenGL_Project.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Button.cpp
-  Camera.cpp
-  DefaultRenderer.cpp
-  InstancedRenderer.cpp
-  ObjectInstance.cpp
-  Renderer.cpp
-  RenderingPipeline.cpp
-  Scene.cpp
   Source.cpp
-  TextRenderer.cpp
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(92,11): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(93,11): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(130,38): warning C4244: '+=': conversion from 'T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-  Generating Code...
   OpenGL_Project.vcxproj -> D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\Engine.exe
