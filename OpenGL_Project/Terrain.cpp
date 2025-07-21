@@ -12,6 +12,7 @@ Terrain::Terrain(std::string _shaderKey, ProjectionType _projection, int _sizeX,
 	cellSpacing = _cellSpacing;
 	mesh = nullptr;
 	modelMat = glm::mat4();
+	terrainScale = 0.0f;
 }
 
 Terrain::~Terrain()
@@ -172,12 +173,19 @@ void Terrain::GenerateMesh(float _scale)
 	normals.clear();
 	indices.clear();
 	texCoords.clear();
+	
+	int vertexCount = terrainSize.x * terrainSize.y;
+
+	LoadHeights(vertexCount);
 
 	for (int x = 0; x < terrainSize.x; x++)
 	{
 		for (int y = 0; y < terrainSize.y; y++)
 		{
-			float height = SampleHeight(x * cellSpacing, y * cellSpacing);
+			//float height = SampleHeight(x * cellSpacing, y * cellSpacing);
+			float height = heights[(x * terrainSize.y) + y];
+
+			std::cout << height;
 
 			float posX = x * cellSpacing;
 			float posY = y * cellSpacing;
@@ -244,4 +252,24 @@ void Terrain::GenerateMesh(float _scale)
 	mesh = AssetLoader::CreateMesh(positions, indices, normals, texCoords);
 
 	SetMesh(mesh);
+}
+
+void Terrain::LoadHeights(int _vertexCount)
+{
+	std::vector<unsigned char> heightValues(_vertexCount);
+
+	std::ifstream File;
+	File.open("Resources/Heightmap0.raw", std::ios_base::binary);
+
+	if (File) 
+	{
+		File.read((char*)&heightValues[0], (std::streamsize)heightValues.size());
+		File.close();
+	}
+
+	heights.resize(_vertexCount, 0);
+	for (unsigned int i = 0; i < _vertexCount; i++)
+	{
+		heights[i] = (float)heightValues[i];
+	}
 }

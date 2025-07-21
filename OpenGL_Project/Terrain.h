@@ -30,6 +30,7 @@ public:
 	void BindVBOData()override;
 
 	void GenerateMesh(float _scale);
+	void LoadHeights(int _vertexCount);
 
 	float SampleHeight(float _x, float _y);
 	float SampleSteepness(float _x, float _y);
