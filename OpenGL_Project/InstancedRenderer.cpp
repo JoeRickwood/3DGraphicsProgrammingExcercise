@@ -47,7 +47,7 @@ void InstancedRenderer::BindVBOData()
 {
 	if (drawCount <= 0 || ModelMatrixes.size() <= 0)
 	{
-		std::cerr << "Cannot Bind Data To The VBO, Instance Count Is Invalid Or None" << std::endl;
+		std::cerr << "Cannot Bind Data To The VBO, Instance Count Is Invalid Or None : Instance Count = " << drawCount <<  std::endl;
 		return;
 	}
 

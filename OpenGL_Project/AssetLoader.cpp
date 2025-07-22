@@ -6,8 +6,13 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
+#define STBI_MSC_SECURE_CRT
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
 
 Mesh::Mesh()
 {
@@ -455,6 +460,19 @@ void AssetLoader::LoadFont(std::string _filepath, std::string _fontKey)
 
 	FT_Done_Face(face);
 	FT_Done_FreeType(fontLibrary);
+}
+
+void AssetLoader::SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _width, int _height)
+{
+	std::ofstream rawFile(_filepath + ".raw", std::ios_base::binary);
+
+	if (rawFile) 
+	{
+		rawFile.write((char*)_pixels[0], (std::streamsize)(_width * _height));
+		rawFile.close();
+	}
+
+	stbi_write_jpg((_filepath + ".jpg").c_str(), _width, _height, 1, _pixels, 100);
 }
 
 GLuint AssetLoader::GetShaderProgram(std::string _key)

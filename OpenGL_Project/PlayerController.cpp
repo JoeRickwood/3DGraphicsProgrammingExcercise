@@ -2,6 +2,7 @@
 #include "Time.h"
 #include <iostream>
 #include "Scene.h"
+#include "MathFunctions.h"
 
 PlayerController::PlayerController(float _mouseSensitivity = 3.f, float _cameraMoveSpeed = 10.f)
 {
@@ -86,18 +87,18 @@ void PlayerController::Update()
 			targetVel = glm::normalize(targetVel) * cameraMoveSpeed;
 
 			//Interpolate The velocity For "Smooth" Effect
-			velocity = lerp(velocity, targetVel, Time::Instance().deltaTime * 5.f);
+			velocity = Lerp(velocity, targetVel, Time::Instance().deltaTime * 5.f);
 		}
 		else
 		{
-			velocity = lerp(velocity, glm::vec3(0.f, 0.f, 0.f), Time::Instance().deltaTime * 5.f);
+			velocity = Lerp(velocity, glm::vec3(0.f, 0.f, 0.f), Time::Instance().deltaTime * 5.f);
 		}
 	}
 	else 
 	{
 		glfwSetInputMode(AssetLoader::Instance().currentWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-		velocity = lerp(velocity, glm::vec3(0.f, 0.f, 0.f), Time::Instance().deltaTime * 5.f);
+		velocity = Lerp(velocity, glm::vec3(0.f, 0.f, 0.f), Time::Instance().deltaTime * 5.f);
 
 		double x;
 		double y;

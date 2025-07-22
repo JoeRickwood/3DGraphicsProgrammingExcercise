@@ -2,7 +2,7 @@
 
 #include "Scene.h"
 #include "Time.h"
-#include "PerlinNoise.h"
+#include "MathFunctions.h"
 
 #include "RenderingPipeline.h"
 
@@ -81,45 +81,77 @@ void LoadScene()
 	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -0.8f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
 
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 0.f, 0.f));
-	cam->AddComponent<PlayerController>(0.003f, 15);
-
-	ObjectInstance* cube1 = new ObjectInstance("Cube1", glm::vec3(-2.f, -1.f, -5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto cube1Renderer = cube1->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
-	cube1Renderer->SetMesh(AssetLoader::Instance().GetMesh("Cube"));
-	cube1Renderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
-	cube1Renderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	cube1Renderer->SetShadowRendering(true);
-	cube1Renderer->SetRenderType(RenderFront);
+	cam->AddComponent<PlayerController>(0.003f, 100);
 
 	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
-	auto terrainRenderer = terrain->AddComponent<Terrain>("DefaultTerrain", ProjectionType::Perspective, 256, 256, 1.0f);
+	auto terrainRenderer = terrain->AddComponent<Terrain>("DefaultTerrain", ProjectionType::Perspective, 512, 512, 1.0f);
 	terrainRenderer->SetTextureTiling(glm::vec2(1, 1));
-	terrainRenderer->AddTexturePass("TextureGrass", "Prototype", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureGrass", "Grass", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureGrassVariant", "GrassVariant", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureGrassVariationNoise", "GrassVariationNoise", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureSand", "MuddySand", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureSnow", "Snow", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+	terrainRenderer->AddTexturePass("TextureNoise", "Noise", Texture2D, TilingType::Repeat);
 
 	terrainRenderer->SetShadowRendering(true);
-	terrainRenderer->GenerateMesh(50.0f); 
+	terrainRenderer->GenerateMesh(100.0f); 
 
-	ObjectInstance* terrainWater = new ObjectInstance("TerrainWater", glm::vec3(0.f, 0.f, 0.f));
-	auto terrainWaterRenderer = terrainWater->AddComponent<Terrain>("Water", ProjectionType::Perspective, 256, 256, 1.0f);
-	terrainWaterRenderer->SetTextureTiling(glm::vec2(1, 1));
-	terrainWaterRenderer->AddTexturePass("Texture0", "Prototype", Texture2D, TilingType::Repeat);
-	terrainWaterRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	terrainWaterRenderer->SetShadowRendering(true);
-	terrainWaterRenderer->GenerateMesh(0.0f);
-	terrainWaterRenderer->SetDrawToDepthBuffer(false);
 
+	ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.0f, 0.0f, 0.0f));
+	auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
+	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
+	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
+	treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+	treesRenderer->SetShadowRendering(true);
+
+	float treeSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
+	int treesGridX = 512;
+	int treesGridY = 512;
+
+	for (int x = 0; x < treesGridX; x++)
+	{
+		for (int y = 0; y < treesGridY; y++)
+		{
+			bool spawnTree = (rand() % 100 > 95) && (PerlinNoise(x * treeSpacing * 15, y * treeSpacing * 15) > 0.1f);
+
+			if (!spawnTree) 
+			{
+				continue;
+			}
+
+			float height = terrainRenderer->SampleHeight(x, y);
+
+
+			if (height < 1)
+			{
+				continue;
+			}
+
+			float steepness = terrainRenderer->SampleSteepness(x, y);
+
+			if (steepness < 0.9f)
+			{
+				continue;
+			}
+
+			float scalar = abs(PerlinNoise(x * treeSpacing, y * treeSpacing)) * 5.0f;
+
+			float rot = rand() % 360;
+
+			treesRenderer->AddInstance(glm::vec3(x * treeSpacing, height, y * treeSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) * scalar);
+		}
+	}
 
 	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.f, 0.f, 0.f));
 	auto grassRenderer = grass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
 	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
-	grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, Repeat);
+	grassRenderer->AddTexturePass("Texture0", "GrassBlade", Texture2D, Repeat);
 	grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, ClampBorder);
 	grassRenderer->SetShadowRendering(false);
 
-	float grassSpacing = 0.5f;
+	float grassSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
 	int grassGridX = 512;
 	int grassGridY = 512;
 
@@ -127,14 +159,14 @@ void LoadScene()
 	{
 		for (int y = 0; y < grassGridY; y++)
 		{
-			float height = terrainRenderer->SampleHeight(x * grassSpacing, y * grassSpacing);
+			float height = terrainRenderer->SampleHeight(x, y);
 
-			if (height < 1) 
+			if (height < 2.5) 
 			{
 				continue;
 			}
 
-			float steepness = terrainRenderer->SampleSteepness(x * grassSpacing, y * grassSpacing);
+			float steepness = terrainRenderer->SampleSteepness(x, y);
 
 			if (steepness < 0.9f) 
 			{
@@ -146,8 +178,6 @@ void LoadScene()
 			grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f));
 		}
 	}
-
-
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));

@@ -52,9 +52,9 @@ protected:
 	glm::vec3 cameraUpDir = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	float nearPlane = 0.1f;
-	float farPlane = 500.0f;
+	float farPlane = 1000.0f;
 
-	float shadowFarPlane = 100.0f;
+	float shadowFarPlane = 300.0f;
 	float fieldOfView = 45.0f;
 
 	float orthographicSize = 5.0f;

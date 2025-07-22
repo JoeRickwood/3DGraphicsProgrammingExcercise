@@ -120,6 +120,7 @@ public:
 
 	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
 	static Mesh* CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> _texcoords);
+	static void SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _width, int _height);
 
 	void LoadAssets(const char* folderPath);
 	
@@ -186,19 +187,3 @@ public:
 		return false;
 	}
 };
-
-
-static float lerp(float a, float b, float t)
-{
-	return ((b - a) * t) + a;
-}
-
-static glm::vec3 lerp(glm::vec3 a, glm::vec3 b, float t) 
-{
-	return glm::vec3
-	(
-		lerp(a.x, b.x, t),
-		lerp(a.y, b.y, t),
-		lerp(a.z, b.z, t)
-	);
-}

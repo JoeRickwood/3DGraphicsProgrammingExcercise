@@ -69,9 +69,13 @@
 
     //BASIC
     uniform sampler2D TextureGrass;
+    uniform sampler2D TextureGrassVariant;
+    uniform sampler2D TextureGrassVariationNoise;
     uniform sampler2D TextureSand;
     uniform sampler2D TextureRock;
+    uniform sampler2D TextureSnow;
     uniform sampler2D ShadowMap;
+    uniform sampler2D TextureNoise;
 
     uniform vec2 Tiling;
 
@@ -221,18 +225,23 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-
-        vec4 grassCol = texture(TextureGrass, FragTexCoords * Tiling);
+        float noise = texture(TextureNoise, FragTexCoords * 0.1f).r * 3.0f;
+        float noise2 = texture(TextureGrassVariationNoise, FragTexCoords * 0.001f).r;
+        
+        vec4 grassCol = mix(texture(TextureGrass, FragTexCoords * Tiling), texture(TextureGrassVariant, FragTexCoords * Tiling), noise2);
         vec4 sandCol = texture(TextureSand, FragTexCoords * Tiling);
         vec4 rockCol = texture(TextureRock, FragTexCoords * Tiling);
+        vec4 snowCol = texture(TextureSnow, FragTexCoords * Tiling);
 
         float angle = dot(FragNormal, vec3(0, 1, 0));
-        angle = smoothstep(0.85f, 0.90f, angle);
+        angle = smoothstep(0.90f, 0.95f, angle);
 
-        float height = smoothstep(1.0f, 1.3f, FragPos.y);
+        float height = smoothstep(1.0f + noise, 1.3f + noise, FragPos.y);
+        float heightSnow = smoothstep(30.0f + noise, 30.3f + noise, FragPos.y);
 
         vec4 combinedColor = mix(rockCol, grassCol, angle);
         combinedColor = mix(sandCol, combinedColor, height);
+        combinedColor = mix(combinedColor, snowCol, heightSnow);
 
         vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * combinedColor;
         //vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);

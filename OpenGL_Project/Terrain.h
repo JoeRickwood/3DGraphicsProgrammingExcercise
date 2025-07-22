@@ -14,6 +14,8 @@ protected:
 	float cellSpacing = 1.0f;
 
 	float terrainScale;
+	float minHeight = -100.f;
+	float maxHeight = 100.0f;
 
 	std::vector<float> heights;
 
@@ -30,7 +32,12 @@ public:
 	void BindVBOData()override;
 
 	void GenerateMesh(float _scale);
-	void LoadHeights(int _vertexCount);
+	void LoadHeightmap(std::string _filepath);
+	void SaveAsHeightmap();
+	void LoadPerlinMap(float _scale);
+	void SmoothHeights(int _iterations = 1);
+
+	float Average(unsigned int x, unsigned int y);
 
 	float SampleHeight(float _x, float _y);
 	float SampleSteepness(float _x, float _y);
