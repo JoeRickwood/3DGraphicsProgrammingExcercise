@@ -87,17 +87,8 @@ static void LoadScene()
 	}
 
 	{
-		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(25.f, 25.f, 25.f));
-		auto backgroundTestRenderer = backgroundTest->AddComponent<DefaultRenderer>("DefaultSprite", ProjectionType::Orthographic);
-		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		backgroundTestRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
-		backgroundTestRenderer->SetTextureTiling(glm::vec2(25, 25));
-		backgroundTestRenderer->SetRenderType(RenderBoth);
-	}
-
-	{
-		ObjectInstance* UIObjectTest = new ObjectInstance("UIButtonObjectTest", glm::vec3(1.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-		auto UIButtonRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::Orthographic);
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIButtonObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1000.f, 1000.f, 1000.f));
+		auto UIButtonRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
 		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UIButtonRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
 		UIButtonRenderer->SetTextureTiling(glm::vec2(1, 1));

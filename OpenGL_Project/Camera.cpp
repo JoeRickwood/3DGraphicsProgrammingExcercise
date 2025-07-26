@@ -32,6 +32,7 @@ void Camera::CalculateProjectionMatrix()
 	float halfWidth = Instance().orthographicSize * aspect;
 	float halfheight = Instance().orthographicSize;
 	Instance().orthoProjectionMatrix = glm::ortho(-halfWidth, halfWidth, -halfheight, halfheight, Instance().nearPlane, Instance().farPlane);
+	Instance().screenProjectionMatrix = glm::ortho(0.0f, AssetLoader::Instance().windowSize.x, 0.0f, AssetLoader::Instance().windowSize.y);
 
 	float aspectRatio = AssetLoader::Instance().windowSize.x / AssetLoader::Instance().windowSize.y;
 	Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Instance().fieldOfView), aspectRatio, Instance().nearPlane, Instance().farPlane);
@@ -48,7 +49,7 @@ const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 		case Perspective:
 			return perspectiveProjectionMatrix;
 		case Screen_Orthographic:
-			return shadowProjectionPerspectiveMatrix;
+			return screenProjectionMatrix;
 		default:
 			return perspectiveProjectionMatrix;
 	}

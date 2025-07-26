@@ -46,6 +46,7 @@ protected:
 	glm::mat4 orthoProjectionMatrix;
 	glm::mat4 perspectiveProjectionMatrix;
 	glm::mat4 shadowProjectionPerspectiveMatrix;
+	glm::mat4 screenProjectionMatrix;
 
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraLookDir = glm::vec3(0.0f, 0.0f, -1.0f);

@@ -52,7 +52,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glCullFace(renderType);
 
 
-	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
+	glm::mat4 VP = projection == ProjectionType::Screen_Orthographic ? Camera::Instance().GetProjectionMatrix(projection) : Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
 	//Pass In Uniforms
