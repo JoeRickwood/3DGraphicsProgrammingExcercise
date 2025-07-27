@@ -2,12 +2,20 @@
 #include "ObjectInstance.h"
 #include <functional>
 
+
+enum ButtonState 
+{
+	DEFAULT,
+	PRESSED
+};
+
 class Button : public Component
 {
 protected:
 	bool mouseOver;
 
 	glm::vec2 mousePos;
+	glm::vec4 color;
 
 	std::vector<std::function<void()>> listeners;
 
@@ -22,5 +30,9 @@ public:
 	void Update()override;
 	void AddListener(std::function<void()> _func);
 	void Click();
+
+
+	glm::vec4 GetColor();
+	void SetColor(glm::vec4 _color);
 };
 

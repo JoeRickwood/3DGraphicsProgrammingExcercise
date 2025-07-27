@@ -93,3 +93,13 @@ void Button::Click()
 		listeners[i]();
 	}
 }
+
+glm::vec4 Button::GetColor()
+{
+	return color;
+}
+
+void Button::SetColor(glm::vec4 _color)
+{
+	color = _color;
+}
