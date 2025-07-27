@@ -152,7 +152,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="DefaultRenderer.cpp" />
+    <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="InstancedRenderer.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -167,7 +167,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components.h" />
-    <ClInclude Include="DefaultRenderer.h" />
+    <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="InstancedRenderer.h" />
     <ClInclude Include="MathExtensions.h" />
     <ClInclude Include="ObjectInstance.h" />

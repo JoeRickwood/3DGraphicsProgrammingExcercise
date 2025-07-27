@@ -32,7 +32,7 @@ void RenderingPipeline::RemoveRenderer(Renderer* _renderer)
 void RenderingPipeline::Render()
 {
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
-	glViewport(0, 0, windowSize.x, windowSize.y);
+	glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < Current().renderers.size(); ++i)

@@ -25,7 +25,7 @@ public:
 	void AddListener(std::function<void()> _func);
 	void Click();
 
-	glm::vec4 GetColor();
+	glm::vec4 GetColor() const;
 	void SetColor(glm::vec4 _color);
 };
 

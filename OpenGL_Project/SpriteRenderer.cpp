@@ -1,8 +1,8 @@
-#include "DefaultRenderer.h"
+#include "SpriteRenderer.h"
 #include "RenderingPipeline.h"
 #include <iostream>
 
-DefaultRenderer::DefaultRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
+SpriteRenderer::SpriteRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
 {
 	translationMat = glm::mat4();
 	rotationMat = glm::mat4();
@@ -10,26 +10,26 @@ DefaultRenderer::DefaultRenderer(std::string _shaderKey, ProjectionType _project
 	modelMat = glm::mat4();
 }
 
-DefaultRenderer::~DefaultRenderer()
+SpriteRenderer::~SpriteRenderer()
 {
 	RenderingPipeline::RemoveRenderer(this);
 }
 
-void DefaultRenderer::Init() 
+void SpriteRenderer::Init() 
 {
 	RenderingPipeline::AddRenderer(this);
 
 	//InitVBO();
 }
 
-void DefaultRenderer::InitVBO() 
+void SpriteRenderer::InitVBO() 
 {
 	glGenBuffers(1, &VBO);
 
 	BindVBOData();
 }
 
-void DefaultRenderer::BindVBOData() 
+void SpriteRenderer::BindVBOData() 
 {
 	glBindVertexArray(mesh->VAO);
 
@@ -58,7 +58,7 @@ void DefaultRenderer::BindVBOData()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void DefaultRenderer::Update()
+void SpriteRenderer::Update()
 {
 	translationMat = glm::translate(glm::mat4(1.0f), parent->GetPosition());
 
@@ -71,7 +71,7 @@ void DefaultRenderer::Update()
 	modelMat = translationMat * rotationMat * scaleMat;
 }
 
-void DefaultRenderer::Render()
+void SpriteRenderer::Render()
 {
 	if (mesh == nullptr) 
 	{	

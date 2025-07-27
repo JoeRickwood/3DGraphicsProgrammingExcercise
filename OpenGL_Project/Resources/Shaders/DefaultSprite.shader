@@ -33,6 +33,8 @@
     uniform sampler2D Texture0;
     uniform vec2 Tiling;
 
+    uniform vec3 Ambient;
+
     void main() 
     {
         vec4 mainCol = texture(Texture0, FragTexCoords * Tiling);
@@ -40,7 +42,7 @@
         if(mainCol.a < 0.5)
             discard;
 
-        FinalColor = mainCol;
+        FinalColor = mainCol * vec4(Ambient, 1.0f);
     }
 
 #endif

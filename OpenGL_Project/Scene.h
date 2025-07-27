@@ -2,11 +2,18 @@
 #include "ObjectInstance.h"
 #include "Components.h"
 
-#define MAX_POINT_LIGHTS 4
-#define MAX_SPOT_LIGHTS 4
-
 class Scene
 {
+protected:
+	Scene();
+	~Scene();
+
+	std::vector<ObjectInstance*> objects;
+
+	//Ambient Color
+	glm::vec3 ambientColor;
+	float ambientStrength;
+
 public:
 	static Scene& Current() { static Scene scene; return scene; }
 
@@ -21,15 +28,5 @@ public:
 	void SetAmbientLightStength(float _strength);
 	void SetAmbientLightColor(glm::vec3 _color);
 	const glm::vec3 GetAmbientLight();
-
-protected:
-	Scene();
-	~Scene();
-
-	std::vector<ObjectInstance*> objects;
-
-	//Ambient Color
-	glm::vec3 ambientColor;
-	float ambientStrength;
 };
 

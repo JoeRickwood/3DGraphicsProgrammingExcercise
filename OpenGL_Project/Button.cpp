@@ -75,7 +75,7 @@ void Button::Update()
 	}
 
 	color = Lerp(color, pressed ? glm::vec4(0.5f, 0.5f, 0.5f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Time::Instance().deltaTime * 50.0f);
-	parent->GetComponent<Renderer>()->SetColorTint(color);
+	parent->GetComponent<Renderer>()->SetColor(color);
 }
 
 void Button::AddListener(std::function<void()> _func)
@@ -93,12 +93,12 @@ void Button::Click()
 	pressed = true;
 }
 
-glm::vec4 Button::GetColor()
+glm::vec4 Button::GetColor() const
 {
 	return color;
 }
 
-void Button::SetColor(glm::vec4 _color)
+void Button::SetColor(glm::vec4 _color) 
 {
 	color = _color;
 }

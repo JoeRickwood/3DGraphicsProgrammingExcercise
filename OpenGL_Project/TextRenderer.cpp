@@ -2,20 +2,6 @@
 #include "RenderingPipeline.h"
 #include <iostream>
 
-void TextRenderer::SetText(std::string _content)
-{
-	text = _content;
-}
-
-void TextRenderer::SetFont(std::string _fontKey)
-{
-    fontKey = _fontKey;
-}
-
-void TextRenderer::SetColor(glm::vec3 _color)
-{
-	color = _color;
-}
 
 void TextRenderer::InitVBO() 
 {
@@ -58,11 +44,7 @@ TextRenderer::TextRenderer(std::string _shaderKey, ProjectionType _projectionTyp
 	scaleMat = glm::mat4();
 	modelMat = glm::mat4();
 
-	color = glm::vec3(1.f, 1.f, 1.f);
-
     renderShadows = false;
-
-    textSize = 48;
 }
 
 TextRenderer::~TextRenderer()
@@ -76,6 +58,8 @@ void TextRenderer::InitializeRenderingInfo(GLuint _program)
     glm::mat4 projectionMat = Camera::Instance().GetProjectionMatrix(projection);
 
 	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(projectionMat));
+
+    glUniform4f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z, color.w);
 }
 
 void TextRenderer::Init()
@@ -85,8 +69,9 @@ void TextRenderer::Init()
 
 void TextRenderer::Render()
 {
-    int x = parent->GetPosition().x;
-    int y = parent->GetPosition().y;
+    //Truncate Position To Integer Values For Better Screen-Space
+    int x = (int)parent->GetPosition().x;
+    int y = (int)parent->GetPosition().y;
 
 	glBindVertexArray(mesh->VAO);
 
@@ -122,12 +107,33 @@ void TextRenderer::Render()
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.advanceOffset >> 6) * parent->GetScale().x; // bitshift by 6 to get value in pixels (2^6 = 64)
+
+        // Advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (int)((ch.advanceOffset >> 6) * parent->GetScale().x); // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glEnable(GL_DEPTH_TEST);
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void TextRenderer::SetText(std::string _content)
+{
+    text = _content;
+}
+
+std::string TextRenderer::GetText()
+{
+    return text;
+}
+
+void TextRenderer::SetFont(std::string _fontKey)
+{
+    fontKey = _fontKey;
+}
+
+std::string TextRenderer::GetFontKey()
+{
+    return fontKey;
 }

@@ -53,10 +53,11 @@ protected:
 	std::string shaderKey;
 	ProjectionType projection;
 	RenderType renderType;
+
 	bool doubleSided;
 	bool renderShadows;
-	bool drawToDepthBuffer;
-	glm::vec4 colorTint;
+
+	glm::vec4 color;
 
 	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
 
@@ -66,7 +67,7 @@ protected:
 
 	friend class RenderingPipeline;
 		
-	virtual void InitializeRenderingInfo(GLuint program);
+	virtual void InitializeRenderingInfo(GLuint _program);
 
 public:
 	Renderer(std::string _shaderKey, ProjectionType _projectionType);
@@ -84,6 +85,7 @@ public:
 	void SetTextureTiling(glm::vec2 _tiling);
 	void SetRenderType(RenderType _type);
 	void SetShadowRendering(bool _on);
-	void SetDrawToDepthBuffer(bool _on);
-	void SetColorTint(glm::vec4 _color);
+
+	glm::vec4 GetColor() const;
+	void SetColor(glm::vec4 _color);
 };

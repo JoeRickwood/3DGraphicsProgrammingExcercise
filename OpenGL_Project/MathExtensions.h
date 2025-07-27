@@ -40,7 +40,7 @@ static float Smoothstep(float _value, float _edge0, float _edge1)
 }
 
 
-//Easing Functions Have Been Ported From Easings.net, Originally Programmed In TypeScript
+//Easing Functions Have Been Ported From https://Easings.net, Originally Programmed In TypeScript
 //https://www.typescriptlang.org
 
 //Input Value Should Be Between 0 And 1, This Function Remaps Value To Be On A Cubic Ease-In Curve

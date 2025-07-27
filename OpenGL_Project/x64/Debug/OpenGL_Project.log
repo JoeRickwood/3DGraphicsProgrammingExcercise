@@ -1,3 +1,0 @@
-﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (OpenGL_Project.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Source.cpp
-  OpenGL_Project.vcxproj -> D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\Engine.exe

@@ -4,7 +4,7 @@ Camera::Camera()
 {
 	orthoProjectionMatrix = glm::mat4();
 	perspectiveProjectionMatrix = glm::mat4();
-	shadowProjectionPerspectiveMatrix = glm::mat4();
+	screenProjectionMatrix = glm::mat4();
 
 	viewMatrix = glm::mat4();
 }
@@ -37,11 +37,10 @@ void Camera::CalculateProjectionMatrix()
 
 	float aspectRatio = windowSize.x / windowSize.y;
 	Instance().perspectiveProjectionMatrix = glm::perspective(glm::radians(Instance().fieldOfView), aspectRatio, Instance().nearPlane, Instance().farPlane);
-	Instance().shadowProjectionPerspectiveMatrix = glm::perspective(glm::radians(Instance().fieldOfView), aspectRatio, Instance().nearPlane, Instance().shadowFarPlane);
 }
 
 //Gets The Projection Matrix Of Either Orthographic Or Perspective, Returns Default Perspective
-const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
+glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type) const
 {
 	switch (_type)
 	{
@@ -56,12 +55,12 @@ const glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type)
 	}
 }
 
-const glm::mat4 Camera::GetViewMatrix()
+glm::mat4 Camera::GetViewMatrix() const
 {
 	return viewMatrix;
 }
 
-const glm::vec3 Camera::GetCameraPosition()
+glm::vec3 Camera::GetCameraPosition() const
 {
 	return cameraPosition;
 }
@@ -71,7 +70,7 @@ void Camera::SetCameraPosition(glm::vec3 _position)
 	cameraPosition = _position;
 }
 
-const glm::vec3 Camera::GetCameraLookDirection()
+glm::vec3 Camera::GetCameraLookDirection() const
 {
 	return cameraLookDir;
 }
@@ -81,7 +80,7 @@ void Camera::SetCameraLookDirection(glm::vec3 _direction)
 	cameraLookDir = _direction;
 }
 
-const glm::vec3 Camera::GetCameraUpDirection()
+glm::vec3 Camera::GetCameraUpDirection() const
 {
 	return cameraUpDir;
 }
@@ -92,7 +91,7 @@ void Camera::SetCameraUpDirection(glm::vec3 _upDirection)
 }
 
 
-const float Camera::GetNearPlane()
+float Camera::GetNearPlane() const
 {
 	return nearPlane;
 }
@@ -102,7 +101,7 @@ void Camera::SetNearPlane(float _nearPlane)
 	nearPlane = _nearPlane;
 }
 
-const float Camera::GetFarPlane()
+float Camera::GetFarPlane() const
 {
 	return farPlane;
 }
@@ -112,7 +111,7 @@ void Camera::SetFarPlane(float _farPlane)
 	farPlane = _farPlane;
 }
 
-const float Camera::GetFieldOfView()
+float Camera::GetFieldOfView() const
 {
 	return fieldOfView;
 }
@@ -122,17 +121,8 @@ void Camera::SetFieldOfView(float _fieldOfView)
 	fieldOfView = _fieldOfView;
 }
 
-const float Camera::GetShadowFarPlane()
-{
-	return shadowFarPlane;
-}
 
-void Camera::SetShadowFarPlane(float _shadowFarPlane)
-{
-	shadowFarPlane = _shadowFarPlane;
-}
-
-const float Camera::GetOrthographicSize()
+float Camera::GetOrthographicSize() const
 {
 	return orthographicSize;
 }

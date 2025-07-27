@@ -63,51 +63,56 @@ static void InitialSetup()
 
 	glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
 	glfwSetWindowSizeCallback(AssetLoader::Instance().currentWindow, (GLFWwindowsizefun)OnWindowResized);
-}
 
-//Update Is Called Once Every Frame BEFORE Render
-static void Update() 
-{
-	Scene::Current().Update();
 
-	glfwPollEvents();
+	Time::Instance().Init();
+
+
+	//We Initialize The Renderable Loader BEFORE We Set Our Object Instances On Screen
+	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (None)
+	AssetLoader::Instance().LoadAssets("Resources");
 }
 
 //Creates All Objects In The Scene
 static void LoadScene()
 {
-	Scene::Current().SetAmbientLightStength(0.2f);
+	//Set The Scenes Current Ambient Light Color And Strength
+	Scene::Current().SetAmbientLightStength(1.0f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
+
+	//Regular Sprite Object Set-Up
 	{
 		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
-		auto backgroundTestRenderer = backgroundTest->AddComponent<DefaultRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		auto backgroundTestRenderer = backgroundTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
 		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		backgroundTestRenderer->AddTexturePass("Texture0", "Joe", Texture2D, Repeat);
 		backgroundTestRenderer->SetRenderType(RenderBoth);
 	}
 
-	
-	ObjectInstance* UIButtonObject = new ObjectInstance("UIButtonObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.0f, 100.0f, 1.0f));
-	auto UIButtonRenderer = UIButtonObject->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
-	UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIButtonRenderer->SetRenderType(RenderBoth);
-	auto UIButton = UIButtonObject->AddComponent<Button>();
-	auto func = []()
-		{
-			std::cout << "Working!!!!";
-		};
-	UIButton->AddListener(func);
-	
+	//Button Set-Up
+	{
+		ObjectInstance* UIButtonObject = new ObjectInstance("UIButtonObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.0f, 100.0f, 1.0f));
+		auto UIButtonRenderer = UIButtonObject->AddComponent<SpriteRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
+		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIButtonRenderer->SetRenderType(RenderBoth);
+		auto UIButton = UIButtonObject->AddComponent<Button>();
+		auto func = []()
+			{
+				std::cout << "Working!!!!";
+			};
+		UIButton->AddListener(func);
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	UIRenderer->SetText("Font Text Rendering Test");
-	UIRenderer->SetRenderType(RenderBoth);
-	UIObjectTest->SetParent(UIButtonObject);
+
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		UIRenderer->SetText("Font Text Rendering Test");
+		UIRenderer->SetRenderType(RenderBoth);
+		UIObjectTest->SetParent(UIButtonObject);
+	}
 
 
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
@@ -121,24 +126,25 @@ int main()
 	//Setup All Objects In Project
 	InitialSetup();
 
-	//We Initialize The Renderable Loader BEFORE We Set Our Object Instances On Screen
-	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (None)
-	AssetLoader::Instance().LoadAssets("Resources");
-
-	Time::Instance().Init();
-
+	//Load The Scenes Objects
 	LoadScene();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(AssetLoader::Instance().currentWindow) == false)
 	{
-		Time::Instance().Update();
-
+		//Calculate The Camera View And Projection Matrices WHich Objects Will Use Later To Render Properly
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();
 
-		Update();
 
+		//Update All ObjectInstance Logic In The Scene
+		Time::Instance().Update();
+		Scene::Current().Update();
+
+		//Poll To See If Any glfw Window Events Have Occured
+		glfwPollEvents();
+
+		//Render All Objects In The Scene
 		RenderingPipeline::Render();
 	}
 

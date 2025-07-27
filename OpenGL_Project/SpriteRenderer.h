@@ -1,7 +1,7 @@
 #pragma once
 #include "Renderer.h"
 
-class DefaultRenderer : public Renderer
+class SpriteRenderer : public Renderer
 {
 private:
 	glm::mat4 translationMat;
@@ -10,8 +10,8 @@ private:
 	glm::mat4 modelMat;
 
 public:
-	DefaultRenderer(std::string _shaderKey, ProjectionType _projectionType);
-	~DefaultRenderer();
+	SpriteRenderer(std::string _shaderKey, ProjectionType _projectionType);
+	~SpriteRenderer();
 
 	void Init()override;
 	void InitVBO()override;

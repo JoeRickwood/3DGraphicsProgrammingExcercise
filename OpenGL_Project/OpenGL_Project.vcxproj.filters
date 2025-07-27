@@ -45,7 +45,7 @@
     <ClCompile Include="InstancedRenderer.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultRenderer.cpp">
+    <ClCompile Include="SpriteRenderer.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="InstancedRenderer.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="DefaultRenderer.h">
+    <ClInclude Include="SpriteRenderer.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">

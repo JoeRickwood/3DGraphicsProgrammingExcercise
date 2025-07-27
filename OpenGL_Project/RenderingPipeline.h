@@ -10,7 +10,7 @@ protected:
 	~RenderingPipeline();
 
 public:
-	static RenderingPipeline& Current() { static RenderingPipeline scene; return scene; }
+	static RenderingPipeline& Current() { static RenderingPipeline renderingPipeline; return renderingPipeline; }
 
 	static void AddRenderer(Renderer* _renderer);
 	static void RemoveRenderer(Renderer* _renderer);
