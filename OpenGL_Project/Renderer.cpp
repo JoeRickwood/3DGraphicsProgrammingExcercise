@@ -61,6 +61,9 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
 	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
 
+	//Color Uniform
+	glUniform4f(glGetUniformLocation(program, "Color"), colorTint.x, colorTint.y, colorTint.z, colorTint.w);
+
 	//Pass In Ambient Light
 	glUniform3fv(glGetUniformLocation(program, "Ambient"), 1, glm::value_ptr(Scene::Current().GetAmbientLight()));
 
@@ -148,4 +151,9 @@ void Renderer::SetShadowRendering(bool _on)
 void Renderer::SetDrawToDepthBuffer(bool _on)
 {
 	drawToDepthBuffer = _on;
+}
+
+void Renderer::SetColorTint(glm::vec4 _color)
+{
+	colorTint = _color;
 }

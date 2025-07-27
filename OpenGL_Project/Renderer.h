@@ -56,6 +56,7 @@ protected:
 	bool doubleSided;
 	bool renderShadows;
 	bool drawToDepthBuffer;
+	glm::vec4 colorTint;
 
 	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
 
@@ -84,4 +85,5 @@ public:
 	void SetRenderType(RenderType _type);
 	void SetShadowRendering(bool _on);
 	void SetDrawToDepthBuffer(bool _on);
+	void SetColorTint(glm::vec4 _color);
 };

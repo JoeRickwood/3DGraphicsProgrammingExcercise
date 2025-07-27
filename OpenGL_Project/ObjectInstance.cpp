@@ -1,5 +1,6 @@
 #include "ObjectInstance.h"
 #include "Scene.h"
+#include <iostream>
 
 ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale)
 {
@@ -57,7 +58,7 @@ const glm::vec3 ObjectInstance::GetScale()
 {
 	if (parent != nullptr)
 	{
-		return parent->GetScale() + scale;
+		return parent->GetScale() * scale;
 	}
 	else
 	{
@@ -87,6 +88,16 @@ const ObjectInstance* ObjectInstance::GetParent()
 
 void ObjectInstance::SetParent(ObjectInstance* _parent)
 {
+	if (_parent == this) 
+	{
+		parent = nullptr;
+		return;
+	}
+
+	position = position - _parent->position;
+	rotation = rotation - _parent->rotation;
+	scale = scale / _parent->scale;
+
 	parent = _parent;
 }
 

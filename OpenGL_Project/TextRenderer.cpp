@@ -61,6 +61,8 @@ TextRenderer::TextRenderer(std::string _shaderKey, ProjectionType _projectionTyp
 	color = glm::vec3(1.f, 1.f, 1.f);
 
     renderShadows = false;
+
+    textSize = 48;
 }
 
 TextRenderer::~TextRenderer()
@@ -71,9 +73,9 @@ void TextRenderer::InitializeRenderingInfo(GLuint _program)
 {
 	glUniform3f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z);
 
-    glm::mat4 projection = Camera::Instance().GetProjectionMatrix(ProjectionType::Screen_Orthographic);
+    glm::mat4 projectionMat = Camera::Instance().GetProjectionMatrix(projection);
 
-	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(projectionMat));
 }
 
 void TextRenderer::Init()

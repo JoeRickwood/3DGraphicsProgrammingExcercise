@@ -1,10 +1,11 @@
 #include "Button.h"
 #include "Renderer.h"
 #include <iostream>
+#include "MathExtensions.h"
+#include "Time.h"
 
 const bool Button::Intersects(glm::vec3 _position) const
 {
-
 	//Calculate The Bounds Of The Button
 	glm::vec3 position = parent->GetPosition();
 	glm::vec3 scale = parent->GetScale();
@@ -30,6 +31,9 @@ Button::Button()
 	mousePos = glm::vec2(0.f, 0.f);
 
 	mouseOver = false;
+
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	pressed = false;
 }
 
 Button::~Button()
@@ -38,22 +42,17 @@ Button::~Button()
 
 void Button::Update()
 {
+	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
+
+
 	double x;
 	double y;
-
-	int windowSizeX;
-	int windowSizeY;
-
 	GLFWwindow* window = glfwGetCurrentContext();
 	glfwGetCursorPos(window, &x, &y);
 
-	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
-
 	//Remap Mouse Pos To Be In Correct Spacing
-	mousePos.x = ((float)x / (float)windowSizeX) * 2.f - 1.f;
-	mousePos.y = ((float)y / (float)windowSizeY) * 2.f - 1.f;
-
-	//std::cout << mousePos.x << "," << mousePos.y << std::endl;
+	mousePos.x = ((float)x / (float)windowSize.x) * 2.0f - 1.0f;
+	mousePos.y = ((float)y / (float)windowSize.y) * 2.0f - 1.0f;
 
 	//Check If The Mouse Posituion Intersects The Buttons' Global Bounds
 	mouseOver = Intersects(glm::vec3(mousePos.x, -mousePos.y, 0.f));
@@ -61,24 +60,22 @@ void Button::Update()
 	//If It Does Intersects, Change The TextureID to the alternate texture
 	if (mouseOver) 
 	{
-		//parent->GetComponent<Renderer>()->textureID = textureID1;
-
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && pressLock == false)
 		{
 			Click();
 			pressLock = true;
 		}
 	}
-	else //If It Does Not Intersect, Change The TextureID to the base Texture
-	{
-		//parent->GetComponent<Renderer>()->textureID = textureID0;
-	}
 
 	//Reset Press Lock If The Mouse Button Is Released
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 	{
 		pressLock = false;
+		pressed = false;
 	}
+
+	color = Lerp(color, pressed ? glm::vec4(0.5f, 0.5f, 0.5f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Time::Instance().deltaTime * 50.0f);
+	parent->GetComponent<Renderer>()->SetColorTint(color);
 }
 
 void Button::AddListener(std::function<void()> _func)
@@ -92,6 +89,8 @@ void Button::Click()
 	{
 		listeners[i]();
 	}
+
+	pressed = true;
 }
 
 glm::vec4 Button::GetColor()

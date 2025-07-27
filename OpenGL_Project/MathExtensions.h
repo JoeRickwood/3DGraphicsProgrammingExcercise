@@ -20,6 +20,18 @@ static glm::vec3 Lerp(glm::vec3 _a, glm::vec3 _b, float _t)
 	);
 }
 
+//Finds A Value Between Two Points On A Fractional Value '_t' In 4D Space, Usually Used For Color
+static glm::vec4 Lerp(glm::vec4 _a, glm::vec4 _b, float _t)
+{
+	return glm::vec4
+	(
+		Lerp(_a.x, _b.x, _t),
+		Lerp(_a.y, _b.y, _t),
+		Lerp(_a.z, _b.z, _t),
+		Lerp(_a.w, _b.w, _t)
+	);
+}
+
 static float Smoothstep(float _value, float _edge0, float _edge1) 
 {
 	float t = glm::clamp((_value - _edge0) / (_edge1 - _edge0), 0.0f, 1.0f);

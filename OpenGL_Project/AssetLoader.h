@@ -122,8 +122,10 @@ public:
 	static Mesh* CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> _texcoords);
 
 	void LoadAssets(const char* folderPath);
-	
-	glm::vec2 windowSize = glm::vec2(1920, 1080);
+
+	glm::vec2 GetWindowSize();
+	void SetWindowSized(glm::vec2 _windowSize);
+
 
 	GLFWwindow* currentWindow;
 
@@ -141,6 +143,8 @@ protected:
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
 	const std::string supportedShaderFileExtensions[1] = { ".shader" };
 	const std::string supportedFontFileExtensions[1] = { ".ttf" };
+
+	glm::vec2 windowSize = glm::vec2(1920, 1080);
 
 	//Helpers
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);

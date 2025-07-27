@@ -10,8 +10,7 @@ static void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
 	glViewport(0, 0, _Width, _Height);
 
-	AssetLoader::Instance().windowSize.x = (float)_Width;
-	AssetLoader::Instance().windowSize.y = (float)_Height;
+	AssetLoader::Instance().SetWindowSized(glm::vec2((float)_Width, (float)_Height));
 }
 
 //Sets Up Objects + Other GLFW Parameters
@@ -26,7 +25,8 @@ static void InitialSetup()
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	//Create Window
-	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)AssetLoader::Instance().windowSize.x, (int)AssetLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
+	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
+	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
 
 	if (AssetLoader::Instance().currentWindow == NULL)
 	{
@@ -60,7 +60,8 @@ static void InitialSetup()
 	glfwSwapInterval(0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+
+	glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
 	glfwSetWindowSizeCallback(AssetLoader::Instance().currentWindow, (GLFWwindowsizefun)OnWindowResized);
 }
 
@@ -86,30 +87,27 @@ static void LoadScene()
 		backgroundTestRenderer->SetRenderType(RenderBoth);
 	}
 
-	{
-		ObjectInstance* UIObjectTest = new ObjectInstance("UIButtonObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1000.f, 1000.f, 1000.f));
-		auto UIButtonRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
-		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIButtonRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
-		UIButtonRenderer->SetTextureTiling(glm::vec2(1, 1));
-		UIButtonRenderer->SetRenderType(RenderBoth);
-		auto UIButton = UIObjectTest->AddComponent<Button>();
-		auto func = []()
-			{
-				std::cout << "Working!!!!";
-			};
-		UIButton->AddListener(func);
-	}
+	
+	ObjectInstance* UIButtonObject = new ObjectInstance("UIButtonObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.0f, 100.0f, 1.0f));
+	auto UIButtonRenderer = UIButtonObject->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
+	UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	UIButtonRenderer->SetRenderType(RenderBoth);
+	auto UIButton = UIButtonObject->AddComponent<Button>();
+	auto func = []()
+		{
+			std::cout << "Working!!!!";
+		};
+	UIButton->AddListener(func);
+	
 
-	{
-		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetFont("AldotheApache");
-		UIRenderer->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-		UIRenderer->SetText("Font Text Rendering Test");
-		UIRenderer->SetRenderType(RenderBoth);
-	}
+	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
+	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	UIRenderer->SetFont("AldotheApache");
+	UIRenderer->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	UIRenderer->SetText("Font Text Rendering Test");
+	UIRenderer->SetRenderType(RenderBoth);
+	UIObjectTest->SetParent(UIButtonObject);
 
 
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
