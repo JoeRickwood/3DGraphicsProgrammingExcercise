@@ -95,7 +95,7 @@ float Terrain::SampleHeight(float _x, float _y)
 	}
 
 
-	float height = heights[_x * terrainSize.x + _y];
+	float height = heights[_x * terrainSize.y + _y];
 
 	//float multiplier = Smoothstep(-20, 25, height);
 
