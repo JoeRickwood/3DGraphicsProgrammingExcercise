@@ -32,10 +32,16 @@ Button::Button()
 
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	pressed = false;
+	initialScale = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Button::~Button()
 {
+}
+
+void Button::Init()
+{
+	initialScale = parent->GetLocalScale();
 }
 
 void Button::Update()
@@ -68,6 +74,8 @@ void Button::Update()
 	}
 
 	color = Lerp(color, pressed ? glm::vec4(0.5f, 0.5f, 0.5f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Time::Instance().deltaTime * 50.0f);
+	parent->SetScale(Lerp(parent->GetLocalScale(), mouseOver ? initialScale * 1.1f : initialScale, Time::Instance().deltaTime * 50.0f));
+
 	parent->GetComponent<Renderer>()->SetColor(color);
 }
 
@@ -94,4 +102,9 @@ glm::vec4 Button::GetColor() const
 void Button::SetColor(glm::vec4 _color) 
 {
 	color = _color;
+}
+
+bool Button::GetPressedState() const
+{
+	return pressed;
 }

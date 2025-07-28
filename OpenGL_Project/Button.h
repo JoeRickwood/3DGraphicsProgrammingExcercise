@@ -14,17 +14,22 @@ protected:
 
 	bool pressLock = false;
 
+	glm::vec3 initialScale;
+
 	const bool Intersects(glm::vec3 _position) const;
 
 public:
 	Button();
 	~Button();
 
+	void Init()override;
 	void Update()override;
 	void AddListener(std::function<void()> _func);
 	void Click();
 
 	glm::vec4 GetColor() const;
 	void SetColor(glm::vec4 _color);
+
+	bool GetPressedState() const;
 };
 

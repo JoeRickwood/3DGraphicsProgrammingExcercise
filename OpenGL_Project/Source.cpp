@@ -149,7 +149,6 @@ static void LoadScene()
 
 		UIObjectTest->SetParent(UIButtonObject);
 		UIObjectTest->SetPosition(glm::vec3(0, 0, 0));
-		std::cout << UIObjectTest->GetPosition().x;
 	}
 
 
@@ -180,7 +179,6 @@ static void LoadScene()
 
 		UIObjectTest->SetParent(UIButtonObject);
 		UIObjectTest->SetPosition(glm::vec3(0, 0, 0));
-		std::cout << UIObjectTest->GetPosition().x;
 	}
 
 	{

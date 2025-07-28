@@ -44,7 +44,10 @@ public:
 
 	//Getters And Setters For Scale
 	virtual glm::vec3 GetScale() const;
+	virtual glm::vec3 GetLocalScale() const;
+
 	void SetScale(glm::vec3 _scale);
+
 
 	//Getters And Setters For Name
 	virtual std::string GetName() const;

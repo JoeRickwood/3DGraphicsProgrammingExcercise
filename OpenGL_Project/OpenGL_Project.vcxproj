@@ -153,7 +153,6 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
-    <ClCompile Include="InstancedRenderer.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
@@ -169,7 +168,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="SpriteRenderer.h" />
-    <ClInclude Include="InstancedRenderer.h" />
     <ClInclude Include="MathExtensions.h" />
     <ClInclude Include="ObjectInstance.h" />
     <ClInclude Include="Renderer.h" />
