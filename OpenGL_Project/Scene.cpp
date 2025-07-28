@@ -11,7 +11,7 @@ void Scene::SetAmbientLightColor(glm::vec3 _color)
 	ambientColor = _color;
 }
 
-const glm::vec3 Scene::GetAmbientLight()
+glm::vec3 Scene::GetAmbientLight() const
 {
 	return ambientColor * ambientStrength;
 }

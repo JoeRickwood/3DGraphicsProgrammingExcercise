@@ -24,6 +24,8 @@ static void InitialSetup()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
+	glfwWindowHint(GLFW_REFRESH_RATE, 60);
+
 	//Create Window
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
 	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
@@ -80,7 +82,7 @@ static void LoadScene()
 	Scene::Current().SetAmbientLightStength(1.0f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
-
+	/*
 	//Regular Sprite Object Set-Up
 	{
 		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
@@ -89,12 +91,14 @@ static void LoadScene()
 		backgroundTestRenderer->AddTexturePass("Texture0", "Joe", Texture2D, Repeat);
 		backgroundTestRenderer->SetRenderType(RenderBoth);
 	}
+	*/
 
-	//Button Set-Up
+	//Play Button Set-Up
 	{
-		ObjectInstance* UIButtonObject = new ObjectInstance("UIButtonObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.0f, 100.0f, 1.0f));
+		UIObjectInstance* UIButtonObject = new UIObjectInstance("UIButtonObjectTest", glm::vec3(-175.f, 100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.0f, 75.0f, 1.0f));
 		auto UIButtonRenderer = UIButtonObject->AddComponent<SpriteRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
 		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIButtonRenderer->AddTexturePass("Texture0", "Button", Texture2D, TilingType::ClampEdges);
 		UIButtonRenderer->SetRenderType(RenderBoth);
 		auto UIButton = UIButtonObject->AddComponent<Button>();
 		auto func = []()
@@ -102,18 +106,93 @@ static void LoadScene()
 				std::cout << "Working!!!!";
 			};
 		UIButton->AddListener(func);
+		UIButtonObject->SetScreenAlignment(MIDDLE, CENTER);
 
 
-		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
 		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UIRenderer->SetFont("AldotheApache");
-		UIRenderer->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		UIRenderer->SetText("Font Text Rendering Test");
+		UIRenderer->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		UIRenderer->SetText("Start New");
 		UIRenderer->SetRenderType(RenderBoth);
+
 		UIObjectTest->SetParent(UIButtonObject);
+		UIObjectTest->SetPosition(glm::vec3(0, 0, 0));
 	}
 
+
+	//Play Button Set-Up
+	{
+		UIObjectInstance* UIButtonObject = new UIObjectInstance("UIButtonObjectTest", glm::vec3(175.f, 100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.0f, 75.0f, 1.0f));
+		auto UIButtonRenderer = UIButtonObject->AddComponent<SpriteRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
+		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIButtonRenderer->AddTexturePass("Texture0", "Button", Texture2D, TilingType::ClampEdges);
+		UIButtonRenderer->SetRenderType(RenderBoth);
+		auto UIButton = UIButtonObject->AddComponent<Button>();
+		auto func = []()
+			{
+				std::cout << "Working!!!!";
+			};
+		UIButton->AddListener(func);
+		UIButtonObject->SetScreenAlignment(MIDDLE, CENTER);
+
+
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		UIRenderer->SetText("Continue");
+		UIRenderer->SetRenderType(RenderBoth);
+
+
+		UIObjectTest->SetParent(UIButtonObject);
+		UIObjectTest->SetPosition(glm::vec3(0, 0, 0));
+		std::cout << UIObjectTest->GetPosition().x;
+	}
+
+
+	//Play Button Set-Up
+	{
+		UIObjectInstance* UIButtonObject = new UIObjectInstance("UIButtonObjectTest", glm::vec3(0.f, -100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(325.0f, 75.0f, 1.0f));
+		auto UIButtonRenderer = UIButtonObject->AddComponent<SpriteRenderer>("DefaultUI", ProjectionType::Screen_Orthographic);
+		UIButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIButtonRenderer->AddTexturePass("Texture0", "Button", Texture2D, TilingType::ClampEdges);
+		UIButtonRenderer->SetRenderType(RenderBoth);
+		auto UIButton = UIButtonObject->AddComponent<Button>();
+		auto func = []()
+			{
+				std::cout << "Working!!!!";
+			};
+		UIButton->AddListener(func);
+		UIButtonObject->SetScreenAlignment(MIDDLE, CENTER);
+
+
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		UIRenderer->SetText("Settings");
+		UIRenderer->SetRenderType(RenderBoth);
+
+
+		UIObjectTest->SetParent(UIButtonObject);
+		UIObjectTest->SetPosition(glm::vec3(0, 0, 0));
+		std::cout << UIObjectTest->GetPosition().x;
+	}
+
+	{
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, 350.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(3.f, 3.f, 3.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Screen_Orthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		UIRenderer->SetText("Game Name");
+		UIRenderer->SetRenderType(RenderBoth);
+		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
+	}
 
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
@@ -135,7 +214,6 @@ int main()
 		//Calculate The Camera View And Projection Matrices WHich Objects Will Use Later To Render Properly
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();
-
 
 		//Update All ObjectInstance Logic In The Scene
 		Time::Instance().Update();

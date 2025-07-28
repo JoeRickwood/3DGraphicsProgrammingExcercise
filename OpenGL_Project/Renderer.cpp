@@ -91,6 +91,13 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 			break;
 		}
+
+		//MOVE TO CUSTOM SHADER PASS IN PER RENDERER / MATERIAL
+		//texture size, borderSize, widgetSize
+		glUniform2f(glGetUniformLocation(_program, "TextureSize"), textureSize.x, textureSize.y);
+		glUniform1f(glGetUniformLocation(_program, "BorderSize"), borderSize);
+		glUniform2f(glGetUniformLocation(_program, "WidgetSize"), parent->GetScale().x, parent->GetScale().y);
+
 		
 		GLint loc = glGetUniformLocation(_program, textures[i].locationName.c_str());
 

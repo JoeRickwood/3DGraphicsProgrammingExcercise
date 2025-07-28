@@ -9,6 +9,7 @@ Camera::Camera()
 	viewMatrix = glm::mat4();
 }
 
+
 Camera::~Camera()
 {
 }

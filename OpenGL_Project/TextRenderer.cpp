@@ -69,21 +69,38 @@ void TextRenderer::Init()
 
 void TextRenderer::Render()
 {
-    //Truncate Position To Integer Values For Better Screen-Space
-    int x = (int)parent->GetPosition().x;
-    int y = (int)parent->GetPosition().y;
-
 	glBindVertexArray(mesh->VAO);
 
     glDisable(GL_DEPTH_TEST);
+
+
+    float totalWidth = 0.0f;
+    float totalHeight = 0.0f;
 
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
 
-        float xpos = x + ch.bearing.x * parent->GetScale().x;
-        float ypos = y - (ch.size.y - ch.bearing.y) * parent->GetScale().y;
+        totalWidth += (ch.advanceOffset >> 6) * parent->GetScale().x;
+
+        float tmpHeight = ch.size.y * parent->GetScale().y;
+        if (tmpHeight > totalHeight) 
+        {
+            totalHeight = tmpHeight;
+        }
+    }
+
+    float x = parent->GetPosition().x - (totalWidth / 2.0f);
+    float y = parent->GetPosition().y - (totalHeight / 2.0f);
+
+
+    for (c = text.begin(); c != text.end(); ++c)
+    {
+        TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
+
+        float xpos = (x + ch.bearing.x * parent->GetScale().x);
+        float ypos = (y - (ch.size.y - ch.bearing.y) * parent->GetScale().y);
 
         float width = ch.size.x * parent->GetScale().x;
         float height = ch.size.y * parent->GetScale().y;
@@ -109,7 +126,7 @@ void TextRenderer::Render()
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (int)((ch.advanceOffset >> 6) * parent->GetScale().x); // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += ((ch.advanceOffset >> 6) * parent->GetScale().x); // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glEnable(GL_DEPTH_TEST);

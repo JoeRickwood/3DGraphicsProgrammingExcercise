@@ -3,6 +3,20 @@
 
 class Component;
 
+enum ScreenAlignmentX
+{
+	LEFT,
+	MIDDLE,
+	Right
+};
+
+enum ScreenAlignmentY 
+{
+	BOTTOM,
+	CENTER,
+	TOP
+};
+
 class ObjectInstance
 {
 protected:
@@ -21,24 +35,24 @@ public:
 	~ObjectInstance();
 
 	//Getters And Setters For Position
-	const glm::vec3 GetPosition();
+	virtual glm::vec3 GetPosition() const;
 	void SetPosition(glm::vec3 _position);
 
 	//Getters And Setters For Rotation
-	const glm::vec3 GetRotation();
+	virtual glm::vec3 GetRotation() const;
 	void SetRotation(glm::vec3 _rotation);
 
 	//Getters And Setters For Scale
-	const glm::vec3 GetScale();
+	virtual glm::vec3 GetScale() const;
 	void SetScale(glm::vec3 _scale);
 
 	//Getters And Setters For Name
-	const std::string GetName();
+	virtual std::string GetName() const;
 	void SetName(std::string _name);
 
 	//Getters And Setters For Parent
-	const ObjectInstance* GetParent();
-	void SetParent(ObjectInstance* _parent);
+	virtual ObjectInstance* GetParent() const;
+	void SetParent(ObjectInstance* _parent, bool resetTransforms = true);
 
 	//Gets The Component Of Type T And Returns The Pointer To It
 	template<typename T>

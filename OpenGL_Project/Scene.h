@@ -1,5 +1,5 @@
 #pragma once
-#include "ObjectInstance.h"
+#include "UIObjectInstance.h"
 #include "Components.h"
 
 class Scene
@@ -27,6 +27,6 @@ public:
 
 	void SetAmbientLightStength(float _strength);
 	void SetAmbientLightColor(glm::vec3 _color);
-	const glm::vec3 GetAmbientLight();
+	glm::vec3 GetAmbientLight() const;
 };
 

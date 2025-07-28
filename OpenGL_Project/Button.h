@@ -8,7 +8,6 @@ protected:
 	bool mouseOver;
 	bool pressed;
 
-	glm::vec2 mousePos;
 	glm::vec4 color;
 
 	std::vector<std::function<void()>> listeners;

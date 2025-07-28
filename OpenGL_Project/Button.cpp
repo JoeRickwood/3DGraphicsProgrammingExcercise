@@ -8,7 +8,7 @@ const bool Button::Intersects(glm::vec3 _position) const
 {
 	//Calculate The Bounds Of The Button
 	glm::vec3 position = parent->GetPosition();
-	glm::vec3 scale = parent->GetScale();
+	glm::vec3 scale = parent->GetScale() * 2.0f;
 
 	float left = position.x - (scale.x / 2.f);
 	float right = position.x + (scale.x / 2.f);
@@ -28,8 +28,6 @@ const bool Button::Intersects(glm::vec3 _position) const
 
 Button::Button()
 {
-	mousePos = glm::vec2(0.f, 0.f);
-
 	mouseOver = false;
 
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -44,18 +42,13 @@ void Button::Update()
 {
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
 
-
 	double x;
 	double y;
 	GLFWwindow* window = glfwGetCurrentContext();
 	glfwGetCursorPos(window, &x, &y);
 
-	//Remap Mouse Pos To Be In Correct Spacing
-	mousePos.x = ((float)x / (float)windowSize.x) * 2.0f - 1.0f;
-	mousePos.y = ((float)y / (float)windowSize.y) * 2.0f - 1.0f;
-
 	//Check If The Mouse Posituion Intersects The Buttons' Global Bounds
-	mouseOver = Intersects(glm::vec3(mousePos.x, -mousePos.y, 0.f));
+	mouseOver = Intersects(glm::vec3(x, AssetLoader::Instance().GetWindowSize().y - y - 24, 0.f));
 
 	//If It Does Intersects, Change The TextureID to the alternate texture
 	if (mouseOver) 

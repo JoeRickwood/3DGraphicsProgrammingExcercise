@@ -59,7 +59,11 @@ protected:
 
 	glm::vec4 color;
 
-	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
+	glm::vec2 textureTiling = glm::vec2(1.0f, 1.0f);
+
+	//UI ONLY CONVERT TO SHADER PASS INS OR MATERIAL LATER
+	float borderSize = 50;
+	glm::vec2 textureSize = glm::vec2(64, 64);
 
 	GLuint VBO;
 
