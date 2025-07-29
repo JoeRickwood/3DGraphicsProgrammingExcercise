@@ -190,7 +190,7 @@ static void LoadScene1()
 	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); 
 
 	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
+	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	UIRenderer->SetFont("AldotheApache");
 	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
