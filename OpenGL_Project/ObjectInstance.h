@@ -3,6 +3,21 @@
 
 class Component;
 
+enum ScreenAlignmentX
+{
+	LEFT,
+	MIDDLE,
+	Right
+};
+
+enum ScreenAlignmentY
+{
+	BOTTOM,
+	CENTER,
+	TOP
+};
+
+
 class ObjectInstance
 {
 protected:
@@ -24,15 +39,15 @@ public:
 	~ObjectInstance();
 
 	//Getters And Setters For Position
-	glm::vec3 GetPosition() const;
+	virtual glm::vec3 GetPosition() const;
 	void SetPosition(glm::vec3 _position);
 
 	//Getters And Setters For Rotation
-	glm::vec3 GetRotation() const;
+	virtual glm::vec3 GetRotation() const;
 	void SetRotation(glm::vec3 _rotation);
 
 	//Getters And Setters For Scale
-	glm::vec3 GetScale() const;
+	virtual glm::vec3 GetScale() const;
 	void SetScale(glm::vec3 _scale);
 
 	//Getters And Setters For Name

@@ -573,3 +573,13 @@ void AssetLoader::LoadAssets(const char* folderPath)
 
 	}
 }
+
+glm::vec2 AssetLoader::GetWindowSize() const
+{
+	return windowSize;
+}
+
+void AssetLoader::SetWindowSize(float _windowSizeX, float _windowSizeY)
+{
+	windowSize = glm::vec2(_windowSizeX, _windowSizeY);
+}

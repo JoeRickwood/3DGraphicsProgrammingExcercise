@@ -11,7 +11,6 @@ protected:
 
 	std::string text;
 	std::string fontKey;
-	glm::vec3 color;
 
 public:
 	TextRenderer(std::string _shaderKey, ProjectionType _projectionType);
@@ -26,6 +25,8 @@ public:
 	void Render()override;
 
 	void SetText(std::string _content);
+	std::string GetText();
+
 	void SetFont(std::string _fontKey);
-	void SetColor(glm::vec3 _color);
+	std::string GetFontKey();
 };

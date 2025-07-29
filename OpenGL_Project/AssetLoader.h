@@ -108,27 +108,6 @@ enum ProjectionType
 
 class AssetLoader
 {
-public:
-	static AssetLoader& Instance() { static AssetLoader shaderLoader; return shaderLoader; }
-
-	GLuint GetShaderProgram(std::string _key);
-	GLuint GetTexture(std::string _key);
-	GLuint GetSkybox(std::string _key);
-	Mesh* GetMesh(std::string _key);
-	Font* GetFont(std::string _fontKey);
-	TextCharacter GetGlyph(std::string _fontKey, const char _glyph);
-	void AddTexture(GLuint _tex, std::string _key);
-
-	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
-	static Mesh* CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> _texcoords);
-	static void SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _width, int _height);
-
-	void LoadAssets(const char* folderPath);
-	
-	glm::vec2 windowSize = glm::vec2(1920, 1080);
-
-	GLFWwindow* currentWindow;
-
 protected:
 	AssetLoader();
 	~AssetLoader();
@@ -138,6 +117,9 @@ protected:
 	std::map<std::string, GLuint> skyboxes;
 	std::map<std::string, Mesh*> meshes;
 	std::map<std::string, Font*> fonts;
+
+
+	glm::vec2 windowSize = glm::vec2(1920, 1080);
 
 	const std::string supportedImageFileExtensions[2] = { ".png", ".jpg" };
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
@@ -156,6 +138,28 @@ protected:
 	static void CreateTexture(std::string _filename, std::string _shaderKey);
 	static void LoadMesh(std::string _filepath, std::string _meshKey);
 	static void LoadFont(std::string _filepath, std::string _fontKey);
+
+public:
+	static AssetLoader& Instance() { static AssetLoader shaderLoader; return shaderLoader; }
+
+	GLuint GetShaderProgram(std::string _key);
+	GLuint GetTexture(std::string _key);
+	GLuint GetSkybox(std::string _key);
+	Mesh* GetMesh(std::string _key);
+	Font* GetFont(std::string _fontKey);
+	TextCharacter GetGlyph(std::string _fontKey, const char _glyph);
+	void AddTexture(GLuint _tex, std::string _key);
+
+	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
+	static Mesh* CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> _texcoords);
+	static void SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _width, int _height);
+
+	void LoadAssets(const char* folderPath);
+
+	glm::vec2 GetWindowSize() const;
+	void SetWindowSize(float _windowSizeX, float _windowSizeY);
+
+	GLFWwindow* currentWindow;
 };
 
 

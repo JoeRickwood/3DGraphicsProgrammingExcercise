@@ -32,7 +32,9 @@ void RenderingPipeline::RemoveRenderer(Renderer* _renderer)
 
 void RenderingPipeline::Render()
 {
-	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
+
+	glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
@@ -54,7 +56,9 @@ void RenderingPipeline::Render()
 
 void RenderingPipeline::Render(std::string shaderKeyOverride)
 {
-	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
+
+	glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)

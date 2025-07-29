@@ -166,6 +166,7 @@
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Time.cpp" />
+    <ClCompile Include="UIObjectInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="UIObjectInstance.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader" />

@@ -11,8 +11,7 @@ static void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
 	glViewport(0, 0, _Width, _Height);
 
-	AssetLoader::Instance().windowSize.x = (float)_Width;
-	AssetLoader::Instance().windowSize.y = (float)_Height;
+	AssetLoader::Instance().SetWindowSize(_Width, _Height);
 }
 
 //Sets Up Objects + Other GLFW Parameters
@@ -27,7 +26,8 @@ static void InitialSetup()
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	//Create Window
-	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)AssetLoader::Instance().windowSize.x, (int)AssetLoader::Instance().windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
+	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
+	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
 
 	if (AssetLoader::Instance().currentWindow == NULL)
 	{
@@ -61,7 +61,7 @@ static void InitialSetup()
 	glfwSwapInterval(0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+	glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
 	glfwSetWindowSizeCallback(AssetLoader::Instance().currentWindow, (GLFWwindowsizefun)OnWindowResized);
 }
 
@@ -175,25 +175,13 @@ static void LoadScene1()
 	}
 
 	Scene::Current().SetAmbientLightStength(0.2f);
-	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
-	std::string skyboxPaths[6] =
-	{
-		"Resources/Skybox/Front.png",
-		"Resources/Skybox/Back.png",
-		"Resources/Skybox/Top.png",
-		"Resources/Skybox/Bottom.png",
-		"Resources/Skybox/Right.png",
-		"Resources/Skybox/Left.png"
-	};
-
-	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); 
+	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f)); 
 
 	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::Orthographic);
 	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+	UIRenderer->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	UIRenderer->SetText("Terrain Scene Test 1");
 	UIRenderer->SetRenderType(RenderBoth);
 
@@ -207,28 +195,23 @@ static void LoadScene2()
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 
-	Scene::Current().SetAmbientLightStength(0.2f);
-	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
-	std::string skyboxPaths[6] =
 	{
-		"Resources/Skybox/Front.png",
-		"Resources/Skybox/Back.png",
-		"Resources/Skybox/Top.png",
-		"Resources/Skybox/Bottom.png",
-		"Resources/Skybox/Right.png",
-		"Resources/Skybox/Left.png"
-	};
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(1.f, 1.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec4(1.f, 1.f, 1.f, 1.f));
+		UIRenderer->SetText("Terrain Scene Test 2");
+		UIRenderer->SetRenderType(RenderBoth);
+	}
 
-	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
-
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-	UIRenderer->SetText("Terrain Scene Test 2");
-	UIRenderer->SetRenderType(RenderBoth);
+	{
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetColor(glm::vec4(1.f, 1.f, 1.f, 1.f));
+		UIRenderer->SetRenderType(RenderBoth);
+	}
 
 }
 
@@ -242,6 +225,18 @@ int main()
 	//We Initialize The Renderable Loader BEFORE We Set Our Object Instances On Screen
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (None)
 	AssetLoader::Instance().LoadAssets("Resources");
+
+	std::string skyboxPaths[6] =
+	{
+		"Resources/Skybox/Front.png",
+		"Resources/Skybox/Back.png",
+		"Resources/Skybox/Top.png",
+		"Resources/Skybox/Bottom.png",
+		"Resources/Skybox/Right.png",
+		"Resources/Skybox/Left.png"
+	};
+
+	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
 
 	Time::Instance().Init();
 

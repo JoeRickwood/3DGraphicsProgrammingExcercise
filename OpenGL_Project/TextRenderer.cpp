@@ -2,20 +2,6 @@
 #include "RenderingPipeline.h"
 #include <iostream>
 
-void TextRenderer::SetText(std::string _content)
-{
-	text = _content;
-}
-
-void TextRenderer::SetFont(std::string _fontKey)
-{
-    fontKey = _fontKey;
-}
-
-void TextRenderer::SetColor(glm::vec3 _color)
-{
-	color = _color;
-}
 
 void TextRenderer::InitVBO() 
 {
@@ -31,8 +17,8 @@ void TextRenderer::BindVBOData()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glEnableVertexAttribArray(8);
+    glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -49,10 +35,6 @@ void TextRenderer::Update()
     scaleMat = glm::scale(glm::mat4(1.0f), parent->GetScale());
 
     modelMat = translationMat * rotationMat * scaleMat;
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &modelMat, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 TextRenderer::TextRenderer(std::string _shaderKey, ProjectionType _projectionType) : Renderer(_shaderKey, _projectionType)
@@ -61,8 +43,6 @@ TextRenderer::TextRenderer(std::string _shaderKey, ProjectionType _projectionTyp
 	rotationMat = glm::mat4();
 	scaleMat = glm::mat4();
 	modelMat = glm::mat4();
-
-	color = glm::vec3(1.f, 1.f, 1.f);
 
     renderShadows = false;
 }
@@ -73,10 +53,12 @@ TextRenderer::~TextRenderer()
 
 void TextRenderer::InitializeRenderingInfo(GLuint _program)
 {
-	glUniform3f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z);
-	glActiveTexture(GL_TEXTURE0);
+	glUniform4f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z, color.w);
 
-	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(Camera::Instance().GetProjectionMatrix(projection)));
+    glm::mat4 projectionMat = Camera::Instance().GetProjectionMatrix(projection);
+	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(projectionMat));
+
+    glUniform4f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z, color.w);
 }
 
 void TextRenderer::Init()
@@ -86,20 +68,38 @@ void TextRenderer::Init()
 
 void TextRenderer::Render()
 {
-    int x = parent->GetPosition().x;
-    int y = parent->GetPosition().y;
-
 	glBindVertexArray(mesh->VAO);
 
     glDisable(GL_DEPTH_TEST);
+
+
+    float totalWidth = 0.0f;
+    float totalHeight = 0.0f;
 
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
 
-        float xpos = x + ch.bearing.x * parent->GetScale().x;
-        float ypos = y - (ch.size.y - ch.bearing.y) * parent->GetScale().y;
+        totalWidth += (ch.advanceOffset >> 6) * parent->GetScale().x;
+
+        float tmpHeight = ch.size.y * parent->GetScale().y;
+        if (tmpHeight > totalHeight) 
+        {
+            totalHeight = tmpHeight;
+        }
+    }
+
+    float x = parent->GetPosition().x - (totalWidth / 2.0f);
+    float y = parent->GetPosition().y - (totalHeight / 2.0f);
+
+
+    for (c = text.begin(); c != text.end(); ++c)
+    {
+        TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
+
+        float xpos = (x + ch.bearing.x * parent->GetScale().x);
+        float ypos = (y - (ch.size.y - ch.bearing.y) * parent->GetScale().y);
 
         float width = ch.size.x * parent->GetScale().x;
         float height = ch.size.y * parent->GetScale().y;
@@ -123,12 +123,33 @@ void TextRenderer::Render()
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.advanceOffset >> 6) * parent->GetScale().x; // bitshift by 6 to get value in pixels (2^6 = 64)
+
+        // Advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += ((ch.advanceOffset >> 6) * parent->GetScale().x); // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glEnable(GL_DEPTH_TEST);
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void TextRenderer::SetText(std::string _content)
+{
+    text = _content;
+}
+
+std::string TextRenderer::GetText()
+{
+    return text;
+}
+
+void TextRenderer::SetFont(std::string _fontKey)
+{
+    fontKey = _fontKey;
+}
+
+std::string TextRenderer::GetFontKey()
+{
+    return fontKey;
 }

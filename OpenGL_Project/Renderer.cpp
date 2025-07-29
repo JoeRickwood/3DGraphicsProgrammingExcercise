@@ -14,6 +14,8 @@ Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectio
 	renderShadows = true;
 	drawToDepthBuffer = true;
 
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	VBO = NULL;
 }
 
@@ -60,6 +62,8 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glUniform3f(glGetUniformLocation(program, "CameraPos"), position.x, position.y, position.z);
 	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
 	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
+
+	glUniform4f(glGetUniformLocation(program, "Color"), color.x, color.y, color.z, color.w);
 
 	//Pass In Point Lights
 	glUniform1ui(glGetUniformLocation(program, "PointLightCount"), Scene::Current().GetPointLightCount());
@@ -205,4 +209,14 @@ void Renderer::SetShadowRendering(bool _on)
 void Renderer::SetDrawToDepthBuffer(bool _on)
 {
 	drawToDepthBuffer = _on;
+}
+
+void Renderer::SetColor(glm::vec4 _color)
+{
+	color = _color;
+}
+
+glm::vec4 Renderer::GetColor() const
+{
+	return color;
 }
