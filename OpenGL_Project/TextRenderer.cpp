@@ -101,7 +101,7 @@ void TextRenderer::Render()
             totalHeight = height;
         }
 
-        totalWidth + ((ch.advanceOffset >> 6) * parent->GetScale().x);
+        totalWidth += (ch.advanceOffset >> 6) * parent->GetScale().x;
     }
 
     int x = parent->GetPosition().x - (totalWidth / 2.0f);
@@ -112,7 +112,6 @@ void TextRenderer::Render()
 
     glDisable(GL_DEPTH_TEST);
 
-    
     for (c = text.begin(); c != text.end(); ++c)
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);

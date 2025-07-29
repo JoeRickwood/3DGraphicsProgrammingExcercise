@@ -224,21 +224,41 @@ static void LoadScene2()
 
 
 	{
-		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, -150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
 		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
 		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UIRenderer->SetFont("AldotheApache");
 		UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		UIRenderer->SetText("Terrain Scene Test 2");
+		UIRenderer->SetText("Perlin Noise Scene");
 		UIRenderer->SetRenderType(RenderBoth);
+		UIObjectTest->SetScreenAlignment(MIDDLE, TOP);
 	} 
 
 	{
-		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(100.f, 100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(-250.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
 		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
 		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UIRenderer->SetRenderType(RenderBoth);
 		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
+	}
+
+	{
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
+	}
+
+	{
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(250.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
 	}
 
 }

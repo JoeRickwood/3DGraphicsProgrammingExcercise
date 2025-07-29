@@ -1,5 +1,5 @@
 #pragma once
-#include "ObjectInstance.h"
+#include "UIObjectInstance.h"
 #include "Components.h"
 
 #define MAX_POINT_LIGHTS 4
