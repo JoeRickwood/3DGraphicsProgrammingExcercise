@@ -14,6 +14,9 @@ protected:
 
 	std::string name;
 
+
+	int scene;
+
 	std::vector<std::shared_ptr<Component>> components;
 
 public:
@@ -21,24 +24,27 @@ public:
 	~ObjectInstance();
 
 	//Getters And Setters For Position
-	const glm::vec3 GetPosition();
+	glm::vec3 GetPosition() const;
 	void SetPosition(glm::vec3 _position);
 
 	//Getters And Setters For Rotation
-	const glm::vec3 GetRotation();
+	glm::vec3 GetRotation() const;
 	void SetRotation(glm::vec3 _rotation);
 
 	//Getters And Setters For Scale
-	const glm::vec3 GetScale();
+	glm::vec3 GetScale() const;
 	void SetScale(glm::vec3 _scale);
 
 	//Getters And Setters For Name
-	const std::string GetName();
+	std::string GetName() const;
 	void SetName(std::string _name);
 
 	//Getters And Setters For Parent
-	const ObjectInstance* GetParent();
+	ObjectInstance* GetParent() const;
 	void SetParent(ObjectInstance* _parent);
+
+	int GetScene() const;
+	void SetScene(int _scene);
 
 	//Gets The Component Of Type T And Returns The Pointer To It
 	template<typename T>

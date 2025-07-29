@@ -36,11 +36,15 @@ public:
 	void SetAmbientLightColor(glm::vec3 _color);
 	const glm::vec3 GetAmbientLight();
 
+	int GetCurrentScene() const;
+	void ChangeScene(int _scene);
+	
+
 protected:
 	Scene();
 	~Scene();
 
-	std::vector<ObjectInstance*> objects;
+	std::map<int, std::vector<ObjectInstance*>> objects;
 
 	//Point Lights
 	PointLight* pointLights[MAX_POINT_LIGHTS];
@@ -56,5 +60,8 @@ protected:
 	//Ambient Color
 	glm::vec3 ambientColor;
 	float ambientStrength;
+
+
+	int currentScene;
 };
 

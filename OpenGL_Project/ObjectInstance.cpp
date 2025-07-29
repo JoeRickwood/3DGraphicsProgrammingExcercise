@@ -16,10 +16,9 @@ ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3
 
 ObjectInstance::~ObjectInstance()
 {
-	Scene::Current().RemoveObject(this);
 }
 
-const glm::vec3 ObjectInstance::GetPosition()
+glm::vec3 ObjectInstance::GetPosition() const
 {
 	if (parent != nullptr) 
 	{
@@ -36,7 +35,7 @@ void ObjectInstance::SetPosition(glm::vec3 _position)
 	position = _position;
 }
 
-const glm::vec3 ObjectInstance::GetRotation()
+glm::vec3 ObjectInstance::GetRotation() const
 {
 	if (parent != nullptr)
 	{
@@ -53,7 +52,7 @@ void ObjectInstance::SetRotation(glm::vec3 _rotation)
 	rotation = _rotation;
 }
 
-const glm::vec3 ObjectInstance::GetScale()
+glm::vec3 ObjectInstance::GetScale() const
 {
 	if (parent != nullptr)
 	{
@@ -70,7 +69,7 @@ void ObjectInstance::SetScale(glm::vec3 _scale)
 	scale = _scale;
 }
 
-const std::string ObjectInstance::GetName()
+std::string ObjectInstance::GetName() const 
 {
 	return name;
 }
@@ -80,7 +79,7 @@ void ObjectInstance::SetName(std::string _name)
 	name = _name;
 }
 
-const ObjectInstance* ObjectInstance::GetParent()
+ObjectInstance* ObjectInstance::GetParent() const
 {
 	return parent;
 }
@@ -88,6 +87,16 @@ const ObjectInstance* ObjectInstance::GetParent()
 void ObjectInstance::SetParent(ObjectInstance* _parent)
 {
 	parent = _parent;
+}
+
+int ObjectInstance::GetScene() const
+{
+	return scene;
+}
+
+void ObjectInstance::SetScene(int _scene)
+{
+	scene = _scene;
 }
 
 void ObjectInstance::Update()

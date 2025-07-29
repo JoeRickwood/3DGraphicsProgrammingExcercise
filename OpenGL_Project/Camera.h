@@ -9,32 +9,32 @@ public:
 	static void CalculateViewMatrix();
 	static void CalculateProjectionMatrix();
 
-	const glm::mat4 GetProjectionMatrix(ProjectionType _type);
+	glm::mat4 GetProjectionMatrix(ProjectionType _type) const;
 
-	const glm::mat4 GetViewMatrix();
+	glm::mat4 GetViewMatrix() const;
 	
-	const glm::vec3 GetCameraPosition();
+	glm::vec3 GetCameraPosition() const;
 	void SetCameraPosition(glm::vec3 _position);
 
-	const glm::vec3 GetCameraLookDirection();
+	glm::vec3 GetCameraLookDirection() const;
 	void SetCameraLookDirection(glm::vec3 _direction);
 
-	const glm::vec3 GetCameraUpDirection();
+	glm::vec3 GetCameraUpDirection() const;
 	void SetCameraUpDirection(glm::vec3 _upDirection);
 
-	const float GetNearPlane();
+	float GetNearPlane() const;
 	void SetNearPlane(float _nearPlane);
 
-	const float GetFarPlane();
+	float GetFarPlane() const;
 	void SetFarPlane(float _farPlane);
 
-	const float GetFieldOfView();
+	float GetFieldOfView() const;
 	void SetFieldOfView(float _fieldOfView);
 
-	const float GetShadowFarPlane();
+	float GetShadowFarPlane() const;
 	void SetShadowFarPlane(float _shadowFarPlane);
 
-	const float GetOrthographicSize();
+	float GetOrthographicSize() const;
 	void SetOrthographicSize(float _orthographicSize);
 
 protected:
@@ -46,6 +46,7 @@ protected:
 	glm::mat4 orthoProjectionMatrix;
 	glm::mat4 perspectiveProjectionMatrix;
 	glm::mat4 shadowProjectionPerspectiveMatrix;
+	glm::mat4 screenOrthoProjectionMatrix;
 
 	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraLookDir = glm::vec3(0.0f, 0.0f, -1.0f);

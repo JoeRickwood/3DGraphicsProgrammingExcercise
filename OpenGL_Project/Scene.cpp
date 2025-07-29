@@ -16,8 +16,20 @@ const glm::vec3 Scene::GetAmbientLight()
 	return ambientColor * ambientStrength;
 }
 
+int Scene::GetCurrentScene() const
+{
+	return currentScene;
+}
+
+void Scene::ChangeScene(int _scene)
+{
+	currentScene = _scene;
+}
+
 Scene::Scene()
 {
+	currentScene = 1;
+
 	pointLightCount = 0;
 	spotLightCount = 0;
 
@@ -33,16 +45,22 @@ Scene::~Scene()
 
 void Scene::AddObject(ObjectInstance* _obj)
 {
-	objects.push_back(_obj);
+	if (_obj == nullptr)
+	{
+		return;
+	}
+
+	objects[currentScene].push_back(_obj);
+	_obj->SetScene(currentScene);
 }
 
 void Scene::RemoveObject(ObjectInstance* _obj)
 {
-	for (int i = 0; i < objects.size(); ++i)
+	for (int i = 0; i < objects[currentScene].size(); ++i)
 	{
-		if (objects[i] == _obj)
+		if (objects[currentScene][i] == _obj)
 		{
-			objects.erase(objects.begin() + i);
+			objects[currentScene].erase(objects[currentScene].begin() + i);
 			return;
 		}
 	}
@@ -117,7 +135,7 @@ const int Scene::GetSpotLightCount()
 
 std::vector<ObjectInstance*> Scene::GetAllObjects()
 {
-	return objects;
+	return objects[currentScene];
 }
 
 void Scene::SetDirectionalLight(DirectionalLight* _directionalLight)
@@ -132,7 +150,7 @@ DirectionalLight* Scene::GetDirectionalLight()
 
 ObjectInstance* Scene::FindObject(std::string _name)
 {
-	for (auto& obj : objects)
+	for (auto& obj : objects[currentScene])
 	{
 		if (obj->GetName() == _name)
 		{
@@ -145,9 +163,9 @@ ObjectInstance* Scene::FindObject(std::string _name)
 
 void Scene::Update()
 {
-	for (auto& obj : objects)
+	for (auto& obj : objects[currentScene])
 	{
-		if (obj == nullptr) 
+		if (obj == nullptr)
 		{
 			continue;
 		}

@@ -4,7 +4,7 @@
 class RenderingPipeline 
 {
 protected:
-	std::vector<Renderer*> renderers;
+	std::map<int, std::vector<Renderer*>> renderers;
 
 	RenderingPipeline();
 	~RenderingPipeline();
@@ -29,4 +29,7 @@ public:
 
 	static void InitShadowRendering();
 	static GLuint GetShadowMap();
+
+
+	void ClearAllRenderers();
 };

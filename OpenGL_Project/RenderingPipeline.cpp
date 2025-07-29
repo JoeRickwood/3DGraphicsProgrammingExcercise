@@ -15,16 +15,16 @@ RenderingPipeline::~RenderingPipeline()
 
 void RenderingPipeline::AddRenderer(Renderer* _renderer)
 {
-	Current().renderers.push_back(_renderer);
+	Current().renderers[_renderer->parent->GetScene()].push_back(_renderer);
 }
 
 void RenderingPipeline::RemoveRenderer(Renderer* _renderer)
 {
-	for (int i = 0; i < Current().renderers.size(); i++)
+	for (int i = 0; i < Current().renderers[_renderer->parent->GetScene()].size(); i++)
 	{
-		if (Current().renderers[i] == _renderer)
+		if (Current().renderers[_renderer->parent->GetScene()][i] == _renderer)
 		{
-			Current().renderers.erase(Current().renderers.begin() + i);
+			Current().renderers[_renderer->parent->GetScene()].erase(Current().renderers[_renderer->parent->GetScene()].begin() + i);
 			return;
 		}
 	}
@@ -35,16 +35,16 @@ void RenderingPipeline::Render()
 	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for (int i = 0; i < Current().renderers.size(); ++i)
+	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
 	{
-		GLuint program = AssetLoader::Instance().GetShaderProgram(Current().renderers[i]->shaderKey);
+		GLuint program = AssetLoader::Instance().GetShaderProgram(Current().renderers[Scene::Current().GetCurrentScene()][i]->shaderKey);
 		glUseProgram(program);
 
-		Current().renderers[i]->BindVBOData();
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->BindVBOData();
 
-		Current().renderers[i]->InitializeRenderingInfo(program);
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->InitializeRenderingInfo(program);
 
-		Current().renderers[i]->Render();
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->Render();
 
 		glUseProgram(0);
 	}
@@ -57,16 +57,16 @@ void RenderingPipeline::Render(std::string shaderKeyOverride)
 	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for (int i = 0; i < Current().renderers.size(); ++i)
+	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
 	{
 		GLuint program = AssetLoader::Instance().GetShaderProgram(shaderKeyOverride);
 		glUseProgram(program);
 
-		Current().renderers[i]->BindVBOData();
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->BindVBOData();
 
-		Current().renderers[i]->InitializeRenderingInfo(program);
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->InitializeRenderingInfo(program);
 
-		Current().renderers[i]->Render();
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->Render();
 
 		glUseProgram(0);
 	}
@@ -95,16 +95,16 @@ void RenderingPipeline::ShadowPass()
 	//Cull Front Faces For Peter Panning
 	glCullFace(GL_FRONT);
 
-	for (int i = 0; i < Current().renderers.size(); ++i)
+	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
 	{
-		if (!Current().renderers[i]->renderShadows) 
+		if (!Current().renderers[Scene::Current().GetCurrentScene()][i]->renderShadows || Current().renderers[Scene::Current().GetCurrentScene()][i] == nullptr)
 		{
 			continue;
 		}
 
-		Current().renderers[i]->BindVBOData();
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->BindVBOData();
 
-		Current().renderers[i]->Render();
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->Render();
 	}
 
 	glCullFace(GL_BACK);
@@ -237,4 +237,9 @@ void RenderingPipeline::InitShadowRendering()
 GLuint RenderingPipeline::GetShadowMap()
 {
 	return Current().depthMap;
+}
+
+void RenderingPipeline::ClearAllRenderers()
+{
+	renderers[Scene::Current().GetCurrentScene()].clear();
 }

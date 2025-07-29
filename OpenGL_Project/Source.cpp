@@ -7,7 +7,7 @@
 #include "RenderingPipeline.h"
 
 //On Window Resized Callback Links To The glfwWindowSizefun
-void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
+static void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
 	glViewport(0, 0, _Width, _Height);
 
@@ -16,7 +16,7 @@ void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 }
 
 //Sets Up Objects + Other GLFW Parameters
-void InitialSetup() 
+static void InitialSetup() 
 {
 	//Initialize GLFW And setting the version to 4.6
 	glfwInit();
@@ -65,17 +65,12 @@ void InitialSetup()
 	glfwSetWindowSizeCallback(AssetLoader::Instance().currentWindow, (GLFWwindowsizefun)OnWindowResized);
 }
 
-//Update Is Called Once Every Frame BEFORE Render
-void Update() 
-{
-	Scene::Current().Update();
 
-	glfwPollEvents();
-}
-
-//Creates All Objects In The Scene
-void LoadScene()
+//Creates All Objects In The Scene1
+static void LoadScene1()
 {
+	Scene::Current().ChangeScene(1);
+
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
 	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -0.8f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
@@ -204,8 +199,43 @@ void LoadScene()
 
 }
 
+//Creates All Objects In The Scene2
+static void LoadScene2()
+{
+	Scene::Current().ChangeScene(2);
+
+	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
+
+	Scene::Current().SetAmbientLightStength(0.2f);
+	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	std::string skyboxPaths[6] =
+	{
+		"Resources/Skybox/Front.png",
+		"Resources/Skybox/Back.png",
+		"Resources/Skybox/Top.png",
+		"Resources/Skybox/Bottom.png",
+		"Resources/Skybox/Right.png",
+		"Resources/Skybox/Left.png"
+	};
+
+	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
+
+	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	UIRenderer->SetFont("AldotheApache");
+	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+	UIRenderer->SetText("Terrain Scene Test 2");
+	UIRenderer->SetRenderType(RenderBoth);
+
+}
+
 int main()
 {
+	bool pressLock = false;
+
 	//Setup All Objects In Project
 	InitialSetup();
 
@@ -215,8 +245,8 @@ int main()
 
 	Time::Instance().Init();
 
-	LoadScene();
-
+	LoadScene1();
+	LoadScene2();
 
 	RenderingPipeline::InitShadowRendering();
 
@@ -228,10 +258,34 @@ int main()
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();
 
-		Update();
+		//Loads Scene 1
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_PRESS)
+		{
+			pressLock = true;
+			Scene::Current().ChangeScene(1);
+		}
+
+		//Loads Scene 2
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_PRESS)
+		{
+			pressLock = true;
+			Scene::Current().ChangeScene(2);
+		}
+
+
+		//Reset Press Lock State
+		if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_RELEASE ||
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_RELEASE)
+		{
+			pressLock = false;
+		}
+
+
+		Scene::Current().Update();
+
+		glfwPollEvents();
 
 		RenderingPipeline::ShadowPass();
-
 		RenderingPipeline::Render();
 	}
 

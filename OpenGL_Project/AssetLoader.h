@@ -102,7 +102,8 @@ enum ProjectionType
 {
 	Orthographic,
 	Perspective,
-	ShadowPerspective
+	ShadowPerspective,
+	ScreenOrthographic
 };
 
 class AssetLoader
@@ -176,7 +177,7 @@ public:
 	}
 
 	//Basic Method To Check If The Bounding Box Contains Point Of x, y
-	inline const bool Contains(float x, float y)
+	inline bool Contains(float x, float y) const
 	{
 		if (x > minX && x < maxX &&
 			y > minY && y < maxY)

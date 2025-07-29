@@ -76,10 +76,7 @@ void TextRenderer::InitializeRenderingInfo(GLuint _program)
 	glUniform3f(glGetUniformLocation(_program, "Color"), color.x, color.y, color.z);
 	glActiveTexture(GL_TEXTURE0);
 
-    glm::mat4 projection = glm::ortho(0.0f, AssetLoader::Instance().windowSize.x, 0.0f, AssetLoader::Instance().windowSize.y);
-
-	glm::mat4 matrix = Camera::Instance().GetProjectionMatrix(Orthographic);
-	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(Camera::Instance().GetProjectionMatrix(projection)));
 }
 
 void TextRenderer::Init()

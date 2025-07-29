@@ -1,35 +1,125 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(538,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (OpenGL_Project.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Button.cpp
+  Camera.cpp
+  DefaultRenderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'DefaultRenderer.cpp')
+  
+  InstancedRenderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'InstancedRenderer.cpp')
+  
+  Lights.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Lights.cpp')
+  
+  ObjectInstance.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'ObjectInstance.cpp')
+  
+  PlayerController.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'PlayerController.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MathFunctions.h(38,55): warning C4309: 'default argument': truncation of constant value
+  (compiling source file 'PlayerController.cpp')
+  
+  Renderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Renderer.cpp')
+  
+  AssetLoader.cpp
+  RenderingPipeline.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'RenderingPipeline.cpp')
+  
+  Scene.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Scene.cpp')
+  
+  Skybox.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Skybox.cpp')
+  
   Source.cpp
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'Source.cpp')
   
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MathFunctions.h(38,55): warning C4309: 'default argument': truncation of constant value
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MathFunctions.h(38,55): warning C4309: 'default argument': truncation of constant value
   (compiling source file 'Source.cpp')
   
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(124,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(124,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(132,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(132,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(139,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(141,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(162,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(162,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(169,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(169,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(176,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(63,34): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(63,34): warning C4244:         with
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(63,34): warning C4244:         [
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(63,34): warning C4244:             _Ty=int
-D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(63,34): warning C4244:         ]
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(119,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(119,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(127,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(127,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(134,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(136,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(157,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(157,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(164,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(164,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(171,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(69,34): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(69,34): warning C4244:         with
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(69,34): warning C4244:         [
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(69,34): warning C4244:             _Ty=int
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(69,34): warning C4244:         ]
   (compiling source file 'Source.cpp')
-      D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(63,34):
+      C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\ObjectInstance.h(69,34):
       the template instantiation context (the oldest one first) is
-          D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(84,7):
+          C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Source.cpp(79,5):
           see reference to function template instantiation 'T *ObjectInstance::AddComponent<PlayerController,float,int>(float &&,int &&)' being compiled
           with
           [
               T=PlayerController
           ]
   
-  OpenGL_Project.vcxproj -> D:\Users\MDS3000618\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\Engine.exe
+  Terrain.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Terrain.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MathFunctions.h(38,55): warning C4309: 'default argument': truncation of constant value
+  (compiling source file 'Terrain.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(78,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(89,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(98,44): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(160,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(248,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(248,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(249,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(249,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(250,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(250,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(251,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(251,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(296,29): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(329,89): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(366,14): warning C4018: '>': signed/unsigned mismatch
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(371,14): warning C4018: '>': signed/unsigned mismatch
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(376,41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(376,34): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  TextRenderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'TextRenderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(89,11): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(89,11): warning C4244:         with
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(89,11): warning C4244:         [
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(89,11): warning C4244:             T=float
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(89,11): warning C4244:         ]
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(90,11): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(90,11): warning C4244:         with
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(90,11): warning C4244:         [
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(90,11): warning C4244:             T=float
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(90,11): warning C4244:         ]
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(127,38): warning C4244: '+=': conversion from 'T' to 'int', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(127,38): warning C4244:         with
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(127,38): warning C4244:         [
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(127,38): warning C4244:             T=float
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\TextRenderer.cpp(127,38): warning C4244:         ]
+  Time.cpp
+  Generating Code...
+  LINK : C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\Engine.exe not found or not built by the last incremental link; performing full link
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  OpenGL_Project.vcxproj -> C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\x64\Debug\Engine.exe
