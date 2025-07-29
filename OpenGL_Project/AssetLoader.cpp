@@ -473,6 +473,8 @@ void AssetLoader::SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _
 	}
 
 	stbi_write_jpg((_filepath + ".jpg").c_str(), _width, _height, 1, _pixels, 100);
+
+	CreateTexture((_filepath + ".jpg"), "Noise");
 }
 
 GLuint AssetLoader::GetShaderProgram(std::string _key)

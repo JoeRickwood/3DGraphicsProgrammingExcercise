@@ -1,6 +1,6 @@
 #ifdef COMPILING_VS
 
-	layout (location = 0) in vec4 vertex;
+	layout (location = 8) in vec4 vertex;
 
 	uniform mat4 VP;
 
@@ -19,14 +19,18 @@
 	in vec2 FragTexCoords;
 
 	uniform sampler2D Texture0;
-	uniform vec3 Color				= vec3(1.f, 1.f, 1.f);
+	uniform vec4 Color				= vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	out vec4 FinalColor;
 
 	void main() 
 	{
-		vec4 sampled = vec4(1.0, 1.0, 1.0, texture(Texture0, FragTexCoords).r);
-		FinalColor = vec4(Color, 1.0) * sampled;
+		if(texture(Texture0, FragTexCoords).r < 0.5f) 
+		{
+			discard;
+		}
+
+		FinalColor = Color;
 	}
 
 #endif

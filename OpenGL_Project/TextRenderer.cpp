@@ -31,8 +31,8 @@ void TextRenderer::BindVBOData()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glEnableVertexAttribArray(8);
+    glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -86,14 +86,33 @@ void TextRenderer::Init()
 
 void TextRenderer::Render()
 {
-    int x = parent->GetPosition().x;
-    int y = parent->GetPosition().y;
+    float totalHeight = 0;
+    float totalWidth = 0;
+
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); ++c)
+    {
+        TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
+
+        float height = ch.size.y * parent->GetScale().y;
+
+        if (height > totalHeight) 
+        {
+            totalHeight = height;
+        }
+
+        totalWidth + ((ch.advanceOffset >> 6) * parent->GetScale().x);
+    }
+
+    int x = parent->GetPosition().x - (totalWidth / 2.0f);
+    int y = parent->GetPosition().y - (totalHeight / 2.0f);
+
 
 	glBindVertexArray(mesh->VAO);
 
     glDisable(GL_DEPTH_TEST);
 
-    std::string::const_iterator c;
+    
     for (c = text.begin(); c != text.end(); ++c)
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);

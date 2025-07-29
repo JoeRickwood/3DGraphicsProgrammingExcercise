@@ -39,6 +39,8 @@
 		vec4 mainCol = texture(Texture0, FragTexCoords * Tiling);
 		mainCol.a = 1;
 
+		//vec4 mainCol = vec4(1, 1, 1, 1);
+
 		//if(mainCol.a < 0.5)
 			//discard;
 

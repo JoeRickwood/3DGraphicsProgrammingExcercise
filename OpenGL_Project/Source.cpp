@@ -222,13 +222,24 @@ static void LoadScene2()
 
 	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-	UIRenderer->SetText("Terrain Scene Test 2");
-	UIRenderer->SetRenderType(RenderBoth);
+
+	{
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetFont("AldotheApache");
+		UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+		UIRenderer->SetText("Terrain Scene Test 2");
+		UIRenderer->SetRenderType(RenderBoth);
+	} 
+
+	{
+		ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(100.f, 100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
+	}
 
 }
 
