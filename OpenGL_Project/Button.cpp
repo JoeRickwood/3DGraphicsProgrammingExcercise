@@ -1,13 +1,14 @@
 #include "Button.h"
 #include "Renderer.h"
 #include <iostream>
+#include "Time.h"
+#include "MathFunctions.h"
 
 const bool Button::Intersects(glm::vec3 _position) const
 {
-
 	//Calculate The Bounds Of The Button
 	glm::vec3 position = parent->GetPosition();
-	glm::vec3 scale = parent->GetScale();
+	glm::vec3 scale = parent->GetScale() * 2.0f;
 
 	float left = position.x - (scale.x / 2.f);
 	float right = position.x + (scale.x / 2.f);
@@ -24,98 +25,58 @@ const bool Button::Intersects(glm::vec3 _position) const
 	return false;
 }
 
-//Debugs The Current Position Of the Mouse In Screen Coordinates And Then Remapped To Be In The Same Space As The Button
-void Button::DebugPos()
+
+Button::Button()
 {
-	double x;
-	double y;
-
-	int windowSizeX;
-	int windowSizeY;
-
-	GLFWwindow* window = glfwGetCurrentContext();
-
-	glfwGetCursorPos(window, &x, &y);
-	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
-
-	std::cout << "Mouse Coordinates On Screen :" << x << "," << y << std::endl;
-	std::cout << "Mouse Coordinates Remapped :" << (x / windowSizeX) * 2.f - 1.f << "," << -((y / windowSizeY) * 2.f - 1.f) << std::endl << std::endl;
-}
-
-Button::Button(int _texID0, int _texID1)
-{
-	debugToggle = false;
-	debugToggleLock = false;
-	mousePos = glm::vec2(0.f, 0.f);
-
 	mouseOver = false;
 
-	textureID0 = _texID0;
-	textureID1 = _texID1;
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	pressed = false;
+	initialScale = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Button::~Button()
 {
 }
 
+void Button::Init()
+{
+	initialScale = parent->GetLocalScale();
+}
+
 void Button::Update()
 {
-	//Create A Toggle-Action State Of The '3' 
-	if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_PRESS && debugToggleLock == false)
-	{
-		debugToggle = !debugToggle;
-		debugToggleLock = true;
-		DebugPos();
-	}
-
-	if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_RELEASE && debugToggleLock)
-	{
-		debugToggleLock = false;
-	}
-
-
+	glm::vec2 windowSize = AssetLoader::Instance().windowSize;
 
 	double x;
 	double y;
-
-	int windowSizeX;
-	int windowSizeY;
-
 	GLFWwindow* window = glfwGetCurrentContext();
 	glfwGetCursorPos(window, &x, &y);
 
-	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
-
-	//Remap Mouse Pos To Be In Correct Spacing
-	mousePos.x = ((float)x / (float)windowSizeX) * 2.f - 1.f;
-	mousePos.y = ((float)y / (float)windowSizeY) * 2.f - 1.f;
-
-	//std::cout << mousePos.x << "," << mousePos.y << std::endl;
-
 	//Check If The Mouse Posituion Intersects The Buttons' Global Bounds
-	mouseOver = Intersects(glm::vec3(mousePos.x, -mousePos.y, 0.f));
+	mouseOver = Intersects(glm::vec3(x, AssetLoader::Instance().windowSize.y - y - 24, 0.f));
 
 	//If It Does Intersects, Change The TextureID to the alternate texture
 	if (mouseOver) 
 	{
-		//parent->GetComponent<Renderer>()->textureID = textureID1;
-
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && pressLock == false)
 		{
 			Click();
 			pressLock = true;
 		}
 	}
-	else //If It Does Not Intersect, Change The TextureID to the base Texture
-	{
-		//parent->GetComponent<Renderer>()->textureID = textureID0;
-	}
 
 	//Reset Press Lock If The Mouse Button Is Released
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 	{
 		pressLock = false;
+		pressed = false;
 	}
+
+	color = Lerp(color, pressed ? glm::vec4(0.5f, 0.5f, 0.5f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Time::Instance().deltaTime * 50.0f);
+	parent->SetScale(Lerp(parent->GetLocalScale(), mouseOver ? initialScale * 1.1f : initialScale, Time::Instance().deltaTime * 50.0f));
+
+	parent->GetComponent<Renderer>()->SetColor(color);
 }
 
 void Button::AddListener(std::function<void()> _func)
@@ -129,4 +90,21 @@ void Button::Click()
 	{
 		listeners[i]();
 	}
+
+	pressed = true;
+}
+
+glm::vec4 Button::GetColor() const
+{
+	return color;
+}
+
+void Button::SetColor(glm::vec4 _color) 
+{
+	color = _color;
+}
+
+bool Button::GetPressedState() const
+{
+	return pressed;
 }

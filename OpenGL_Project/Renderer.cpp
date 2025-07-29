@@ -15,6 +15,10 @@ Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectio
 	drawToDepthBuffer = true;
 
 	VBO = NULL;
+
+
+	textureSize = glm::vec2(0, 0);
+	border = 0;
 }
 
 Renderer::~Renderer()
@@ -60,6 +64,12 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glUniform3f(glGetUniformLocation(program, "CameraPos"), position.x, position.y, position.z);
 	glUniform1f(glGetUniformLocation(program, "Time"), Time::Instance().time);
 	glUniform2f(glGetUniformLocation(program, "Tiling"), textureTiling.x, textureTiling.y);
+
+	//Color
+	glUniform4fv(glGetUniformLocation(program, "Color"), 1, glm::value_ptr(color));
+	glUniform2fv(glGetUniformLocation(program, "TextureSize"), 1, glm::value_ptr(textureSize));
+	glUniform2fv(glGetUniformLocation(program, "WidgetSize"), 1, glm::value_ptr(parent->GetScale()));
+	glUniform1f(glGetUniformLocation(program, "BorderSize"), border);
 
 	//Pass In Point Lights
 	glUniform1ui(glGetUniformLocation(program, "PointLightCount"), Scene::Current().GetPointLightCount());
@@ -205,4 +215,34 @@ void Renderer::SetShadowRendering(bool _on)
 void Renderer::SetDrawToDepthBuffer(bool _on)
 {
 	drawToDepthBuffer = _on;
+}
+
+void Renderer::SetColor(glm::vec4 _color) 
+{
+	color = _color;
+}
+
+float Renderer::GetBorderSize() const
+{
+	return border;
+}
+
+void Renderer::SetBorderSize(float _size)
+{
+	border = _size;
+}
+
+glm::vec2 Renderer::GetTextureSize() const
+{
+	return textureSize;
+}
+
+void Renderer::SetTextureSize(glm::vec2 _size)
+{
+	textureSize = _size;
+}
+
+glm::vec4 Renderer::GetColor() const
+{
+	return color;
 }

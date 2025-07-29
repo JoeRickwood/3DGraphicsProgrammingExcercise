@@ -261,6 +261,39 @@ static void LoadScene2()
 		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
 	}
 
+	//Buttons
+	{
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(-275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(MIDDLE, BOTTOM);
+		auto button = UIObjectTest->AddComponent<Button>();
+		button->AddListener([] 
+		{
+			std::cout << "Pressed Button";
+		});
+		UIRenderer->SetBorderSize(50);
+		UIRenderer->SetTextureSize(glm::vec2(64, 64));
+	}
+
+	{
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(MIDDLE, BOTTOM);
+		auto button = UIObjectTest->AddComponent<Button>();
+		button->AddListener([]
+			{
+				std::cout << "Pressed Button";
+			});
+		UIRenderer->SetBorderSize(50);
+		UIRenderer->SetTextureSize(glm::vec2(64, 64));
+	}
+
 }
 
 int main()

@@ -64,6 +64,11 @@ glm::vec3 ObjectInstance::GetScale() const
 	}
 }
 
+glm::vec3 ObjectInstance::GetLocalScale() const
+{
+	return scale;
+}
+
 void ObjectInstance::SetScale(glm::vec3 _scale)
 {
 	scale = _scale;

@@ -59,6 +59,11 @@ protected:
 
 	glm::vec2 textureTiling = glm::vec2(1.f, 1.f);
 
+	glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	float border;
+	glm::vec2 textureSize;
+
+
 	GLuint VBO;
 
 	std::vector<TexturePass> textures;
@@ -84,4 +89,13 @@ public:
 	void SetRenderType(RenderType _type);
 	void SetShadowRendering(bool _on);
 	void SetDrawToDepthBuffer(bool _on);
+
+	glm::vec4 GetColor() const;
+	void SetColor(glm::vec4 _color);
+
+	float GetBorderSize() const;
+	void SetBorderSize(float _size);
+
+	glm::vec2 GetTextureSize() const;
+	void SetTextureSize(glm::vec2 _size);
 };
