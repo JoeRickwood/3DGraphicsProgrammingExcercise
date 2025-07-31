@@ -12,7 +12,6 @@ Terrain::Terrain(std::string _shaderKey, ProjectionType _projection, int _sizeX,
 	cellSpacing = _cellSpacing;
 	mesh = nullptr;
 	modelMat = glm::mat4();
-	terrainScale = 0.0f;
 }
 
 Terrain::~Terrain()
@@ -32,7 +31,7 @@ void Terrain::Init()
 		}
 	}
 
-	GenerateMesh(0.0f);
+	//GenerateMesh(0.0f);
 
 	RenderingPipeline::AddRenderer(this);
 }
@@ -142,6 +141,11 @@ glm::vec2 Terrain::GetSize()
 	return terrainSize;
 }
 
+void Terrain::SetSeed(int _seed)
+{
+	seed = _seed;
+}
+
 float Terrain::Smoothstep(float edge0, float edge1, float x)
 {
 	// Scale, and clamp x to 0..1 range
@@ -183,10 +187,8 @@ void Terrain::Render()
 }
 
 
-void Terrain::GenerateMesh(float _scale)
+void Terrain::GenerateMesh(bool _generateNormals)
 {
-	terrainScale = _scale;
-
 	if (mesh)
 	{
 		delete mesh;
@@ -196,13 +198,6 @@ void Terrain::GenerateMesh(float _scale)
 	normals.clear();
 	indices.clear();
 	texCoords.clear();
-	
-	//LoadHeightmap("Resources/Heightmap0.raw");
-	LoadPerlinMap(terrainScale);
-
-	SaveAsHeightmap();
-
-	//SmoothHeights(0); 
 
 	for (int x = 0; x < terrainSize.x; x++)
 	{
@@ -238,37 +233,39 @@ void Terrain::GenerateMesh(float _scale)
 		}
 	}
 
-
-	//Recalculate Normals
-	float invCellSpacing = 1.0f / (2.0f * cellSpacing);
-	for (int x = 0; x < terrainSize.x; ++x)
+	if (_generateNormals) 
 	{
-		for (int y = 0; y < terrainSize.y; ++y)
+		//Recalculate Normals
+		float invCellSpacing = 1.0f / (2.0f * cellSpacing);
+		for (int x = 0; x < terrainSize.x; ++x)
 		{
-			float rowNeg = SampleHeight(x - 1, y);
-			float rowPos = SampleHeight(x + 1, y);
-			float colNeg = SampleHeight(x, y - 1);
-			float colPos = SampleHeight(x, y + 1);
-
-			float X = rowNeg - rowPos;
-			if (x == 0 || x == terrainSize.x - 1) 
+			for (int y = 0; y < terrainSize.y; ++y)
 			{
-				X *= 2;
+				float rowNeg = SampleHeight(x - 1, y);
+				float rowPos = SampleHeight(x + 1, y);
+				float colNeg = SampleHeight(x, y - 1);
+				float colPos = SampleHeight(x, y + 1);
+
+				float X = rowNeg - rowPos;
+				if (x == 0 || x == terrainSize.x - 1)
+				{
+					X *= 2;
+				}
+
+				float Y = colPos - colNeg;
+				if (y == 0 || y == terrainSize.y - 1)
+				{
+					Y *= 2;
+				}
+
+				glm::vec3 tangentZ = glm::vec3(0.0f, X * invCellSpacing, 1.0f);
+				glm::vec3 tangentX = glm::vec3(1.0f, Y * invCellSpacing, 0.0f);
+
+				glm::vec3 normal = glm::cross(tangentZ, tangentX);
+				normal = glm::normalize(normal);
+
+				normals[x * terrainSize.y + y] = normal;
 			}
-
-			float Y = colPos - colNeg;
-			if (y == 0 || y == terrainSize.y - 1) 
-			{
-				Y *= 2;
-			}
-
-			glm::vec3 tangentZ = glm::vec3(0.0f, X * invCellSpacing, 1.0f);
-			glm::vec3 tangentX = glm::vec3(1.0f, Y * invCellSpacing, 0.0f);
-
-			glm::vec3 normal = glm::cross(tangentZ, tangentX);
-			normal = glm::normalize(normal);
-
-			normals[x * terrainSize.y + y] = normal;
 		}
 	}
 
@@ -296,6 +293,7 @@ void Terrain::LoadHeightmap(std::string _filepath)
 	for (unsigned int i = 0; i < vertexCount; i++)
 	{
 		heights[i] = Lerp(minHeight, maxHeight, (float)heightValues[i] / 255.0f);
+		//std::cout << (float)heightValues[i] / 255.0f;
 	}
 }
 
@@ -314,7 +312,74 @@ void Terrain::SaveAsHeightmap()
 		}
 	}
 
-	AssetLoader::SaveImageToPath("NoiseTextures/NoiseTex", pixels, terrainSize.x, terrainSize.y);
+	AssetLoader::SaveImageToPath("NoiseTextures/Noise", pixels, terrainSize.x, terrainSize.y);
+}
+
+
+void Terrain::CreateHeightmap()
+{
+	if (terrainSize.x <= 0 || terrainSize.y <= 0)
+	{
+		std::cerr << "Invalid terrain size!" << std::endl;
+		return;
+	}
+
+	uint8_t* pixels = new uint8_t[terrainSize.x * terrainSize.y];
+	float* noiseValues = new float[terrainSize.x * terrainSize.y];
+
+	int index = 0;
+
+	int seed = rand() % 1000000;
+
+	float minValue = 10000.0f;
+	float maxValue = -10000.0f;
+
+	//Set Initial Values And Calculate Min And Max Values
+	for (int i = 0, x = 0; x < terrainSize.x; x++)
+	{
+		for (int y = 0; y < terrainSize.y; y++)
+		{
+			float rawNoise = (float)PerlinNoise(x * cellSpacing, y * cellSpacing, seed) + 0.5f;
+
+			if (rawNoise < minValue) 
+			{
+				minValue = rawNoise;
+			}
+			
+			if(rawNoise > maxValue)
+			{
+				maxValue = rawNoise;
+			}
+
+			noiseValues[i] = rawNoise;
+			i++;
+		}
+	}
+
+	for (int x = 0; x < terrainSize.x; x++)
+	{
+		for (int y = 0; y < terrainSize.y; y++)
+		{
+			float remapped = Remap(noiseValues[index], minValue, maxValue, 0.0f, 1.0f);
+
+			uint8_t pixelValue = static_cast<uint8_t>((int)(remapped * 256));
+
+			pixels[index++] = (uint8_t)(pixelValue);
+		}
+	}
+
+	std::ofstream rawFile("NoiseTextures/Noise.raw", std::ios_base::binary);
+
+	if (rawFile)
+	{
+		rawFile.write((char*)pixels, (std::streamsize)(terrainSize.x * terrainSize.y));
+		rawFile.close();
+	}
+
+	AssetLoader::SaveImageToPath("NoiseTextures/Noise", pixels, terrainSize.x, terrainSize.y);
+
+	delete[] pixels;
+	delete[] noiseValues;
 }
 
 void Terrain::LoadPerlinMap(float _scale)
@@ -357,13 +422,13 @@ float Terrain::Average(unsigned int x, unsigned int y)
 	float totalHeight = 0.0f;
 
 	int averageCount = 0;
-	for (int i = -1; i < 1; i++)
+	for (int i = -1; i <= 1; i++)
 	{
-		for (int j = -1; j < 1; j++)
+		for (int j = -1; j <= 1; j++)
 		{
 			float val = 0.0f;
 
-			if (x + i > terrainSize.x || x + i < 0) 
+			if (x + i > terrainSize.y || x + i < 0) 
 			{
 				continue;
 			}

@@ -249,7 +249,19 @@ void AssetLoader::CreateTexture(std::string filename, std::string textureKey)
 	stbi_image_free(data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	AssetLoader::Instance().textures.emplace(textureKey, ret);
+
+	//Texture Override Function
+	bool found = Instance().textures.count(textureKey) > 0;
+
+	if (found)
+	{
+		glDeleteTextures(1, &Instance().textures[textureKey]);
+		Instance().textures[textureKey] = ret;
+	}
+	else 
+	{
+		Instance().textures.emplace(textureKey, ret);
+	}
 }
 
 void AssetLoader::CreateSkybox(std::string _filepaths[6], std::string _skyboxKey)
@@ -464,14 +476,6 @@ void AssetLoader::LoadFont(std::string _filepath, std::string _fontKey)
 
 void AssetLoader::SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _width, int _height)
 {
-	std::ofstream rawFile(_filepath + ".raw", std::ios_base::binary);
-
-	if (rawFile) 
-	{
-		rawFile.write((char*)_pixels[0], (std::streamsize)(_width * _height));
-		rawFile.close();
-	}
-
 	stbi_write_jpg((_filepath + ".jpg").c_str(), _width, _height, 1, _pixels, 100);
 
 	CreateTexture((_filepath + ".jpg"), "Noise");

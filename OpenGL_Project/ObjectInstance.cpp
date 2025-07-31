@@ -56,7 +56,7 @@ glm::vec3 ObjectInstance::GetScale() const
 {
 	if (parent != nullptr)
 	{
-		return parent->GetScale() + scale;
+		return parent->GetScale() * scale;
 	}
 	else
 	{

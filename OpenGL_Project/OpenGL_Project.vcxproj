@@ -191,7 +191,9 @@
     <ClInclude Include="UIObjectInstance.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\4WayGradient.shader" />
     <None Include="Resources\Shaders\BorderedUI.shader" />
+    <None Include="Resources\Shaders\BurnNoise.shader" />
     <None Include="Resources\Shaders\Default.shader" />
     <None Include="Resources\Shaders\DefaultGlyph.shader" />
     <None Include="Resources\Shaders\DefaultTerrain.shader" />

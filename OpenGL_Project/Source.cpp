@@ -91,10 +91,15 @@ static void LoadScene1()
 	terrainRenderer->AddTexturePass("TextureNoise", "Noise", Texture2D, TilingType::Repeat);
 
 	terrainRenderer->SetShadowRendering(true);
-	terrainRenderer->GenerateMesh(100.0f); 
+
+	terrainRenderer->SetSeed(rand() % 100000);
+	terrainRenderer->CreateHeightmap();
+	terrainRenderer->LoadHeightmap("NoiseTextures/Noise.raw");
+	terrainRenderer->SmoothHeights(2);
+	terrainRenderer->GenerateMesh(true); 
 
 
-	ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.0f, 0.0f, 0.0f));
+	/*ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.0f, 0.0f, 0.0f));
 	auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
 	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
 	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
@@ -172,7 +177,7 @@ static void LoadScene1()
 
 			grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f));
 		}
-	}
+	} */
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -222,7 +227,6 @@ static void LoadScene2()
 
 	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
 
-
 	{
 		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, -150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
 		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
@@ -245,7 +249,7 @@ static void LoadScene2()
 
 	{
 		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("4WayGradient", ProjectionType::ScreenOrthographic);
 		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UIRenderer->SetRenderType(RenderBoth);
 		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
@@ -254,7 +258,7 @@ static void LoadScene2()
 
 	{
 		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(250.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BurnNoise", ProjectionType::ScreenOrthographic);
 		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UIRenderer->SetRenderType(RenderBoth);
 		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
@@ -272,10 +276,30 @@ static void LoadScene2()
 		auto button = UIObjectTest->AddComponent<Button>();
 		button->AddListener([] 
 		{
-			std::cout << "Pressed Button";
+			Scene::Current().ChangeScene(1);
+
+			Terrain* terrain = Scene::Current().FindObject("Terrain")->GetComponent<Terrain>();
+
+			terrain->SetSeed(2332);
+			terrain->CreateHeightmap();
+
+			Scene::Current().ChangeScene(2);
+
 		});
 		UIRenderer->SetBorderSize(50);
 		UIRenderer->SetTextureSize(glm::vec2(64, 64));
+
+
+		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UITextRenderer->SetFont("AldotheApache");
+		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+		UITextRenderer->SetText("New Heightmap");
+		UITextRenderer->SetRenderType(RenderBoth);
+
+		UITextObject->SetParent(UIObjectTest);
+		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
 	}
 
 	{
@@ -288,10 +312,31 @@ static void LoadScene2()
 		auto button = UIObjectTest->AddComponent<Button>();
 		button->AddListener([]
 			{
-				std::cout << "Pressed Button";
+				Scene::Current().ChangeScene(1);
+
+				Terrain* terrain = Scene::Current().FindObject("Terrain")->GetComponent<Terrain>();
+
+				terrain->LoadHeightmap("NoiseTextures/Noise.raw");
+				terrain->SmoothHeights(2);
+				terrain->GenerateMesh(true);
+
+				Scene::Current().ChangeScene(2);
+
 			});
 		UIRenderer->SetBorderSize(50);
 		UIRenderer->SetTextureSize(glm::vec2(64, 64));
+
+
+		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UITextRenderer->SetFont("AldotheApache");
+		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+		UITextRenderer->SetText("Apply To Terrain");
+		UITextRenderer->SetRenderType(RenderBoth);
+
+		UITextObject->SetParent(UIObjectTest);
+		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
 	}
 
 }

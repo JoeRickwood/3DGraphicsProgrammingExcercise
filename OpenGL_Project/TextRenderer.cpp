@@ -94,14 +94,14 @@ void TextRenderer::Render()
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
 
-        float height = ch.size.y * parent->GetScale().y;
+        float height = ch.size.y * parent->GetLocalScale().y;
 
         if (height > totalHeight) 
         {
             totalHeight = height;
         }
 
-        totalWidth += (ch.advanceOffset >> 6) * parent->GetScale().x;
+        totalWidth += (ch.advanceOffset >> 6) * parent->GetLocalScale().x;
     }
 
     int x = parent->GetPosition().x - (totalWidth / 2.0f);
@@ -116,11 +116,11 @@ void TextRenderer::Render()
     {
         TextCharacter ch = AssetLoader::Instance().GetGlyph(fontKey, *c);
 
-        float xpos = x + ch.bearing.x * parent->GetScale().x;
-        float ypos = y - (ch.size.y - ch.bearing.y) * parent->GetScale().y;
+        float xpos = x + ch.bearing.x * parent->GetLocalScale().x;
+        float ypos = y - (ch.size.y - ch.bearing.y) * parent->GetLocalScale().y;
 
-        float width = ch.size.x * parent->GetScale().x;
-        float height = ch.size.y * parent->GetScale().y;
+        float width = ch.size.x * parent->GetLocalScale().x;
+        float height = ch.size.y * parent->GetLocalScale().y;
 
         // update VBO for each character
         float vertices[6][4] = {
@@ -142,7 +142,7 @@ void TextRenderer::Render()
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.advanceOffset >> 6) * parent->GetScale().x; // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (ch.advanceOffset >> 6) * parent->GetLocalScale().x; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glEnable(GL_DEPTH_TEST);

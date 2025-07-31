@@ -84,16 +84,16 @@ static double CosineInterpolate(double a, double b, double t)
 	return (a * (1.0 - t2) + b * t2);
 }
 
-static double Smooth(int X, int Y)
+static double Smooth(int X, int Y, int _seed)
 {
-	double corners = (RandomValue(X - 1, Y - 1) + RandomValue(X + 1, Y - 1) + RandomValue(X - 1, Y + 1) + RandomValue(X + 1, Y + 1)) / 16.0f;
-	double sides = (RandomValue(X, Y - 1) + RandomValue(X, Y + 1) + RandomValue(X - 1, Y) + RandomValue(X + 1, Y)) / 8.0f;
-	double center = RandomValue(X, Y) / 4.0f;
+	double corners = (RandomValue(X - 1, Y - 1, _seed) + RandomValue(X + 1, Y - 1, _seed) + RandomValue(X - 1, Y + 1, _seed) + RandomValue(X + 1, Y + 1, _seed)) / 16.0f;
+	double sides = (RandomValue(X, Y - 1, _seed) + RandomValue(X, Y + 1, _seed) + RandomValue(X - 1, Y, _seed) + RandomValue(X + 1, Y, _seed)) / 8.0f;
+	double center = RandomValue(X, Y, _seed) / 4.0f;
 
 	return corners + sides + center;
 }
 
-static double SmoothedInterpolate(double X, double Y) 
+static double SmoothedInterpolate(double X, double Y, int _seed)
 {
 	int truncX = (int)X;
 	int truncY = (int)Y;
@@ -101,10 +101,10 @@ static double SmoothedInterpolate(double X, double Y)
 	double fractX = X - (double)truncX;
 	double fractY = Y - (double)truncY;
 
-	double v1 = Smooth(truncX, truncY);
-	double v2 = Smooth(truncX + 1, truncY);
-	double v3 = Smooth(truncX, truncY + 1);
-	double v4 = Smooth(truncX + 1, truncY + 1);
+	double v1 = Smooth(truncX, truncY, _seed);
+	double v2 = Smooth(truncX + 1, truncY, _seed);
+	double v3 = Smooth(truncX, truncY + 1, _seed);
+	double v4 = Smooth(truncX + 1, truncY + 1, _seed);
 
 	double interpolate1 = CosineInterpolate(v1, v2, fractX);
 	double interpolate2 = CosineInterpolate(v3, v4, fractX);
@@ -113,7 +113,7 @@ static double SmoothedInterpolate(double X, double Y)
 	return final;
 }
 
-static double TotalNoisePerPoint(float _x, float _y) 
+static double TotalNoisePerPoint(float _x, float _y, int _seed)
 {
 	int octaves = 20;
 	float wavelength = 128.0f;
@@ -129,18 +129,27 @@ static double TotalNoisePerPoint(float _x, float _y)
 		float amplitude = (float)pow(gain, i);
 		maxValue += amplitude;
 
-		total += SmoothedInterpolate(_x * freq, _y * freq) * amplitude;
+		total += SmoothedInterpolate(_x * freq, _y * freq, _seed) * amplitude;
 	}
 
 	return total / maxValue;
 }
 
-static double PerlinNoise(float _x, float _y)
+static double PerlinNoise(float _x, float _y, int _seed = 2132)
 {
-	return TotalNoisePerPoint(_x, _y);
+	return TotalNoisePerPoint(_x, _y, _seed);
 }
 
+static float Remap(float _value, float _inMin, float _inMax, float _outMin, float _outMax)
+{
+	if (_inMin == _inMax) {
+		std::cerr << "Error: inMin and inMax cannot be the same." << std::endl;
+		return 0; // or throw an exception
+	}
 
+	float scale = (_outMax - _outMin) / (_inMax - _inMin);
+	return _outMin + ((_value - _inMin) * scale);
+}
 
 
 

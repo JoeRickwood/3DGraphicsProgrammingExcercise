@@ -13,9 +13,10 @@ protected:
 	glm::ivec2 terrainSize;
 	float cellSpacing = 1.0f;
 
-	float terrainScale;
-	float minHeight = -100.f;
-	float maxHeight = 100.0f;
+	float minHeight = -10.f;
+	float maxHeight = 50.0f;
+
+	int seed = 29718391287;
 
 	std::vector<float> heights;
 
@@ -31,11 +32,14 @@ public:
 	void InitVBO()override;
 	void BindVBOData()override;
 
-	void GenerateMesh(float _scale);
+	void GenerateMesh(bool _generateNormals = true);
 	void LoadHeightmap(std::string _filepath);
-	void SaveAsHeightmap();
+	
 	void LoadPerlinMap(float _scale);
 	void SmoothHeights(int _iterations = 1);
+
+	void SaveAsHeightmap();
+	void CreateHeightmap();
 
 	float Average(unsigned int x, unsigned int y);
 
@@ -44,6 +48,8 @@ public:
 
 	float GetCellSpacing();
 	glm::vec2 GetSize();
+
+	void SetSeed(int _seed);
 
 	float Smoothstep(float edge0, float edge1, float x);
 
