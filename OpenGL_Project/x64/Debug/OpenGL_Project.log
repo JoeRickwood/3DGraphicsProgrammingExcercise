@@ -1,4 +1,97 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(538,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (OpenGL_Project.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  DefaultRenderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'DefaultRenderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'DefaultRenderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'DefaultRenderer.cpp')
+  
+  InstancedRenderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'InstancedRenderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'InstancedRenderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'InstancedRenderer.cpp')
+  
+  Lights.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Lights.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'Lights.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'Lights.cpp')
+  
+  ObjectInstance.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'ObjectInstance.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'ObjectInstance.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'ObjectInstance.cpp')
+  
+  PlayerController.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'PlayerController.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'PlayerController.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'PlayerController.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\MathFunctions.h(69,55): warning C4309: 'default argument': truncation of constant value
+  (compiling source file 'PlayerController.cpp')
+  
+  Renderer.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Renderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'Renderer.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'Renderer.cpp')
+  
+  RenderingPipeline.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'RenderingPipeline.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'RenderingPipeline.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'RenderingPipeline.cpp')
+  
+  Scene.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Scene.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'Scene.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'Scene.cpp')
+  
+  Skybox.cpp
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Skybox.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+  (compiling source file 'Skybox.cpp')
+  
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.h(19,13): warning C4309: 'initializing': truncation of constant value
+  (compiling source file 'Skybox.cpp')
+  
   Source.cpp
 C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'Source.cpp')
@@ -53,11 +146,11 @@ C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terr
 C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(247,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(247,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(293,29): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(394,89): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(431,14): warning C4018: '>': signed/unsigned mismatch
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(436,14): warning C4018: '>': signed/unsigned mismatch
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(441,41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(441,34): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(396,89): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(433,14): warning C4018: '>': signed/unsigned mismatch
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(438,14): warning C4018: '>': signed/unsigned mismatch
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(443,41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Terrain.cpp(443,34): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
   TextRenderer.cpp
 C:\Users\Joe\Documents\GitHub\3DGraphicsProgrammingExcercise\OpenGL_Project\Components.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'TextRenderer.cpp')

@@ -329,17 +329,19 @@ void Terrain::CreateHeightmap()
 
 	int index = 0;
 
-	int seed = rand() % 1000000;
-
+	//Find Minimum And maximum Values In Order To Remap To 0 -> 1 Range
 	float minValue = 10000.0f;
 	float maxValue = -10000.0f;
+
+	float noiseScale = 1.5f;
 
 	//Set Initial Values And Calculate Min And Max Values
 	for (int i = 0, x = 0; x < terrainSize.x; x++)
 	{
 		for (int y = 0; y < terrainSize.y; y++)
 		{
-			float rawNoise = (float)PerlinNoise(x * cellSpacing, y * cellSpacing, seed) + 0.5f;
+
+			float rawNoise = (float)PerlinNoise(x * cellSpacing * noiseScale, y * cellSpacing * noiseScale, seed) + 0.5f;
 
 			if (rawNoise < minValue) 
 			{

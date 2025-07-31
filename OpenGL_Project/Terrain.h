@@ -13,7 +13,7 @@ protected:
 	glm::ivec2 terrainSize;
 	float cellSpacing = 1.0f;
 
-	float minHeight = -10.f;
+	float minHeight = -5.f;
 	float maxHeight = 50.0f;
 
 	int seed = 29718391287;

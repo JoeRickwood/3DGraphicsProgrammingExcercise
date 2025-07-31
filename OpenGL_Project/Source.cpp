@@ -87,8 +87,8 @@ static void LoadScene1()
 	terrainRenderer->AddTexturePass("TextureSand", "MuddySand", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureSnow", "Snow", Texture2D, TilingType::Repeat);
+	terrainRenderer->AddTexturePass("TextureNoise", "NoiseShaderPassIn", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	terrainRenderer->AddTexturePass("TextureNoise", "Noise", Texture2D, TilingType::Repeat);
 
 	terrainRenderer->SetShadowRendering(true);
 
@@ -97,87 +97,6 @@ static void LoadScene1()
 	terrainRenderer->LoadHeightmap("NoiseTextures/Noise.raw");
 	terrainRenderer->SmoothHeights(2);
 	terrainRenderer->GenerateMesh(true); 
-
-
-	/*ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.0f, 0.0f, 0.0f));
-	auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
-	treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
-	treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
-	treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	treesRenderer->SetShadowRendering(true);
-
-	float treeSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
-	int treesGridX = 512;
-	int treesGridY = 512;
-
-	for (int x = 0; x < treesGridX; x++)
-	{
-		for (int y = 0; y < treesGridY; y++)
-		{
-			bool spawnTree = (rand() % 100 > 95) && (PerlinNoise(x * treeSpacing * 15, y * treeSpacing * 15) > 0.1f);
-
-			if (!spawnTree) 
-			{
-				continue;
-			}
-
-			float height = terrainRenderer->SampleHeight(x, y);
-
-
-			if (height < 1)
-			{
-				continue;
-			}
-
-			float steepness = terrainRenderer->SampleSteepness(x, y);
-
-			if (steepness < 0.9f)
-			{
-				continue;
-			}
-
-			float scalar = abs(PerlinNoise(x * treeSpacing, y * treeSpacing)) * 5.0f;
-
-			float rot = rand() % 360;
-
-			treesRenderer->AddInstance(glm::vec3(x * treeSpacing, height, y * treeSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) * scalar);
-		}
-	}
-
-	ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.f, 0.f, 0.f));
-	auto grassRenderer = grass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
-	grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
-	grassRenderer->AddTexturePass("Texture0", "GrassBlade", Texture2D, Repeat);
-	grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, ClampBorder);
-	grassRenderer->SetShadowRendering(false);
-
-	float grassSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
-	int grassGridX = 512;
-	int grassGridY = 512;
-
-	for (int x = 0; x < grassGridX; x++)
-	{
-		for (int y = 0; y < grassGridY; y++)
-		{
-			float height = terrainRenderer->SampleHeight(x, y);
-
-			if (height < 2.5) 
-			{
-				continue;
-			}
-
-			float steepness = terrainRenderer->SampleSteepness(x, y);
-
-			if (steepness < 0.9f) 
-			{
-				continue;
-			}
-
-			float rot = rand() % 360;
-
-			grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f));
-		}
-	} */
 
 	Scene::Current().SetAmbientLightStength(0.2f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -280,7 +199,7 @@ static void LoadScene2()
 
 			Terrain* terrain = Scene::Current().FindObject("Terrain")->GetComponent<Terrain>();
 
-			terrain->SetSeed(2332);
+			terrain->SetSeed(rand() % 2040213);
 			terrain->CreateHeightmap();
 
 			Scene::Current().ChangeScene(2);
@@ -317,7 +236,7 @@ static void LoadScene2()
 				Terrain* terrain = Scene::Current().FindObject("Terrain")->GetComponent<Terrain>();
 
 				terrain->LoadHeightmap("NoiseTextures/Noise.raw");
-				terrain->SmoothHeights(2);
+				terrain->SmoothHeights(1);
 				terrain->GenerateMesh(true);
 
 				Scene::Current().ChangeScene(2);

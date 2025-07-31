@@ -14,7 +14,7 @@
 
 	void main() 
 	{
-		FragTexCoords = TexCoords;
+		FragTexCoords = Position.xz;
 		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
 		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
         FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
@@ -248,7 +248,6 @@
 
         if(mainCol.a < 0.5)
             discard;
-
 
 
         //FinalColor = vec4(vec3(floor(col * 10f) / 10f), 1.0f);
