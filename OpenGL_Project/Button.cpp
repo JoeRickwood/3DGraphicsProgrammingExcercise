@@ -54,7 +54,7 @@ void Button::Update()
 	glfwGetCursorPos(window, &x, &y);
 
 	//Check If The Mouse Posituion Intersects The Buttons' Global Bounds
-	mouseOver = Intersects(glm::vec3(x, AssetLoader::Instance().windowSize.y - y - 24, 0.f));
+	mouseOver = Intersects(glm::vec3(x, AssetLoader::Instance().windowSize.y - y, 0.f));
 
 	//If It Does Intersects, Change The TextureID to the alternate texture
 	if (mouseOver) 

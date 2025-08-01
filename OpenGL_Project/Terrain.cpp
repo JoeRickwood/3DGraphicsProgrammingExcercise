@@ -74,29 +74,27 @@ float Terrain::SampleHeight(float _x, float _y)
 	//float height = ValueNoise_2D(_x * 2.f, _y * 2.f) * terrainScale;
 	if (_x >= terrainSize.x) 
 	{
-		_x = terrainSize.x - 1;
+		_x = (float)terrainSize.x - 1.0f;
 	}
 
-	if (_x < 0)
+	if (_x < 0.0f)
 	{
-		_x = 0;
+		_x = 0.0f;
 	}
 
 
-	if (_y >= terrainSize.y)
+	if (_y >= (float)terrainSize.y)
 	{
-		_y = terrainSize.y - 1;
+		_y = (float)terrainSize.y - 1.0f;
 	}
 
-	if (_y < 0)
+	if (_y < 0.0f)
 	{
-		_y = 0;
+		_y = 0.0f;
 	}
 
 
-	float height = heights[_x * terrainSize.y + _y];
-
-	//float multiplier = Smoothstep(-20, 25, height);
+	float height = heights[_x * (float)terrainSize.y + _y];
 
 	return height;
 }
@@ -131,12 +129,12 @@ float Terrain::SampleSteepness(float x, float y)
 	return glm::dot(normal, glm::vec3(0, 1, 0));
 }
 
-float Terrain::GetCellSpacing()
+float Terrain::GetCellSpacing() const
 {
 	return cellSpacing;
 }
 
-glm::vec2 Terrain::GetSize()
+glm::vec2 Terrain::GetSize() const
 {
 	return terrainSize;
 }
@@ -161,7 +159,7 @@ float Terrain::Smoothstep(float edge0, float edge1, float x)
 		x = 1;
 	}
 
-	return x * x * (3.0 - 2.0 * x);
+	return x * x * (3.0f - 2.0f * x);
 }
 
 
@@ -241,10 +239,10 @@ void Terrain::GenerateMesh(bool _generateNormals)
 		{
 			for (int y = 0; y < terrainSize.y; ++y)
 			{
-				float rowNeg = SampleHeight(x - 1, y);
-				float rowPos = SampleHeight(x + 1, y);
-				float colNeg = SampleHeight(x, y - 1);
-				float colPos = SampleHeight(x, y + 1);
+				float rowNeg = SampleHeight((float)x - 1.0f, (float)y);
+				float rowPos = SampleHeight((float)x + 1.0f, (float)y);
+				float colNeg = SampleHeight((float)x, (float)y - 1.0f);
+				float colPos = SampleHeight((float)x, (float)y + 1);
 
 				float X = rowNeg - rowPos;
 				if (x == 0 || x == terrainSize.x - 1)
@@ -290,7 +288,7 @@ void Terrain::LoadHeightmap(std::string _filepath)
 	}
 
 	heights.resize(vertexCount, 0);
-	for (unsigned int i = 0; i < vertexCount; i++)
+	for (unsigned int i = 0; i < (unsigned int)vertexCount; i++)
 	{
 		heights[i] = Lerp(minHeight, maxHeight, (float)heightValues[i] / 255.0f);
 		//std::cout << (float)heightValues[i] / 255.0f;
@@ -316,8 +314,9 @@ void Terrain::SaveAsHeightmap()
 }
 
 
-void Terrain::CreateHeightmap()
+void Terrain::CreateHeightmap() const
 {
+	//Terrain Size Boundary Checking
 	if (terrainSize.x <= 0 || terrainSize.y <= 0)
 	{
 		std::cerr << "Invalid terrain size!" << std::endl;
@@ -340,7 +339,6 @@ void Terrain::CreateHeightmap()
 	{
 		for (int y = 0; y < terrainSize.y; y++)
 		{
-
 			float rawNoise = (float)PerlinNoise(x * cellSpacing * noiseScale, y * cellSpacing * noiseScale, seed) + 0.5f;
 
 			if (rawNoise < minValue) 
@@ -393,7 +391,7 @@ void Terrain::LoadPerlinMap(float _scale)
 	{
 		for (int y = 0; y < terrainSize.y; y++)
 		{
-			heights[x * terrainSize.y + y] = Clamp(PerlinNoise(x * cellSpacing, y * cellSpacing) * _scale, minHeight, maxHeight);
+			heights[x * terrainSize.y + y] = Clamp((float)PerlinNoise(x * cellSpacing, y * cellSpacing) * _scale, minHeight, maxHeight);
 		}
 	}
 }

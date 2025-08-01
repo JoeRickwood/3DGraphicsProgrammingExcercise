@@ -66,7 +66,7 @@ static float Smoothstep(float _value, float _edge0, float _edge1)
 }
 
 
-static double RandomValue(int _X, int _Y, int _seed = 743927492794)
+static double RandomValue(int _X, int _Y, int _seed = 743927492)
 {
 	double value = 0.0;
 

@@ -2,10 +2,8 @@
 #include "InstancedRenderer.h"
 #include "DefaultRenderer.h"
 #include "TextRenderer.h"
-
 #include "PlayerController.h"
 #include "Button.h"
-#include "Terrain.h";
-
+#include "Terrain.h"
 #include "Lights.h"
 #include "Skybox.h"

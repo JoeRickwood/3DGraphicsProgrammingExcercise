@@ -71,16 +71,23 @@ static void LoadScene1()
 {
 	Scene::Current().ChangeScene(1);
 
+	Scene::Current().SetAmbientLightStength(0.2f);
+	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	//Create Skybox For Rendering
 	ObjectInstance* skybox = new ObjectInstance("Skybox", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(0.f, 0.f, 0.f));
 	skybox->AddComponent<Skybox>("Skybox", "MainSkybox");
-	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -0.8f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
+	skybox->AddComponent<DirectionalLight>(glm::vec3(0.8f, -0.4f, 0.4f), glm::vec3(1.5f, 1.5f, 1.5f), 1.0f); 
 
+	//Create Player Move-Around Camera
 	ObjectInstance* cam = new ObjectInstance("Camera", glm::vec3(0.f, 0.f, 0.f));
 	cam->AddComponent<PlayerController>(0.003f, 100);
 
+	//Create Terrain Object
 	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
 	auto terrainRenderer = terrain->AddComponent<Terrain>("DefaultTerrain", ProjectionType::Perspective, 512, 512, 1.0f);
-	terrainRenderer->SetTextureTiling(glm::vec2(1, 1));
+
+	//Send All Used Texture Passes Into Terrain Shader For Height / Normal Blending
 	terrainRenderer->AddTexturePass("TextureGrass", "Grass", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureGrassVariant", "GrassVariant", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureGrassVariationNoise", "GrassVariationNoise", Texture2D, TilingType::Repeat);
@@ -88,39 +95,57 @@ static void LoadScene1()
 	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureSnow", "Snow", Texture2D, TilingType::Repeat);
 	terrainRenderer->AddTexturePass("TextureNoise", "NoiseShaderPassIn", Texture2D, TilingType::Repeat);
+
+	//Enable Shadows On Terrain (Should Make Shadow Map Pass-In Automatic With Turned On Shadow Rendering)
 	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+	terrainRenderer->SetShadowRendering(false); //Disbaling Shadow Rendering For This Project
 
-	terrainRenderer->SetShadowRendering(true);
-
+	//Seed Terrain And Generate Intial Heightmap
 	terrainRenderer->SetSeed(rand() % 100000);
 	terrainRenderer->CreateHeightmap();
 	terrainRenderer->LoadHeightmap("NoiseTextures/Noise.raw");
 	terrainRenderer->SmoothHeights(2);
 	terrainRenderer->GenerateMesh(true); 
 
-	Scene::Current().SetAmbientLightStength(0.2f);
-	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	//Create A Little Text UI To Show What Scene The User Is Currently Viewing
+	UIObjectInstance* SceneText = new UIObjectInstance("Scene Indicator", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+	auto SceneTextRenderer = SceneText->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+	SceneTextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	SceneTextRenderer->SetFont("AldotheApache");
+	SceneTextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+	SceneTextRenderer->SetText("Terrain Scene Test 1");
+	SceneTextRenderer->SetRenderType(RenderBoth);
+	SceneText->SetScreenAlignment(MIDDLE, TOP);
+	SceneText->SetPosition(glm::vec3(0, -100, 0));
 
-	std::string skyboxPaths[6] =
-	{
-		"Resources/Skybox/Front.png",
-		"Resources/Skybox/Back.png",
-		"Resources/Skybox/Top.png",
-		"Resources/Skybox/Bottom.png",
-		"Resources/Skybox/Right.png",
-		"Resources/Skybox/Left.png"
-	};
+	{ //This Button Loads Scene To Scene 1
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("Scene 2 Button", glm::vec3(270.f, -160.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(LEFT, TOP);
+		auto button = UIObjectTest->AddComponent<Button>();
+		button->AddListener([]
+			{
+				Scene::Current().ChangeScene(2);
 
-	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox"); 
+			});
+		UIRenderer->SetBorderSize(50);
+		UIRenderer->SetTextureSize(glm::vec2(64, 64));
 
-	ObjectInstance* UIObjectTest = new ObjectInstance("UIObjectTest", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-	UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-	UIRenderer->SetFont("AldotheApache");
-	UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-	UIRenderer->SetText("Terrain Scene Test 1");
-	UIRenderer->SetRenderType(RenderBoth);
+		//Create Text To Be Parented To The Button To Give Info
+		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UITextRenderer->SetFont("AldotheApache");
+		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+		UITextRenderer->SetText("Change Scene");
+		UITextRenderer->SetRenderType(RenderBoth);
 
+		UITextObject->SetParent(UIObjectTest);
+		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+	}
 }
 
 //Creates All Objects In The Scene2
@@ -128,71 +153,63 @@ static void LoadScene2()
 {
 	Scene::Current().ChangeScene(2);
 
+	//Set Initial Camera Position
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 
-	Scene::Current().SetAmbientLightStength(0.2f);
-	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
-	std::string skyboxPaths[6] =
-	{
-		"Resources/Skybox/Front.png",
-		"Resources/Skybox/Back.png",
-		"Resources/Skybox/Top.png",
-		"Resources/Skybox/Bottom.png",
-		"Resources/Skybox/Right.png",
-		"Resources/Skybox/Left.png"
-	};
-
-	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
-
-	{
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, -150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
-		auto UIRenderer = UIObjectTest->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetFont("AldotheApache");
-		UIRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		UIRenderer->SetText("Perlin Noise Scene");
-		UIRenderer->SetRenderType(RenderBoth);
-		UIObjectTest->SetScreenAlignment(MIDDLE, TOP);
+	{ //Scene Text Indicator
+		UIObjectInstance* SceneText = new UIObjectInstance("Perlin Noise Scene Text", glm::vec3(0.f, -150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+		SceneText->SetScreenAlignment(MIDDLE, TOP);
+		auto SceneTextRenderer = SceneText->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		SceneTextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		SceneTextRenderer->SetFont("AldotheApache");
+		SceneTextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+		SceneTextRenderer->SetText("Perlin Noise Scene");
+		SceneTextRenderer->SetRenderType(RenderBoth);
 	} 
 
-	{
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(-250.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
+	{ //Left Most Perlin Noise UI Object, Shows Regular Perlin Noise
+		UIObjectInstance* LeftPerlinObject = new UIObjectInstance("Left Perlin Object", glm::vec3(-450.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.f, 200.f, 200.f));
+		LeftPerlinObject->SetScreenAlignment(MIDDLE, CENTER);
+		auto LeftPerlinObjectRenderer = LeftPerlinObject->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		LeftPerlinObjectRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		LeftPerlinObjectRenderer->SetRenderType(RenderBoth);
+		LeftPerlinObjectRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
 	}
 
-	{
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("4WayGradient", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
+	{ //Middle Perlin Noise UI Object, Shows Gradient Perlin Noise Object
+		UIObjectInstance* MiddlePerlinObject = new UIObjectInstance("Middle Perlin Object", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.f, 200.f, 200.f));
+		MiddlePerlinObject->SetScreenAlignment(MIDDLE, CENTER);
+		auto MiddlePerlinObjectRenderer = MiddlePerlinObject->AddComponent<DefaultRenderer>("4WayGradient", ProjectionType::ScreenOrthographic);
+		MiddlePerlinObjectRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		MiddlePerlinObjectRenderer->SetRenderType(RenderBoth);
+		MiddlePerlinObjectRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
 	}
 
-	{
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(250.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(100.f, 100.f, 100.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BurnNoise", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
+	{ //Right Most Perlin Noise UI Object, Shows Animated Perlin Noise Object
+		UIObjectInstance* RightPerlinObject = new UIObjectInstance("Right Perlin Object", glm::vec3(450.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.f, 200.f, 200.f));
+		RightPerlinObject->SetScreenAlignment(MIDDLE, CENTER);
+		auto RightPerlinObjectRenderer = RightPerlinObject->AddComponent<DefaultRenderer>("BurnNoise", ProjectionType::ScreenOrthographic);
+		RightPerlinObjectRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		RightPerlinObjectRenderer->SetRenderType(RenderBoth);
+		RightPerlinObjectRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
+		RightPerlinObjectRenderer->SetColor(glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 	}
 
 	//Buttons
-	{
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(-275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(MIDDLE, BOTTOM);
-		auto button = UIObjectTest->AddComponent<Button>();
+	{ //This Button Creates A New Heightmap And Override The Previous One In The Asset Loader
+		UIObjectInstance* NewHeightmapButton = new UIObjectInstance("New Heightmap Button", glm::vec3(-275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
+		NewHeightmapButton->SetScreenAlignment(MIDDLE, BOTTOM);
+		
+		auto NewHeightmapButtonRenderer = NewHeightmapButton->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
+		NewHeightmapButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		NewHeightmapButtonRenderer->SetRenderType(RenderBoth);
+		NewHeightmapButtonRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
+		NewHeightmapButtonRenderer->SetBorderSize(50);
+		NewHeightmapButtonRenderer->SetTextureSize(glm::vec2(64, 64));
+		
+		//Pass In Listener To The Button Component
+		auto button = NewHeightmapButton->AddComponent<Button>();
 		button->AddListener([] 
 		{
 			Scene::Current().ChangeScene(1);
@@ -205,23 +222,22 @@ static void LoadScene2()
 			Scene::Current().ChangeScene(2);
 
 		});
-		UIRenderer->SetBorderSize(50);
-		UIRenderer->SetTextureSize(glm::vec2(64, 64));
 
-
-		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
-		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		//Create The Text To be Parented To The Button To Give Info
+		ObjectInstance* NewHeightmapTextObject = new ObjectInstance("New Heightmap Text", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.8f, 0.8f, 0.8f));
+		auto UITextRenderer = NewHeightmapTextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
 		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UITextRenderer->SetFont("AldotheApache");
 		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
 		UITextRenderer->SetText("New Heightmap");
 		UITextRenderer->SetRenderType(RenderBoth);
 
-		UITextObject->SetParent(UIObjectTest);
-		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+		//Set Parent And Reset Position
+		NewHeightmapTextObject->SetParent(NewHeightmapButton);
+		NewHeightmapTextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
 	}
 
-	{
+	{ //This Button Creates Loads The generated Heightmap To The Terrain, This Regenerates Terrain Mesh
 		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
 		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
 		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
@@ -245,8 +261,8 @@ static void LoadScene2()
 		UIRenderer->SetBorderSize(50);
 		UIRenderer->SetTextureSize(glm::vec2(64, 64));
 
-
-		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+		//Create Text To Be Parented To The Button To Give Info
+		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.8f, 0.8f, 0.8f));
 		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
 		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 		UITextRenderer->SetFont("AldotheApache");
@@ -258,11 +274,40 @@ static void LoadScene2()
 		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
 	}
 
+
+	{ //This Button Loads Scene To Scene 1
+		UIObjectInstance* UIObjectTest = new UIObjectInstance("Scene 1 Button", glm::vec3(270.f, -160.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
+		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
+		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UIRenderer->SetRenderType(RenderBoth);
+		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
+		UIObjectTest->SetScreenAlignment(LEFT, TOP);
+		auto button = UIObjectTest->AddComponent<Button>();
+		button->AddListener([]
+			{
+				Scene::Current().ChangeScene(1);
+
+			});
+		UIRenderer->SetBorderSize(50);
+		UIRenderer->SetTextureSize(glm::vec2(64, 64));
+
+		//Create Text To Be Parented To The Button To Give Info
+		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
+		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
+		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		UITextRenderer->SetFont("AldotheApache");
+		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
+		UITextRenderer->SetText("Change Scene");
+		UITextRenderer->SetRenderType(RenderBoth);
+
+		UITextObject->SetParent(UIObjectTest);
+		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+	}
 }
 
 int main()
 {
-	bool pressLock = false;
+	bool pressLock = false; //Press Lock Helps Not Load A Scene Each Frame Lol
 
 	//Setup All Objects In Project
 	InitialSetup();
@@ -271,8 +316,23 @@ int main()
 	//This Is To Prevent The Renderable Loader Returning "Default" Renderables (None)
 	AssetLoader::Instance().LoadAssets("Resources");
 
+	//Skyboxes cant be loaded without a supplymentary help or a seperate file not yet implemented, so we manually create it
+	//On Loading Scene 2, Create The Used Skybox
+	std::string skyboxPaths[6] =
+	{
+		"Resources/Skybox/Front.png",
+		"Resources/Skybox/Back.png",
+		"Resources/Skybox/Top.png",
+		"Resources/Skybox/Down.png",
+		"Resources/Skybox/Right.png",
+		"Resources/Skybox/Left.png"
+	};
+
+	AssetLoader::CreateSkybox(skyboxPaths, "MainSkybox");
+
 	Time::Instance().Init();
 
+	//Load Each Scene Into The Scene Manager
 	LoadScene1();
 	LoadScene2();
 
@@ -307,7 +367,6 @@ int main()
 		{
 			pressLock = false;
 		}
-
 
 		Scene::Current().Update();
 

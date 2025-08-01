@@ -42,13 +42,14 @@
 	{
 		float val = texture(Texture0, FragTexCoords).r;
 
-		float step1 = 0.25f;
-		float step2 = 0.50f;
-		float step3 = 0.75f;
+		float step1 = 0.35f;
+		float step2 = 0.4f;
+		float step3 = 0.65f;
+		float step4 = 1.0f;
 
-		vec4 mainCol = mix(vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), smoothstep(step1, step2, val));
-		mainCol = mix(mainCol, vec4(1, 0, 0, 1), smoothstep(step2, step3, val));
-		mainCol = mix(mainCol, vec4(0, 0, 1, 1), smoothstep(step3, 1, val));
+		vec4 mainCol = mix(vec4(1, 1, 1, 1), vec4(0.5, 0.5, 1, 1), smoothstep(0, step1, val));
+		mainCol = mix(mainCol, vec4(0.2, 0.2, 0.6, 1), smoothstep(step2, step3, val));
+		mainCol = mix(mainCol, vec4(0.0, 0.0, 0.2, 1), smoothstep(step3, step4, val));
 
 		if(mainCol.a < 0.5)
 			discard;

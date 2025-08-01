@@ -13,10 +13,10 @@ protected:
 	glm::ivec2 terrainSize;
 	float cellSpacing = 1.0f;
 
-	float minHeight = -5.f;
-	float maxHeight = 50.0f;
+	const float minHeight = -5.f;
+	const float maxHeight = 50.0f;
 
-	int seed = 29718391287;
+	int seed = 297183;
 
 	std::vector<float> heights;
 
@@ -39,15 +39,15 @@ public:
 	void SmoothHeights(int _iterations = 1);
 
 	void SaveAsHeightmap();
-	void CreateHeightmap();
+	void CreateHeightmap() const;
 
 	float Average(unsigned int x, unsigned int y);
 
 	float SampleHeight(float _x, float _y);
 	float SampleSteepness(float _x, float _y);
 
-	float GetCellSpacing();
-	glm::vec2 GetSize();
+	float GetCellSpacing() const;
+	glm::vec2 GetSize() const;
 
 	void SetSeed(int _seed);
 

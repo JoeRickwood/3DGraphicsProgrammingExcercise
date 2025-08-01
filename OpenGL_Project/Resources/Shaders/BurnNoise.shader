@@ -42,11 +42,16 @@
 
 	void main() 
 	{
+
 		float val = texture(Texture0, FragTexCoords).r;
 
-		float sinTime = (sin(Time * 0.5f) + 1.0f) / 2.0f;
+		float sinTime = mod(-Time / 2.0f, 1.0f);
 
-		FinalColor = Color * smoothstep(sinTime - 0.01f, sinTime, val);
+		float mult1 = smoothstep(sinTime - 0.1f, sinTime, val);
+		float mult2 = 1 - smoothstep(sinTime - 0.05f, sinTime + 0.10f, val);
+
+
+		FinalColor = Color * mult1 * mult2;
 	}
 
 #endif

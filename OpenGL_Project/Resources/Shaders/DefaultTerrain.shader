@@ -17,6 +17,8 @@
 		FragTexCoords = Position.xz;
 		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
 		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
+
+        //Shadow Rendering
         FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
 
         gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
@@ -202,7 +204,7 @@
 
     float smoothstep(float edge0, float edge1, float x) 
     {
-        // Scale, and clamp x to 0..1 range
+        // Scale, and clamp x to 0 -> 1 range
         x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
         return x * x * (3.0 - 2.0 * x);
     }
@@ -228,29 +230,34 @@
         float noise = texture(TextureNoise, FragTexCoords * 0.1f).r * 3.0f;
         float noise2 = texture(TextureGrassVariationNoise, FragTexCoords * 0.001f).r;
         
+        //Sample All Textures Before Hand
         vec4 grassCol = mix(texture(TextureGrass, FragTexCoords * Tiling), texture(TextureGrassVariant, FragTexCoords * Tiling), noise2);
         vec4 sandCol = texture(TextureSand, FragTexCoords * Tiling);
         vec4 rockCol = texture(TextureRock, FragTexCoords * Tiling);
         vec4 snowCol = texture(TextureSnow, FragTexCoords * Tiling);
 
+        //Normal Direction For Using Rock Texture
+        //Calculates "Steepness"
         float angle = dot(FragNormal, vec3(0, 1, 0));
-        angle = smoothstep(0.90f, 0.95f, angle);
+        angle = smoothstep(0.93f, 0.95f, angle);
 
-        float height = smoothstep(1.0f + noise, 1.3f + noise, FragPos.y);
-        float heightSnow = smoothstep(30.0f + noise, 30.3f + noise, FragPos.y);
+        //Going From Dirt To Grass
+        float height = smoothstep(1.0f + noise, 1.3f + noise, FragPos.y); //Smoothstep Using FragPos.y
 
-        vec4 combinedColor = mix(rockCol, grassCol, angle);
-        combinedColor = mix(sandCol, combinedColor, height);
-        combinedColor = mix(combinedColor, snowCol, heightSnow);
+        //Going From Grass To Snpw
+        float heightSnow = smoothstep(30.0f + noise, 30.3f + noise, FragPos.y); //Smoothstep Using FragPos.y
 
+        vec4 combinedColor = mix(rockCol, grassCol, angle); //Rock To Grass Based On Normal
+        combinedColor = mix(sandCol, combinedColor, height); //Sand To (Rock -> Grass) Blend Based On Height
+        combinedColor = mix(combinedColor, snowCol, heightSnow); //(Rock -> Grass -> Sand) Blend To Snow Based On Snow Height
+
+        //Includes Shadow Calculations
         vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * combinedColor;
         //vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 
         if(mainCol.a < 0.5)
             discard;
 
-
-        //FinalColor = vec4(vec3(floor(col * 10f) / 10f), 1.0f);
         FinalColor = mainCol;
     }
 

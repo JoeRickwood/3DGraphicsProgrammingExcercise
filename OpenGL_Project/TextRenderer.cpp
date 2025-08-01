@@ -142,7 +142,7 @@ void TextRenderer::Render()
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.advanceOffset >> 6) * parent->GetLocalScale().x; // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (int)((ch.advanceOffset >> 6) * parent->GetLocalScale().x); // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glEnable(GL_DEPTH_TEST);

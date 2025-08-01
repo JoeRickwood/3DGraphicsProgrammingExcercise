@@ -4,7 +4,7 @@
 #include "Scene.h"
 #include "MathFunctions.h"
 
-PlayerController::PlayerController(float _mouseSensitivity = 3.f, float _cameraMoveSpeed = 10.f)
+PlayerController::PlayerController(float _mouseSensitivity, float _cameraMoveSpeed)
 {
 	mouseSensitivity = _mouseSensitivity;
 	cameraMoveSpeed = _cameraMoveSpeed;
@@ -112,4 +112,24 @@ void PlayerController::Update()
 	parent->SetPosition(parent->GetPosition() + (-velocity * Time::Instance().deltaTime));
 
 	Camera::Instance().SetCameraPosition(parent->GetPosition());
+}
+
+float PlayerController::GetMouseSensitivity() const
+{
+	return mouseSensitivity;
+}
+
+void PlayerController::SetMouseSensitivity(float _mouseSensitivity)
+{
+	mouseSensitivity = _mouseSensitivity;
+}
+
+float PlayerController::GetCameraMoveSpeed() const
+{
+	return cameraMoveSpeed;
+}
+
+void PlayerController::SetCameraMoveSpeed(float _cameraMoveSpeed)
+{
+	cameraMoveSpeed = _cameraMoveSpeed;
 }
