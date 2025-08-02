@@ -184,6 +184,7 @@
     <None Include="Resources\Shaders\DefaultSprite.shader" />
     <None Include="Resources\Shaders\DefaultText.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
+    <None Include="Resources\Shaders\ShadowPass.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

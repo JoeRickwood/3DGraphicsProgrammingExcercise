@@ -20,8 +20,6 @@
 	}
 
 #elif defined(COMPILING_FS)
-
-
     //IN / OUTS
     in vec2 FragTexCoords;
     in vec3 FragNormal;
@@ -29,17 +27,13 @@
 
     out vec4 FinalColor;
 
-    //BASIC
-    uniform sampler2D Texture0;
-    uniform vec2 Tiling;
+	uniform int IsShadow = 1;
 
     uniform vec3 Ambient;
 
     void main() 
     {
-        vec4 mainCol = texture(Texture0, FragTexCoords * Tiling);
-
-        FinalColor = vec4(mainCol.xyz, 1) * vec4(Ambient, 1.0f);
+        FinalColor = vec4(1, 1, 1, 1);
     }
 
 #endif

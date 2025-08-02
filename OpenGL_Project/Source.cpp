@@ -29,6 +29,7 @@ static void InitialSetup()
 	//Create Window
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
 	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
+	AssetLoader::Instance().SetWindowSized(glm::vec2((int)windowSize.x, (int)windowSize.y));
 
 	if (AssetLoader::Instance().currentWindow == NULL)
 	{
@@ -82,17 +83,40 @@ static void LoadScene()
 	Scene::Current().SetAmbientLightStength(1.0f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
+	
+	//Regular Sprite Object Set-Up
+	{
+		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
+		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		objectTestRenderer->AddTexturePass("Texture0", "Test", Texture2D, Repeat);
+		objectTestRenderer->SetRenderType(RenderBoth);
+		objectTestRenderer->SetShadowRendering(true);
+	}
+
+	{
+		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(3.0f, 3.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(5.f, 5.f, 5.f));
+		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		objectTestRenderer->AddTexturePass("Texture0", "ShadowMap", Texture2D, Repeat);
+		objectTestRenderer->SetRenderType(RenderBoth);
+		objectTestRenderer->SetShadowRendering(false);
+	}
+
+
 	/*
 	//Regular Sprite Object Set-Up
 	{
-		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
+		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.f, 20.f, 1.f));
 		auto backgroundTestRenderer = backgroundTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
 		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		backgroundTestRenderer->AddTexturePass("Texture0", "Joe", Texture2D, Repeat);
+		backgroundTestRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
 		backgroundTestRenderer->SetRenderType(RenderBoth);
-	}
-	*/
-
+		backgroundTestRenderer->SetTextureTiling(glm::vec2(20.0f, 20.0f));
+	} */
+	
+	//Expand For UI Creation
+	/*
 	//Play Button Set-Up
 	{
 		UIObjectInstance* UIButtonObject = new UIObjectInstance("UIButtonObjectTest", glm::vec3(-175.f, 100.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.0f, 75.0f, 1.0f));
@@ -192,6 +216,8 @@ static void LoadScene()
 		UIObjectTest->SetScreenAlignment(MIDDLE, CENTER);
 	}
 
+	*/
+
 	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 	Camera::Instance().SetCameraUpDirection(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -202,6 +228,8 @@ int main()
 {
 	//Setup All Objects In Project
 	InitialSetup();
+
+	RenderingPipeline::InitializeShadowMapping();
 
 	//Load The Scenes Objects
 	LoadScene();
@@ -219,6 +247,8 @@ int main()
 
 		//Poll To See If Any glfw Window Events Have Occured
 		glfwPollEvents();
+
+		RenderingPipeline::ShadowPass();
 
 		//Render All Objects In The Scene
 		RenderingPipeline::Render();

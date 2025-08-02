@@ -48,9 +48,7 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 		glEnable(GL_CULL_FACE);
 	}
 	
-
 	glCullFace(renderType);
-
 
 	glm::mat4 VP = projection == ProjectionType::Screen_Orthographic ? Camera::Instance().GetProjectionMatrix(projection) : Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));

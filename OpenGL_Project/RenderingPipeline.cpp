@@ -5,11 +5,38 @@
 
 RenderingPipeline::RenderingPipeline()
 {
-
+	shadowmapFBO = NULL;
 }
 
 RenderingPipeline::~RenderingPipeline()
 {
+}
+
+void RenderingPipeline::InitializeShadowMapping()
+{
+	glGenBuffers(1, &Current().shadowmapFBO);
+
+	glGenTextures(1, &Current().shadowmapTexture);
+	glBindTexture(GL_TEXTURE_2D, Current().shadowmapTexture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1920, 1080, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glGenerateMipmap(Current().shadowmapTexture);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Current().shadowmapTexture, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	AssetLoader::Instance().AddTexture(Current().shadowmapTexture, "ShadowMap");
 }
 
 void RenderingPipeline::AddRenderer(Renderer* _renderer)
@@ -27,6 +54,29 @@ void RenderingPipeline::RemoveRenderer(Renderer* _renderer)
 			return;
 		}
 	}
+}
+
+void RenderingPipeline::ShadowPass()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
+
+	for (int i = 0; i < Current().renderers.size(); ++i)
+	{
+		GLuint program = AssetLoader::Instance().GetShaderProgram("ShadowPass");
+		glUseProgram(program);
+
+		Current().renderers[i]->BindVBOData();
+
+		glm::mat4 VP = Current().renderers[i]->projection == ProjectionType::Screen_Orthographic ? Camera::Instance().GetProjectionMatrix(Current().renderers[i]->projection) : Camera::Instance().GetProjectionMatrix(Current().renderers[i]->projection) * Camera::Instance().GetViewMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
+
+		Current().renderers[i]->Render();
+
+		glUseProgram(0);
+	}
+
+	//Bind The Current Frame Buffer And The Shader Program Back To Defaults
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void RenderingPipeline::Render()
