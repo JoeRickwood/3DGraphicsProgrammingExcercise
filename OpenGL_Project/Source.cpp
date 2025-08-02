@@ -101,6 +101,7 @@ static void LoadScene()
 		objectTestRenderer->AddTexturePass("Texture0", "ShadowMap", Texture2D, Repeat);
 		objectTestRenderer->SetRenderType(RenderBoth);
 		objectTestRenderer->SetShadowRendering(false);
+		objectTestRenderer->SetTextureTiling(glm::vec2(25, 25));
 	}
 
 
@@ -229,10 +230,11 @@ int main()
 	//Setup All Objects In Project
 	InitialSetup();
 
-	RenderingPipeline::InitializeShadowMapping();
-
 	//Load The Scenes Objects
 	LoadScene();
+
+
+	RenderingPipeline::InitializeShadowMapping();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(AssetLoader::Instance().currentWindow) == false)

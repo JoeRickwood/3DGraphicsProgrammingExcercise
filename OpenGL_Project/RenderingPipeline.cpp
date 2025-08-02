@@ -6,6 +6,7 @@
 RenderingPipeline::RenderingPipeline()
 {
 	shadowmapFBO = NULL;
+	shadowmapTexture = NULL;
 }
 
 RenderingPipeline::~RenderingPipeline()
@@ -14,26 +15,27 @@ RenderingPipeline::~RenderingPipeline()
 
 void RenderingPipeline::InitializeShadowMapping()
 {
-	glGenBuffers(1, &Current().shadowmapFBO);
+	//Generate Frame Buffer + Depth Map Textures
+	glGenFramebuffers(1, &Current().shadowmapFBO);
 
 	glGenTextures(1, &Current().shadowmapTexture);
 	glBindTexture(GL_TEXTURE_2D, Current().shadowmapTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1920, 1080, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glGenerateMipmap(Current().shadowmapTexture);
+	float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, Current().shadowmapTexture, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Current().shadowmapTexture, 0);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	AssetLoader::Instance().AddTexture(Current().shadowmapTexture, "ShadowMap");

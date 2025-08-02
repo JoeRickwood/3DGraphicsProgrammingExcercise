@@ -1,39 +1,23 @@
 #ifdef COMPILING_VS
 	layout (location = 0) in vec3 Position;
-	layout (location = 1) in vec2 TexCoords;
-	layout (location = 2) in vec3 Normal;
     layout (location = 3) in mat4 ModelMatrix;
 
 	uniform mat4 VP;
 
-	out vec2 FragTexCoords;
-	out vec3 FragNormal;
-	out vec3 FragPos;
-
 	void main() 
 	{
-		FragTexCoords = TexCoords;
-		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
-		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
-
-        gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
+		gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
 	}
 
 #elif defined(COMPILING_FS)
-    //IN / OUTS
-    in vec2 FragTexCoords;
-    in vec3 FragNormal;
-    in vec3 FragPos;
 
-    out vec4 FinalColor0;
-
-	uniform int IsShadow = 1;
-
-    uniform vec3 Ambient;
+	out vec4 FinalColor;
 
     void main() 
     {
-        FinalColor0 = vec4(1, 1, 1, 1);
+		gl_FragDepth = gl_FragCoord.z;
+
+		FinalColor = vec4(vec3(gl_FragCoord.z), 1.0f); 
     }
 
 #endif
