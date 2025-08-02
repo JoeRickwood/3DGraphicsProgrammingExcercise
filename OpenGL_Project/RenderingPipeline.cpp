@@ -58,22 +58,23 @@ void RenderingPipeline::RemoveRenderer(Renderer* _renderer)
 
 void RenderingPipeline::ShadowPass()
 {
+	GLuint program = AssetLoader::Instance().GetShaderProgram("ShadowPass");
+	glUseProgram(program);
+
+	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(Orthographic) * Camera::Instance().GetViewMatrix();
+	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
+
 	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	for (int i = 0; i < Current().renderers.size(); ++i)
 	{
-		GLuint program = AssetLoader::Instance().GetShaderProgram("ShadowPass");
-		glUseProgram(program);
-
 		Current().renderers[i]->BindVBOData();
 
-		glm::mat4 VP = Current().renderers[i]->projection == ProjectionType::Screen_Orthographic ? Camera::Instance().GetProjectionMatrix(Current().renderers[i]->projection) : Camera::Instance().GetProjectionMatrix(Current().renderers[i]->projection) * Camera::Instance().GetViewMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
-
 		Current().renderers[i]->Render();
-
-		glUseProgram(0);
 	}
+
+	glUseProgram(0);
 
 	//Bind The Current Frame Buffer And The Shader Program Back To Defaults
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
