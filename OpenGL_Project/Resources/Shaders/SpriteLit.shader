@@ -45,26 +45,28 @@
 
     float Raymarch(vec2 coord) 
     {
-        int RaymarchCount = 5;
-        float RayMarchStep = 0.005f; 
-        vec2 lightingDir = vec2(1, -1);
+        int RaymarchCount = 25;
+        float RayMarchStep = 0.001f; 
+        vec2 lightingDir = vec2(0.5, -1);
+
+        float total = 0;
 
         for(int i = 0; i < RaymarchCount; i++) 
         {
             if(CalculateShadowValue(coord + (-lightingDir * RayMarchStep * i)) > 0.0f) 
             {
-                return 0.3f;
+                total += 0.1f;
             }
         }
 
-        return 1.0f;
+        return 1 - total;
     }
 
     void main() 
     {
         float shadowValue = Raymarch(gl_FragCoord.xy / ScreenSize);
 
-        vec4 mainCol = texture(Texture0, FragTexCoords * Tiling) * vec4(shadowValue, shadowValue, shadowValue, shadowValue);
+        vec4 mainCol = texture(Texture0, FragTexCoords * Tiling) * vec4(shadowValue, shadowValue, shadowValue, 1.0f);
         FinalColor = mainCol;
         //FinalColor = vec4(gl_FragCoord.x / ScreenSize.x, gl_FragCoord.y / ScreenSize.y, 0, 1);
     }

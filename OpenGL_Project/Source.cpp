@@ -114,18 +114,6 @@ static void LoadScene()
 		objectTestRenderer->SetTextureTiling(glm::vec2(25, 25));
 	}
 
-
-	/*
-	//Regular Sprite Object Set-Up
-	{
-		ObjectInstance* backgroundTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.f, 20.f, 1.f));
-		auto backgroundTestRenderer = backgroundTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
-		backgroundTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		backgroundTestRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
-		backgroundTestRenderer->SetRenderType(RenderBoth);
-		backgroundTestRenderer->SetTextureTiling(glm::vec2(20.0f, 20.0f));
-	} */
-	
 	//Expand For UI Creation
 	/*
 	//Play Button Set-Up

@@ -39,7 +39,7 @@
     {
         vec4 mainCol = texture(Texture0, FragTexCoords * Tiling);
 
-        FinalColor = vec4(mainCol.xyz, 1) * vec4(Ambient, 1.0f);
+        FinalColor = mainCol * vec4(Ambient, 1.0f);
     }
 
 #endif
