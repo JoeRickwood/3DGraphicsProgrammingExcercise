@@ -17,7 +17,7 @@
     {
 		gl_FragDepth = gl_FragCoord.z;
 
-		FinalColor = vec4(vec3(gl_FragCoord.z), 1.0f); 
+		FinalColor = vec4(1.0f, 1.0f, 1.0f, 1.0f); 
     }
 
 #endif

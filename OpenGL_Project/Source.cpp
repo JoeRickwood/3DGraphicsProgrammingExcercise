@@ -10,7 +10,7 @@ static void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 {
 	glViewport(0, 0, _Width, _Height);
 
-	AssetLoader::Instance().SetWindowSized(glm::vec2((float)_Width, (float)_Height));
+	AssetLoader::Instance().SetWindowSize(glm::vec2((float)_Width, (float)_Height));
 }
 
 //Sets Up Objects + Other GLFW Parameters
@@ -29,7 +29,7 @@ static void InitialSetup()
 	//Create Window
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
 	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
-	AssetLoader::Instance().SetWindowSized(glm::vec2((int)windowSize.x, (int)windowSize.y));
+	AssetLoader::Instance().SetWindowSize(glm::vec2((int)windowSize.x, (int)windowSize.y));
 
 	if (AssetLoader::Instance().currentWindow == NULL)
 	{
@@ -95,10 +95,20 @@ static void LoadScene()
 	}
 
 	{
-		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(3.0f, 3.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(5.f, 5.f, 5.f));
+		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(3.0f, -2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.f, 1.f, 1.f));
 		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
 		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		objectTestRenderer->AddTexturePass("Texture0", "ShadowMap", Texture2D, Repeat);
+		objectTestRenderer->AddTexturePass("Texture0", "Test", Texture2D, Repeat);
+		objectTestRenderer->SetRenderType(RenderBoth);
+		objectTestRenderer->SetShadowRendering(true);
+	}
+
+	{
+		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(10.0f, 10.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(25.f, 25.f, 3.f));
+		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("SpriteLit", ProjectionType::Orthographic);
+		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		objectTestRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
+		objectTestRenderer->AddTexturePass("ShadowMap", "ShadowMap", Texture2D, ClampBorder);
 		objectTestRenderer->SetRenderType(RenderBoth);
 		objectTestRenderer->SetShadowRendering(false);
 		objectTestRenderer->SetTextureTiling(glm::vec2(25, 25));

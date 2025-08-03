@@ -118,5 +118,8 @@
     <None Include="Resources\Shaders\ShadowPass.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\SpriteLit.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

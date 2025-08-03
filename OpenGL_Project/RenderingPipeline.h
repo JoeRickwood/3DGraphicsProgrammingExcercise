@@ -12,6 +12,8 @@ protected:
 	GLuint shadowmapFBO;
 	GLuint shadowmapTexture;
 
+	float shadowMapHeight = 2048, shadowMapWidth = 2048;
+
 
 public:
 	static RenderingPipeline& Current() { static RenderingPipeline renderingPipeline; return renderingPipeline; }

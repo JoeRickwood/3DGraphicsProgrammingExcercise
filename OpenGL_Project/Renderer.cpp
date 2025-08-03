@@ -53,6 +53,9 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 	glm::mat4 VP = projection == ProjectionType::Screen_Orthographic ? Camera::Instance().GetProjectionMatrix(projection) : Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
+	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
+	glUniform2fv(glGetUniformLocation(_program, "ScreenSize"), 1, glm::value_ptr(windowSize));
+
 	//Pass In Uniforms
 	glm::vec3 position = Camera::Instance().GetCameraPosition();
 	glUniform3f(glGetUniformLocation(_program, "CameraPos"), position.x, position.y, position.z);

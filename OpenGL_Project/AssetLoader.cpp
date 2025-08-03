@@ -561,7 +561,7 @@ glm::vec2 AssetLoader::GetWindowSize()
 	return windowSize;
 }
 
-void AssetLoader::SetWindowSized(glm::vec2 _windowSize)
+void AssetLoader::SetWindowSize(glm::vec2 _windowSize)
 {
 	windowSize = _windowSize;
 }

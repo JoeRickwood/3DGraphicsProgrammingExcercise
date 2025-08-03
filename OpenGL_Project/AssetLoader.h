@@ -124,7 +124,7 @@ public:
 	void LoadAssets(const char* folderPath);
 
 	glm::vec2 GetWindowSize();
-	void SetWindowSized(glm::vec2 _windowSize);
+	void SetWindowSize(glm::vec2 _windowSize);
 
 
 	GLFWwindow* currentWindow;

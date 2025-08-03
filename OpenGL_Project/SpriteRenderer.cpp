@@ -18,8 +18,6 @@ SpriteRenderer::~SpriteRenderer()
 void SpriteRenderer::Init() 
 {
 	RenderingPipeline::AddRenderer(this);
-
-	//InitVBO();
 }
 
 void SpriteRenderer::InitVBO() 

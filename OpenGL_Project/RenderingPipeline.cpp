@@ -20,7 +20,7 @@ void RenderingPipeline::InitializeShadowMapping()
 
 	glGenTextures(1, &Current().shadowmapTexture);
 	glBindTexture(GL_TEXTURE_2D, Current().shadowmapTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Current().shadowMapWidth, Current().shadowMapHeight, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -32,9 +32,12 @@ void RenderingPipeline::InitializeShadowMapping()
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, Current().shadowmapTexture, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Current().shadowmapTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, NULL, 0);
+
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -60,21 +63,31 @@ void RenderingPipeline::RemoveRenderer(Renderer* _renderer)
 
 void RenderingPipeline::ShadowPass()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
+
+	glViewport(0, 0, (GLsizei)Current().shadowMapWidth, (GLsizei)Current().shadowMapHeight);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	GLuint program = AssetLoader::Instance().GetShaderProgram("ShadowPass");
 	glUseProgram(program);
 
 	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(Orthographic) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
-	glBindFramebuffer(GL_FRAMEBUFFER, Current().shadowmapFBO);
-	glClear(GL_COLOR_BUFFER_BIT);
-
 	for (int i = 0; i < Current().renderers.size(); ++i)
 	{
+		if (!Current().renderers[i]->renderShadows)
+		{
+			continue;
+		}
+
 		Current().renderers[i]->BindVBOData();
+
+		//Current().renderers[i]->InitializeRenderingInfo(program);
 
 		Current().renderers[i]->Render();
 	}
+
 
 	glUseProgram(0);
 
