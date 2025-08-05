@@ -1,11 +1,7 @@
 #pragma once
-#include "ObjectInstance.h"
+#include "Material.h"
 
-enum TextureType 
-{
-	Texture2D = GL_TEXTURE_2D,
-	CubeMap = GL_TEXTURE_CUBE_MAP
-};
+
 
 enum RenderType 
 {
@@ -15,41 +11,17 @@ enum RenderType
 	RenderBoth = GL_CULL_FACE
 };
 
-enum TilingType 
-{
-	ClampEdges,
-	Repeat,
-	ClampBorder
-};
 
 
-struct TexturePass 
-{
-public:
-	std::string locationName;
-	std::string textureKey;
-	TextureType type;
-	TilingType tilingType;
-
-	TexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType)
-	{
-		locationName = _location;
-
-		textureKey = _texKey;
-		type = _type;
-		tilingType = _tilingType;
-	}
-
-	~TexturePass() 
-	{
-
-	}
-};
 
 class Renderer : public Component
 {
 protected:
-	Mesh* mesh; 	 //Points To Renderable Object From The MeshLoader Static Class
+	Mesh* mesh; 			//Points To Renderable Object From The MeshLoader Static Class
+	Material* material;		//Points To The Material Object Being Used By This Renderer 
+	
+	GLuint VBO;				//VBO Data To Hotswap When Rendering Different Kinds, Allows For Instanced, And Non-Instanced Objects And Text To Be Rendered The Same
+
 	std::string shaderKey;
 	ProjectionType projection;
 	RenderType renderType;
@@ -64,8 +36,6 @@ protected:
 	//UI ONLY CONVERT TO SHADER PASS INS OR MATERIAL LATER
 	float borderSize = 50;
 	glm::vec2 textureSize = glm::vec2(64, 64);
-
-	GLuint VBO;
 
 	std::vector<TexturePass> textures;
 
@@ -83,7 +53,8 @@ public:
 	virtual void BindVBOData();
 	virtual void Render();
 
-	void AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType);
+	void AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TextureTilingType _tilingType);
+
 	void SetMesh(Mesh* _mesh);
 	void SetShader(std::string _shaderKey);
 	void SetTextureTiling(glm::vec2 _tiling);
@@ -92,4 +63,8 @@ public:
 
 	glm::vec4 GetColor() const;
 	void SetColor(glm::vec4 _color);
+
+	void SetMaterial(Material* _material);
+	Material* GetMaterial();
+
 };

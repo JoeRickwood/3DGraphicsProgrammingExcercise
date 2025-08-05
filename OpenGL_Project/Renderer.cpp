@@ -4,8 +4,11 @@
 #include <iostream>
 #include "RenderingPipeline.h"
 
-Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectionType = ProjectionType::Perspective)
+Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectionType = ProjectionType::PERSPECTIVE)
 {
+
+
+
 	shaderKey = _shaderKey;
 	projection = _projectionType;
 	mesh = nullptr;
@@ -50,7 +53,7 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 	
 	glCullFace(renderType);
 
-	glm::mat4 VP = projection == ProjectionType::Screen_Orthographic ? Camera::Instance().GetProjectionMatrix(projection) : Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
+	glm::mat4 VP = projection == ProjectionType::SCREEN_ORTHOGRAPHIC ? Camera::Instance().GetProjectionMatrix(projection) : Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(_program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
@@ -79,15 +82,15 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 		//Updating Tiling Type Based On The Texture pass Tiling Type
 		switch (textures[i].tilingType)
 		{
-		case TilingType::ClampEdges: //Stops The Color At The Edge Of The Texture
+		case TextureTilingType::CLAMP_EDGES: //Stops The Color At The Edge Of The Texture
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			break;
-		case TilingType::Repeat: //Repeating Textures Wrap Around When Tiled
+		case TextureTilingType::REPEAT: //Repeating Textures Wrap Around When Tiled
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_REPEAT);
 			break;
-		case TilingType::ClampBorder: //Clamps Color To Texture Border Color IF Set
+		case TextureTilingType::CLAMP_BORDER: //Clamps Color To Texture Border Color If Set
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 			break;
@@ -116,7 +119,7 @@ void Renderer::Render()
 
 }
 
-void Renderer::AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TilingType _tilingType = TilingType::Repeat)
+void Renderer::AddTexturePass(std::string _location, std::string _texKey, TextureType _type, TextureTilingType _tilingType = REPEAT)
 {
 	textures.push_back(TexturePass(_location, _texKey, _type, _tilingType));
 }
@@ -162,6 +165,16 @@ void Renderer::SetShadowRendering(bool _on)
 void Renderer::SetColor(glm::vec4 _color)
 {
 	color = _color;
+}
+
+void Renderer::SetMaterial(Material* _material)
+{
+	material = _material;
+}
+
+Material* Renderer::GetMaterial()
+{
+	return material;
 }
 
 glm::vec4 Renderer::GetColor() const

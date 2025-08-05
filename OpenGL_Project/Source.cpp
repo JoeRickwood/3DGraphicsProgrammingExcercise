@@ -28,7 +28,7 @@ static void InitialSetup()
 
 	//Create Window
 	glm::vec2 windowSize = AssetLoader::Instance().GetWindowSize();
-	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL EXCERCISE", NULL, NULL);
+	AssetLoader::Instance().currentWindow = glfwCreateWindow((int)windowSize.x, (int)windowSize.y, "OPEN GL ", NULL, NULL);
 	AssetLoader::Instance().SetWindowSize(glm::vec2((int)windowSize.x, (int)windowSize.y));
 
 	if (AssetLoader::Instance().currentWindow == NULL)

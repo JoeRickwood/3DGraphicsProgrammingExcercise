@@ -100,9 +100,9 @@ public:
 
 enum ProjectionType
 {
-	Orthographic,
-	Perspective,
-	Screen_Orthographic
+	ORTHOGRAPHIC,
+	PERSPECTIVE,
+	SCREEN_ORTHOGRAPHIC
 };
 
 class AssetLoader
@@ -125,7 +125,6 @@ public:
 
 	glm::vec2 GetWindowSize();
 	void SetWindowSize(glm::vec2 _windowSize);
-
 
 	GLFWwindow* currentWindow;
 
