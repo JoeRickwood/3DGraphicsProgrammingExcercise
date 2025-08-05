@@ -166,6 +166,8 @@ protected:
 	std::vector<ValuePass> valuePasses;
 	std::vector<MatrixPass> matrixPasses;
 
+
+
 	void SetUniforms(GLuint _program);
 
 public:
@@ -191,5 +193,15 @@ public:
 	void AddMatrixPass(MatrixPass _value);
 	//Returns A Matrix Pass With The Corresponding Name Key, if None Exist In This Material, Returns Nullptr
 	MatrixPass* GetMatrixPass(std::string _key);
+
+
+	void SetName(std::string _name);
+	std::string GetName() const;
+
+	void SetShader(std::string _shader);
+	std::string GetShader() const;
+
+	void SetRenderType(RenderType _renderType);
+	RenderType GetRenderType() const;
 
 };

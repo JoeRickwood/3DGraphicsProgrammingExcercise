@@ -82,7 +82,6 @@ static void LoadScene()
 	//Set The Scenes Current Ambient Light Color And Strength
 	Scene::Current().SetAmbientLightStength(1.0f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
-
 	
 	//Regular Sprite Object Set-Up
 	{

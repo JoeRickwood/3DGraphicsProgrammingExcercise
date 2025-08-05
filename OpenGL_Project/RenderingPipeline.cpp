@@ -36,9 +36,6 @@ void RenderingPipeline::InitializeShadowMapping()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Current().shadowmapTexture, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, NULL, 0);
 
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	glReadBuffer(GL_COLOR_ATTACHMENT0);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	AssetLoader::Instance().AddTexture(Current().shadowmapTexture, "ShadowMap");
@@ -87,7 +84,6 @@ void RenderingPipeline::ShadowPass()
 
 		Current().renderers[i]->Render();
 	}
-
 
 	glUseProgram(0);
 

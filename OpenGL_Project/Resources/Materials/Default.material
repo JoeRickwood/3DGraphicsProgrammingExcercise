@@ -1,0 +1,22 @@
+name : "value";
+shader : "DefaultUI";
+renderType : "";
+
+tp "_location, _texKey, _type, _tilingType";
+
+vp1 "_location, (0)";
+vp2 "_location, (0, 0)";
+vp3 "_location, (0, 0, 0)";
+vp4 "_location, (0, 0, 0, 0)";
+
+mp2 "_location, (0, 0
+		 0, 0)";
+
+mp3 "_location, (0, 0, 0,
+		 0, 0, 0,
+		 0, 0, 0)";
+
+mp4 "_location, (0, 0, 0, 0,
+		 0, 0, 0, 0,
+		 0, 0, 0, 0,
+		 0, 0, 0, 0)";

@@ -155,3 +155,24 @@ MatrixPass* Material::GetMatrixPass(std::string _key)
 
 	return nullptr;
 }
+
+void Material::SetShader(std::string _shader) 
+{
+	shaderKey = _shader;
+}
+
+
+std::string Material::GetShader() const
+{
+	return shaderKey;
+}
+
+void Material::SetRenderType(RenderType _type) 
+{
+	renderType = _type;
+}
+
+RenderType Material::GetRenderType() const
+{
+	return renderType;
+}
