@@ -1,6 +1,14 @@
-#pragma once
-#include "ObjectInstance.h"
+#include <string>
+#include <vector>
+#include <map>
+#include<fstream>
 
+#include <glew.h>
+#include <glfw3.h>
+
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 enum ValuePassInType 
 {
@@ -27,6 +35,15 @@ enum TextureTilingType
 	CLAMP_BORDER
 };
 
+enum RenderType
+{
+	RENDER_FRONT = GL_BACK,
+	RENDER_BACK = GL_FRONT,
+	RENDER_NONE = GL_FRONT_AND_BACK,
+	RENDER_BOTH = GL_CULL_FACE
+};
+
+//Structs Used To Pass Uniforms Into Shader
 struct TexturePass
 {
 public:
@@ -137,23 +154,27 @@ public:
 class Material
 {
 protected:
+	//Name Used For Identification
 	std::string name;
-
 	//Shader Key To Receive GLuint Shader Program From The Asset Loader
 	std::string shaderKey;
 
+	RenderType renderType;
 
 	//List Of Texture Passes To Send To The Shader Program
 	std::vector<TexturePass> texturePasses;
 	std::vector<ValuePass> valuePasses;
 	std::vector<MatrixPass> matrixPasses;
 
+	void SetUniforms(GLuint _program);
+
 public:
 	Material();
 	~Material();
 
 	//Binds Shader Program And Passes In Textures, Values And Matrices Into Shader
-	void Bind();
+	//Returns GLuint Shader ID Held In The AssetLoader
+	GLuint Bind();
 	void Unbind();
 
 	//Emplaces Texture Onto Texture Pass Stack

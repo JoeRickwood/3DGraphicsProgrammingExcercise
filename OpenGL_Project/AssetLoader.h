@@ -1,16 +1,5 @@
 #pragma once
-// Library Includes
-#include <string>
-#include <vector>
-#include <map>
-#include<fstream>
-
-#include <glew.h>
-#include <glfw3.h>
-
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
+#include "Material.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -115,6 +104,7 @@ public:
 	GLuint GetSkybox(std::string _key);
 	Mesh* GetMesh(std::string _key);
 	Font* GetFont(std::string _fontKey);
+
 	TextCharacter GetGlyph(std::string _fontKey, const char _glyph);
 	void AddTexture(GLuint _tex, std::string _key);
 
@@ -132,18 +122,22 @@ protected:
 	AssetLoader();
 	~AssetLoader();
 
+	glm::vec2 windowSize = glm::vec2(1920, 1080);
+
+	//Asset Maps
 	std::map<std::string, GLuint> shaderPrograms;
+
 	std::map<std::string, GLuint> textures;
 	std::map<std::string, GLuint> skyboxes;
+
 	std::map<std::string, Mesh*> meshes;
 	std::map<std::string, Font*> fonts;
+	std::map<std::string, Material*> materials;
 
 	const std::string supportedImageFileExtensions[2] = { ".png", ".jpg" };
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
 	const std::string supportedShaderFileExtensions[1] = { ".shader" };
 	const std::string supportedFontFileExtensions[1] = { ".ttf" };
-
-	glm::vec2 windowSize = glm::vec2(1920, 1080);
 
 	//Helpers
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);

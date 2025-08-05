@@ -45,11 +45,11 @@ glm::mat4 Camera::GetProjectionMatrix(ProjectionType _type) const
 {
 	switch (_type)
 	{
-		case Orthographic:
+		case ORTHOGRAPHIC:
 			return orthoProjectionMatrix;
-		case Perspective:
+		case PERSPECTIVE:
 			return perspectiveProjectionMatrix;
-		case Screen_Orthographic:
+		case SCREEN_ORTHOGRAPHIC:
 			return screenProjectionMatrix;
 		default:
 			return perspectiveProjectionMatrix;

@@ -1,18 +1,5 @@
 #pragma once
-#include "Material.h"
-
-
-
-enum RenderType 
-{
-	RenderFront = GL_BACK,
-	RenderBack = GL_FRONT,
-	RenderNone = GL_FRONT_AND_BACK,
-	RenderBoth = GL_CULL_FACE
-};
-
-
-
+#include "ObjectInstance.h"
 
 class Renderer : public Component
 {

@@ -20,7 +20,7 @@ void RenderingPipeline::InitializeShadowMapping()
 
 	glGenTextures(1, &Current().shadowmapTexture);
 	glBindTexture(GL_TEXTURE_2D, Current().shadowmapTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Current().shadowMapWidth, Current().shadowMapHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)Current().shadowMapWidth, (GLsizei)Current().shadowMapHeight, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -71,7 +71,7 @@ void RenderingPipeline::ShadowPass()
 	GLuint program = AssetLoader::Instance().GetShaderProgram("ShadowPass");
 	glUseProgram(program);
 
-	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(Orthographic) * Camera::Instance().GetViewMatrix();
+	glm::mat4 VP = Camera::Instance().GetProjectionMatrix(ORTHOGRAPHIC) * Camera::Instance().GetViewMatrix();
 	glUniformMatrix4fv(glGetUniformLocation(program, "VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
 	for (int i = 0; i < Current().renderers.size(); ++i)

@@ -87,29 +87,29 @@ static void LoadScene()
 	//Regular Sprite Object Set-Up
 	{
 		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.f));
-		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::ORTHOGRAPHIC);
 		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		objectTestRenderer->AddTexturePass("Texture0", "Test", Texture2D, Repeat);
-		objectTestRenderer->SetRenderType(RenderBoth);
+		objectTestRenderer->AddTexturePass("Texture0", "Test", TEXTURE_2D, REPEAT);
+		objectTestRenderer->SetRenderType(RENDER_BOTH);
 		objectTestRenderer->SetShadowRendering(true);
 	}
 
 	{
 		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(3.0f, -2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.f, 1.f, 1.f));
-		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::Orthographic);
+		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("DefaultSprite", ProjectionType::ORTHOGRAPHIC);
 		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		objectTestRenderer->AddTexturePass("Texture0", "Test", Texture2D, Repeat);
-		objectTestRenderer->SetRenderType(RenderBoth);
+		objectTestRenderer->AddTexturePass("Texture0", "Test", TEXTURE_2D, REPEAT);
+		objectTestRenderer->SetRenderType(RENDER_BOTH);
 		objectTestRenderer->SetShadowRendering(true);
 	}
 
 	{
 		ObjectInstance* objectTest = new ObjectInstance("Test", glm::vec3(10.0f, 10.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(25.f, 25.f, 3.f));
-		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("SpriteLit", ProjectionType::Orthographic);
+		auto objectTestRenderer = objectTest->AddComponent<SpriteRenderer>("SpriteLit", ProjectionType::ORTHOGRAPHIC);
 		objectTestRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		objectTestRenderer->AddTexturePass("Texture0", "GroundTile", Texture2D, Repeat);
-		objectTestRenderer->AddTexturePass("ShadowMap", "ShadowMap", Texture2D, ClampBorder);
-		objectTestRenderer->SetRenderType(RenderBoth);
+		objectTestRenderer->AddTexturePass("Texture0", "GroundTile", TEXTURE_2D, REPEAT);
+		objectTestRenderer->AddTexturePass("ShadowMap", "ShadowMap", TEXTURE_2D, CLAMP_BORDER);
+		objectTestRenderer->SetRenderType(RENDER_BOTH);
 		objectTestRenderer->SetShadowRendering(false);
 		objectTestRenderer->SetTextureTiling(glm::vec2(25, 25));
 	}

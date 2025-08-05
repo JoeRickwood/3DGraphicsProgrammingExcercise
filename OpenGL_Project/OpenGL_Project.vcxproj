@@ -223,6 +223,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="MathExtensions.h" />
     <ClInclude Include="ObjectInstance.h" />

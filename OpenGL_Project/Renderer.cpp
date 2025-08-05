@@ -6,13 +6,12 @@
 
 Renderer::Renderer(std::string _shaderKey = "Default", ProjectionType _projectionType = ProjectionType::PERSPECTIVE)
 {
-
-
+	material = nullptr;
 
 	shaderKey = _shaderKey;
 	projection = _projectionType;
 	mesh = nullptr;
-	renderType = RenderFront;
+	renderType = RENDER_FRONT;
 	doubleSided = false;
 	renderShadows = true;
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -41,16 +40,8 @@ void Renderer::BindVBOData()
 
 
 void Renderer::InitializeRenderingInfo(GLuint _program)
-{
-	if (doubleSided) 
-	{
-		glDisable(GL_CULL_FACE);
-	}
-	else 
-	{
-		glEnable(GL_CULL_FACE);
-	}
-	
+{	
+	glDisable(GL_CULL_FACE);
 	glCullFace(renderType);
 
 	glm::mat4 VP = projection == ProjectionType::SCREEN_ORTHOGRAPHIC ? Camera::Instance().GetProjectionMatrix(projection) : Camera::Instance().GetProjectionMatrix(projection) * Camera::Instance().GetViewMatrix();
@@ -95,13 +86,6 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 			glTexParameteri(textures[i].type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 			break;
 		}
-
-		//MOVE TO CUSTOM SHADER PASS IN PER RENDERER / MATERIAL
-		//texture size, borderSize, widgetSize
-		glUniform2f(glGetUniformLocation(_program, "TextureSize"), textureSize.x, textureSize.y);
-		glUniform1f(glGetUniformLocation(_program, "BorderSize"), borderSize);
-		glUniform2f(glGetUniformLocation(_program, "WidgetSize"), parent->GetScale().x, parent->GetScale().y);
-
 		
 		GLint loc = glGetUniformLocation(_program, textures[i].locationName.c_str());
 
@@ -109,6 +93,13 @@ void Renderer::InitializeRenderingInfo(GLuint _program)
 
 		glActiveTexture(0);
 	}
+
+	//MOVE TO CUSTOM SHADER PASS IN PER RENDERER / MATERIAL
+	//texture size, borderSize, widgetSize
+	glUniform2f(glGetUniformLocation(_program, "TextureSize"), textureSize.x, textureSize.y);
+	glUniform1f(glGetUniformLocation(_program, "BorderSize"), borderSize);
+	glUniform2f(glGetUniformLocation(_program, "WidgetSize"), parent->GetScale().x, parent->GetScale().y);
+
 
 	parent->ShaderUpdate();
 }
@@ -143,9 +134,9 @@ void Renderer::SetTextureTiling(glm::vec2 _tiling)
 
 void Renderer::SetRenderType(RenderType _type)
 {
-	if (_type == RenderBoth) 
+	if (_type == RENDER_BOTH) 
 	{
-		renderType = RenderFront;
+		renderType = RENDER_FRONT;
 		doubleSided = true;
 	}
 	else 
