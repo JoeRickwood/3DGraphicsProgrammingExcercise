@@ -14,10 +14,7 @@
 
 	void main() 
 	{
-		gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
-
-		FragTexCoords = TexCoords;
-		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
+		gl_Position = VP * ModelMatrix * vec4(Position, 1.0f); 
 	}
 
 #elif defined(COMPILING_FS)

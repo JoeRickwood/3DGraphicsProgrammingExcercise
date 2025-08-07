@@ -230,7 +230,6 @@ int main()
 	//Load The Scenes Objects
 	LoadScene();
 
-
 	RenderingPipeline::InitializeShadowMapping();
 
 	//Application Loop Runs Until The Window Is Set To close

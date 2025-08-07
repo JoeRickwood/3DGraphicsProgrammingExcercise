@@ -119,17 +119,17 @@ void AssetLoader::CreateShaderProgram(const char* _filename, std::string _shader
 	AssetLoader::Instance().shaderPrograms.emplace(_shaderKey, program);
 }
 
-GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
+GLuint AssetLoader::CreateShader(GLenum _shaderType, const char* _shaderName)
 {
 	// Read the shader files and save the source code as strings
-	std::string shaderTxt = ReadShaderFile(shaderName);
+	std::string shaderTxt = ReadShaderFile(_shaderName);
 	const char* define = "";
 
-	if (shaderType == GL_VERTEX_SHADER) 
+	if (_shaderType == GL_VERTEX_SHADER) 
 	{
 		 define = "#version 460 core\n#define COMPILING_VS\n";
 	}
-	else if(shaderType == GL_FRAGMENT_SHADER)
+	else if(_shaderType == GL_FRAGMENT_SHADER)
 	{
 		define = "#version 460 core\n#define COMPILING_FS\n";
 	}
@@ -142,7 +142,7 @@ GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 
 
 	// Create the shader ID and create pointers for source code string and length
-	GLuint shaderID = glCreateShader(shaderType);
+	GLuint shaderID = glCreateShader(_shaderType);
 
 
 	const char* shaderChars = shaderTxt.c_str();
@@ -157,22 +157,22 @@ GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compile_result);
 	if (compile_result == GL_FALSE)
 	{
-		PrintErrorDetails(true, shaderID, shaderName);
+		PrintErrorDetails(true, shaderID, _shaderName);
 		return 0;
 	}
 
 	return shaderID;
 }
 
-std::string AssetLoader::ReadShaderFile(const char* filename)
+std::string AssetLoader::ReadShaderFile(const char* _filename)
 {
 	// Open the file for reading
-	std::ifstream file(filename, std::ios::in);
+	std::ifstream file(_filename, std::ios::in);
 	std::string shaderCode;
 
 	// Ensure the file is open and readable
 	if (!file.good()) {
-		std::cout << "Cannot read file:  " << filename << std::endl;
+		std::cout << "Cannot read file:  " << _filename << std::endl;
 		return "";
 	}
 
@@ -188,20 +188,20 @@ std::string AssetLoader::ReadShaderFile(const char* filename)
 	return shaderCode;
 }
 
-void AssetLoader::PrintErrorDetails(bool isShader, GLuint id, const char* name)
+void AssetLoader::PrintErrorDetails(bool _isShader, GLuint _id, const char* _name)
 {
 	int infoLogLength = 0;
 	// Retrieve the length of characters needed to contain the info log
-	(isShader == true) ? glGetShaderiv(id, GL_INFO_LOG_LENGTH, &infoLogLength) : glGetProgramiv(id, GL_INFO_LOG_LENGTH, &infoLogLength);
+	(_isShader == true) ? glGetShaderiv(_id, GL_INFO_LOG_LENGTH, &infoLogLength) : glGetProgramiv(_id, GL_INFO_LOG_LENGTH, &infoLogLength);
 	std::vector<char> log(infoLogLength);
 
 	// Retrieve the log info and populate log variable
-	(isShader == true) ? glGetShaderInfoLog(id, infoLogLength, NULL, &log[0]) : glGetProgramInfoLog(id, infoLogLength, NULL, &log[0]);
-	std::cout << "Error compiling " << ((isShader == true) ? "shader" : "program") << ": " << name << std::endl;
+	(_isShader == true) ? glGetShaderInfoLog(_id, infoLogLength, NULL, &log[0]) : glGetProgramInfoLog(_id, infoLogLength, NULL, &log[0]);
+	std::cout << "Error compiling " << ((_isShader == true) ? "shader" : "program") << ": " << _name << std::endl;
 	std::cout << &log[0] << std::endl;
 }
 
-void AssetLoader::CreateTexture(std::string filename, std::string textureKey)
+void AssetLoader::CreateTexture(const char* filename, std::string textureKey)
 {
 	stbi_set_flip_vertically_on_load(true);
 
@@ -211,7 +211,7 @@ void AssetLoader::CreateTexture(std::string filename, std::string textureKey)
 	int width;
 	int height;
 	int components;
-	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &components, 0);
+	unsigned char* data = stbi_load(filename, &width, &height, &components, 0);
 
 	if (data == nullptr) {
 		std::cout << "Texture Not Loaded : " << filename << "\n";
@@ -223,7 +223,7 @@ void AssetLoader::CreateTexture(std::string filename, std::string textureKey)
 	glGenTextures(1, &ret);
 	glBindTexture(GL_TEXTURE_2D, ret);
 
-	data = stbi_load(filename.c_str(), &width, &height, &components, 0);
+	data = stbi_load(filename, &width, &height, &components, 0);
 
 	//Check If Is RGBA Or just RGB
 	GLint LoadedComponents = (components == 4) ? GL_RGBA : GL_RGB;
@@ -245,6 +245,10 @@ void AssetLoader::CreateTexture(std::string filename, std::string textureKey)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	AssetLoader::Instance().textures.emplace(textureKey, ret);
+}
+
+void AssetLoader::CreateMaterial(const char* _filename, std::string _materialKey)
+{
 }
 
 void AssetLoader::CreateSkybox(std::string _filepaths[6], std::string _skyboxKey)
@@ -303,7 +307,7 @@ Mesh* AssetLoader::CreateMesh(std::vector<glm::vec3> _positions, std::vector<int
 	return mesh;
 }
 
-void AssetLoader::LoadMesh(std::string _filepath, std::string _meshKey)
+void AssetLoader::CreateMesh(const char* _filepath, std::string _meshKey)
 {
 	std::vector<VertexStandard> vertices;
 	tinyobj::ObjReaderConfig readerConfig;
@@ -381,7 +385,7 @@ void AssetLoader::LoadMesh(std::string _filepath, std::string _meshKey)
 	AssetLoader::Instance().meshes.emplace(_meshKey, mesh);
 }
 
-void AssetLoader::LoadFont(std::string _filepath, std::string _fontKey)
+void AssetLoader::CreateFont(const char* _filepath, std::string _fontKey)
 {
 	//TEXT FONT LOADING
 	FT_Library fontLibrary;
@@ -394,7 +398,7 @@ void AssetLoader::LoadFont(std::string _filepath, std::string _fontKey)
 	FT_Face face;
 	Instance().fonts.emplace(_fontKey, new Font());
 
-	if (FT_New_Face(fontLibrary, _filepath.c_str(), 0, &face))
+	if (FT_New_Face(fontLibrary, _filepath, 0, &face))
 	{
 		std::cout << "Failed to load font : "<< _filepath << std::endl;
 		return;
@@ -518,7 +522,7 @@ void AssetLoader::LoadAssets(const char* folderPath)
 			if (supportedImageFileExtensions[i] == extension)
 			{
 
-				CreateTexture(std::filesystem::path(file).string(), name.string());
+				CreateTexture(std::filesystem::path(file).string().c_str(), name.string());
 				std::cout << "Created Texture : " << name << "\n";
 			}
 		}
@@ -528,7 +532,7 @@ void AssetLoader::LoadAssets(const char* folderPath)
 		{
 			if (supportedModelFileExtensions[i] == extension)
 			{
-				LoadMesh(std::filesystem::path(file).string(), name.string());
+				CreateMesh(std::filesystem::path(file).string().c_str(), name.string());
 				std::cout << "Created Model : " << name << "\n";
 			}
 		}
@@ -548,15 +552,26 @@ void AssetLoader::LoadAssets(const char* folderPath)
 		{
 			if (supportedFontFileExtensions[i] == extension)
 			{
-				LoadFont(std::filesystem::path(file).string(), name.string());
+				CreateFont(std::filesystem::path(file).string().c_str(), name.string());
 				std::cout << "Created Font : " << name << "\n";
+			}
+		}
+
+
+		//Check The Extension For Supported Material Files
+		for (int i = 0; i < std::size(supportedeMaterialFileExtensions); i++)
+		{
+			if (supportedeMaterialFileExtensions[i] == extension)
+			{
+				CreateMaterial(std::filesystem::path(file).string().c_str(), name.string());
+				std::cout << "Created Material : " << name << "\n";
 			}
 		}
 
 	}
 }
 
-glm::vec2 AssetLoader::GetWindowSize()
+glm::vec2 AssetLoader::GetWindowSize() const
 {
 	return windowSize;
 }

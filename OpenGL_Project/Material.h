@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include<fstream>
+#include <fstream>
 
 #include <glew.h>
 #include <glfw3.h>
@@ -194,13 +194,15 @@ public:
 	//Returns A Matrix Pass With The Corresponding Name Key, if None Exist In This Material, Returns Nullptr
 	MatrixPass* GetMatrixPass(std::string _key);
 
-
+	//Set And Get Material Name
 	void SetName(std::string _name);
 	std::string GetName() const;
 
+	//Set And Get Material Shader Used
 	void SetShader(std::string _shader);
 	std::string GetShader() const;
 
+	//Set And Get The Render Type Of The Material
 	void SetRenderType(RenderType _renderType);
 	RenderType GetRenderType() const;
 

@@ -113,7 +113,7 @@ public:
 
 	void LoadAssets(const char* folderPath);
 
-	glm::vec2 GetWindowSize();
+	glm::vec2 GetWindowSize() const;
 	void SetWindowSize(glm::vec2 _windowSize);
 
 	GLFWwindow* currentWindow;
@@ -138,19 +138,21 @@ protected:
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
 	const std::string supportedShaderFileExtensions[1] = { ".shader" };
 	const std::string supportedFontFileExtensions[1] = { ".ttf" };
+	const std::string supportedeMaterialFileExtensions[1] = { ".material" };
 
 	//Helpers
-	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
+	static void PrintErrorDetails(bool _isShader, GLuint _id, const char* _name);
 
 	//Used For Asset Loading Indirectly
-	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
-	static std::string ReadShaderFile(const char* filename);
+	static GLuint CreateShader(GLenum _shaderType, const char* _shaderName);
+	static std::string ReadShaderFile(const char* _filename);
 
 	//Asset Loading + Creation From Filepaths
 	static void CreateShaderProgram(const char* _filename, std::string _shaderKey);
-	static void CreateTexture(std::string _filename, std::string _shaderKey);
-	static void LoadMesh(std::string _filepath, std::string _meshKey);
-	static void LoadFont(std::string _filepath, std::string _fontKey);
+	static void CreateTexture(const char* _filename, std::string _shaderKey);
+	static void CreateMaterial(const char* _filename, std::string _materialKey); //NEEDS IMPLEMENTING PROPERLY
+	static void CreateMesh(const char* _filepath, std::string _meshKey);
+	static void CreateFont(const char* _filepath, std::string _fontKey);
 };
 
 
