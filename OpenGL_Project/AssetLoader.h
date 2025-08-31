@@ -112,6 +112,8 @@ public:
 	static AssetLoader& Instance() { static AssetLoader shaderLoader; return shaderLoader; }
 
 	GLuint GetShaderProgram(std::string _key);
+	GLuint GetComputeShaderProgram(std::string _key);
+
 	GLuint GetTexture(std::string _key);
 	GLuint GetSkybox(std::string _key);
 	Mesh* GetMesh(std::string _key);
@@ -122,6 +124,7 @@ public:
 	static void CreateSkybox(std::string _filepaths[6], std::string _skyboxKey);
 	static Mesh* CreateMesh(std::vector<glm::vec3> _positions, std::vector<int> indices, std::vector<glm::vec3> normals, std::vector<glm::vec2> _texcoords);
 	static void SaveImageToPath(std::string _filepath, uint8_t* _pixels, int _width, int _height);
+	static GLuint CreateTextureComputeOutput(int _width, int _height);
 
 	void LoadAssets(const char* folderPath);
 	
@@ -134,6 +137,8 @@ protected:
 	~AssetLoader();
 
 	std::map<std::string, GLuint> shaderPrograms;
+	std::map<std::string, GLuint> computeShaderPrograms;
+
 	std::map<std::string, GLuint> textures;
 	std::map<std::string, GLuint> skyboxes;
 	std::map<std::string, Mesh*> meshes;
@@ -143,16 +148,20 @@ protected:
 	const std::string supportedModelFileExtensions[1] = { ".obj" };
 	const std::string supportedShaderFileExtensions[1] = { ".shader" };
 	const std::string supportedFontFileExtensions[1] = { ".ttf" };
+	const std::string supportedComputeShaderFileExtensions[1] = { ".comp" };
 
 	//Helpers
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
 
 	//Used For Asset Loading Indirectly
 	static GLuint CreateShader(GLenum shaderType, const char* shaderName);
+	static GLuint CreateComputeShader(const char* shaderName);
+
 	static std::string ReadShaderFile(const char* filename);
 
 	//Asset Loading + Creation From Filepaths
 	static void CreateShaderProgram(const char* _filename, std::string _shaderKey);
+	static void CreateComputeShaderProgram(const char* _filename, std::string _computeShaderKey);
 	static void CreateTexture(std::string _filename, std::string _shaderKey);
 	static void LoadMesh(std::string _filepath, std::string _meshKey);
 	static void LoadFont(std::string _filepath, std::string _fontKey);

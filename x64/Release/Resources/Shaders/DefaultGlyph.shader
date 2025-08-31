@@ -27,16 +27,20 @@
 	in vec3 FragPos;
 
 	uniform sampler2D Texture0;
-	uniform vec4 Color          = vec4(1.0f, 1.0f, 1.0f, 1.0f);	
+	uniform vec3 Color				= vec3(1.f, 1.f, 1.f);
 
-	out vec4 FinalColor; 
+
+	out vec4 FinalColor;
+
 
 	void main() 
 	{
-		vec4 mainCol = texture(Texture0, FragTexCoords) * Color;
+		float a = texture(Texture0, FragTexCoords).r;
 
-		if(mainCol.a < 0.5)
+		if(a < 0.5)
 			discard;
+
+		vec4 mainCol = vec4(Color, 1.0f);
 
 		FinalColor = mainCol;
 	}

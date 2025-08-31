@@ -1,14 +1,13 @@
 #ifdef COMPILING_VS
-
 	layout (location = 0) in vec3 Position;
 	layout (location = 1) in vec2 TexCoords;
 	layout (location = 2) in vec3 Normal;
-	layout (location = 3) in mat4 Model;
+    layout (location = 3) in mat4 ModelMatrix;
 
 	uniform mat4 VP;
     uniform mat4 LightVP;
 
-	uniform float Time;
+    uniform float Time = 0;
 
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
@@ -16,35 +15,46 @@
     out vec4 FragPosLightSpace;
 
 
-	float power(float inVal, int inPow) 
-	{
-		for (int i = 0; i < inPow; i++) 
-		{
-			inVal *= inVal;
-		}
-
-		return inVal;
-	}
+    float GetWaveHeight(float x) 
+    {
+        return sin((x * 0.5f) + Time) * 0.1f;
+    }
 
 	void main() 
 	{
-		vec4 worldPos = Model * vec4(Position, 1.0);
+        vec3 Pos = Position;
 
-		float swayX = (((sin(Time * 2f) + 0.5f) / 2.f) * TexCoords.y * 0.3) * (sin(worldPos.x + Time) + 1f);
-		float swayY = ((cos(Time * 2f) + 0.5f) / 2.f) * TexCoords.y * 0.1f;
+        float waveHeight = GetWaveHeight(Pos.x);
 
-		worldPos.x += swayX;
-		worldPos.z += swayY;
-
-		gl_Position = VP * worldPos;
+        Pos.y += waveHeight;
 
 		FragTexCoords = TexCoords;
-		FragNormal = normalize(mat3(transpose(inverse(Model))) * Normal);
-		FragPos = vec3(worldPos);
+
+        float rowNeg = GetWaveHeight(Pos.x - 0.1f);
+        float rowPos = GetWaveHeight(Pos.x + 0.1f);
+        float colNeg = Pos.z;
+        float colPos = Pos.z;
+
+        float X = rowNeg - rowPos;
+        float Y = colPos - colNeg;
+
+        vec3 tangentZ = vec3(0.0f, X, 1.0f);
+        vec3 tangentX = vec3(1.0f, Y, 0.0f);
+
+        vec3 waterNormal = normalize(cross(tangentZ, tangentX));
+
+
+
+		FragNormal = waterNormal;
+		FragPos = vec3(ModelMatrix * vec4(Pos, 1.0f));
         FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
+        
+
+        gl_Position = VP * ModelMatrix * vec4(Pos, 1.0f);
 	}
 
 #elif defined(COMPILING_FS)
+
     #define MAX_POINT_LIGHTS 4
     #define MAX_SPOT_LIGHTS 4
 
@@ -118,7 +128,7 @@
          float currentDepth = projCoords.z;  
 
 
-         //float bias = max(0.05 * (1.0 - dot(FragNormal, DirLight.Direction)), 0.005); 
+         //float bias = max(0.05f * (1.0f - dot(FragNormal, DirLight.Direction)), 0.005f); 
          float bias = 0.0001f;
          float shadow = 0.0f;  
 
@@ -128,12 +138,13 @@
          {
              for(int y = -sampleRadius; y <= sampleRadius; ++y)
              {
+                 float value = (projCoords.x > 0 && projCoords.x < 1 && projCoords.x > 0 && projCoords.y < 1) ? 1f : 0f;
+
                  float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-                 shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+                 shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0) * value;        
              }    
          }
          shadow /= pow((sampleRadius * 2) + 1, 2);
-
 
          if(projCoords.z > 1.0) 
          {
@@ -143,18 +154,17 @@
          return shadow * 0.75f;
     } 
 
-
     vec3 CalculateLightPoint(unsigned int index) 
     {
         vec3 Normal = normalize(FragNormal);
         vec3 LightDir = normalize(FragPos - PointLights[index].Position);
 
-        float DiffuseStrength = max(dot(Normal, -LightDir), 0.5f);
+        float DiffuseStrength = max(dot(Normal, -LightDir), 0.0f);
         vec3 Diffuse = DiffuseStrength * PointLights[index].Color;
 
         vec3 ReverseViewDir = normalize(CameraPos - FragPos);
         vec3 HalfwayVector = normalize(-LightDir + ReverseViewDir);
-        float SpecularReflectivity = pow(max(dot(Normal, HalfwayVector), 0.5f), Smoothness);
+        float SpecularReflectivity = pow(max(dot(Normal, HalfwayVector), 0.0f), Smoothness);
         vec3 Specular = PointLights[index].SpecularStrength * SpecularReflectivity * PointLights[index].Color;
 
 
@@ -171,15 +181,16 @@
         vec3 viewDir = normalize(CameraPos - FragPos);
 
         // Diffuse
-        float diffuseStrength = max(dot(normal, lightDir), 0.2f);
+        float diffuseStrength = max(dot(normal, lightDir), 0.0);
         vec3 diffuse = diffuseStrength * DirLight.Color;
 
         // Specular (Blinn-Phong)
         vec3 halfwayDir = normalize(lightDir + viewDir);
-        float spec = pow(max(dot(normal, halfwayDir), 0.2f), Smoothness);
+        float spec = pow(max(dot(normal, halfwayDir), 0.0), Smoothness);
         vec3 specular = spec * DirLight.SpecularStrength * DirLight.Color;
 
-        return diffuse + specular;
+        //return diffuse + Specular;
+        return diffuse;
     }
 
     vec3 CalculateSpotLight(unsigned int index) 
@@ -208,6 +219,18 @@
         return SpotLights[index].Color * intensity;
     }
 
+    float linearize_depth(float d,float zNear,float zFar)
+    {
+        float z_n = 2.0 * d - 1.0;
+        return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
+    }
+
+    float CalculateDepth() 
+    {
+        float val1 = linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f;
+        return val1;
+    }
+
     void main() 
     {
         //Calculate Total Light Amount
@@ -226,14 +249,13 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-        vec4 mainCol = vec4(TotalLight * 0.5f * (1 - ShadowCalculation(FragPosLightSpace)), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        //vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        vec4 mainCol = vec4(vec3(0.15f, 0.4f, 0.93f), 1.0f);
 
         if(mainCol.a < 0.5)
-            discard;    
+            discard;
 
-        //mainCol.a *= 1f - clamp(0.2f / FragTexCoords.y, 0.f, 1.f);
-
-        FinalColor = mainCol;
+        FinalColor = vec4(1.0f, 1.0f, 1.0f, clamp(CalculateDepth(), 0.6f, 1.0f)) * mainCol;
     }
 
 #endif

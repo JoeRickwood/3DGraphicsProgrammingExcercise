@@ -114,6 +114,60 @@ void RenderingPipeline::ShadowPass()
 	glUseProgram(0);
 }
 
+void RenderingPipeline::FrameBufferPass()
+{
+	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
+	{
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->ComputeRender();
+	}
+
+
+	glBindFramebuffer(GL_FRAMEBUFFER, Current().framebufferFBO);
+
+	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
+	{
+		GLuint program = AssetLoader::Instance().GetShaderProgram(Current().renderers[Scene::Current().GetCurrentScene()][i]->shaderKey);
+		glUseProgram(program);
+
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->BindVBOData();
+
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->InitializeRenderingInfo(program);
+
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->Render();
+
+		glUseProgram(0);
+	}
+
+	//glfwSwapBuffers(AssetLoader::Instance().currentWindow);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderingPipeline::RenderToScreen()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDrawBuffer(GL_BACK);
+
+	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	GLuint program = AssetLoader::Instance().GetShaderProgram(Current().screenQuad->shaderKey);
+	glUseProgram(program);
+
+	Current().screenQuad->BindVBOData();
+
+	Current().screenQuad->InitializeRenderingInfo(program);
+
+	Current().screenQuad->Render();
+
+	glfwSwapBuffers(AssetLoader::Instance().currentWindow);
+}
 
 
 std::vector<glm::vec4> RenderingPipeline::GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
@@ -237,6 +291,70 @@ void RenderingPipeline::InitShadowRendering()
 GLuint RenderingPipeline::GetShadowMap()
 {
 	return Current().depthMap;
+}
+
+Renderer* RenderingPipeline::GetScreenQuadRenderer()
+{
+	return Current().screenQuad;
+}
+
+void RenderingPipeline::SetScreenQuadRenderer(Renderer* _renderer)
+{
+	Current().screenQuad = _renderer;
+}
+
+void RenderingPipeline::InitFrameBuffer()
+{
+	glGenFramebuffers(1, &Current().framebufferFBO);
+
+	glGenTextures(1, &Current().framebufferTexture);
+	glBindTexture(GL_TEXTURE_2D, Current().framebufferTexture);
+
+	glm::vec2 windowSize = AssetLoader::Instance().windowSize;
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)windowSize.x, (GLsizei)windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+	float clampColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, Current().framebufferFBO);
+
+	
+	glGenRenderbuffers(1, &Current().depthRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, Current().depthRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, Current().depthRenderBuffer);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Current().framebufferTexture, 0);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, NULL, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	AssetLoader::Instance().AddTexture(Current().framebufferTexture, "Framebuffer");
+}
+
+GLuint RenderingPipeline::GetFramebufferTexture()
+{
+	return Current().framebufferTexture;
+}
+
+void RenderingPipeline::UpdateFramebufferTexture()
+{
+	glBindTexture(GL_TEXTURE_2D, Current().framebufferTexture);
+
+	glm::vec2 windowSize = AssetLoader::Instance().windowSize;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)windowSize.x, (GLsizei)windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, Current().depthRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void RenderingPipeline::ClearAllRenderers()

@@ -31,9 +31,25 @@
 
 	out vec4 FinalColor; 
 
+	float smoothstep(float edge0, float edge1, float x) 
+    {
+        // Scale, and clamp x to 0..1 range
+        x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+        return x * x * (3.0 - 2.0 * x);
+    }
+
 	void main() 
 	{
-		vec4 mainCol = texture(Texture0, FragTexCoords) * Color;
+		float val = texture(Texture0, FragTexCoords).r;
+
+		float step1 = 0.35f;
+		float step2 = 0.4f;
+		float step3 = 0.65f;
+		float step4 = 1.0f;
+
+		vec4 mainCol = mix(vec4(1, 1, 1, 1), vec4(0.5, 0.5, 1, 1), smoothstep(0, step1, val));
+		mainCol = mix(mainCol, vec4(0.2, 0.2, 0.6, 1), smoothstep(step2, step3, val));
+		mainCol = mix(mainCol, vec4(0.0, 0.0, 0.2, 1), smoothstep(step3, step4, val));
 
 		if(mainCol.a < 0.5)
 			discard;

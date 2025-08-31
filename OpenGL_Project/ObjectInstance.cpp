@@ -1,7 +1,7 @@
 #include "ObjectInstance.h"
 #include "Scene.h"
 
-ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale)
+ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, bool _floatingObject)
 {
 	name = _name;
 
@@ -11,7 +11,10 @@ ObjectInstance::ObjectInstance(std::string _name, glm::vec3 _position, glm::vec3
 
 	parent = nullptr;
 
-	Scene::Current().AddObject(this);
+	if (!_floatingObject) 
+	{
+		Scene::Current().AddObject(this);
+	}
 }
 
 ObjectInstance::~ObjectInstance()
@@ -108,6 +111,11 @@ void ObjectInstance::Update()
 {
 	for (int i = 0; i < components.size(); ++i)
 	{
+		if (components[i] == nullptr) 
+		{
+			continue;
+		}
+
 		components[i]->Update();
 	}
 }

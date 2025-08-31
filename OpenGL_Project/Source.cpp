@@ -13,6 +13,9 @@ static void OnWindowResized(GLFWwindow* _Window, int _Width, int _Height)
 
 	AssetLoader::Instance().windowSize.x = (float)_Width;
 	AssetLoader::Instance().windowSize.y = (float)_Height;
+
+
+	RenderingPipeline::UpdateFramebufferTexture();
 }
 
 //Sets Up Objects + Other GLFW Parameters
@@ -54,6 +57,9 @@ static void InitialSetup()
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
 
+	//For Particle Systems
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
 	glDepthFunc(GL_LESS);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
@@ -71,7 +77,7 @@ static void LoadScene1()
 {
 	Scene::Current().ChangeScene(1);
 
-	Scene::Current().SetAmbientLightStength(0.2f);
+	Scene::Current().SetAmbientLightStength(0.4f);
 	Scene::Current().SetAmbientLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 
 	//Create Skybox For Rendering
@@ -107,8 +113,121 @@ static void LoadScene1()
 	terrainRenderer->SmoothHeights(2);
 	terrainRenderer->GenerateMesh(true); 
 
+	{
+		ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.0f, 0.0f, 0.0f));
+		auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
+		treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
+		treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
+		treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
+		treesRenderer->SetShadowRendering(true);
+
+		float treeSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
+		int treesGridX = 512;
+		int treesGridY = 512;
+
+		for (int x = 0; x < treesGridX; x++)
+		{
+			for (int y = 0; y < treesGridY; y++)
+			{
+				bool spawnTree = (rand() % 100 > 95) && (PerlinNoise(x * treeSpacing * 15, y * treeSpacing * 15) > 0.1f);
+
+				if (!spawnTree)
+				{
+					continue;
+				}
+
+				float height = terrainRenderer->SampleHeight(x, y);
+
+
+				if (height < 1)
+				{
+					continue;
+				}
+
+				float steepness = terrainRenderer->SampleSteepness(x, y);
+
+				if (steepness < 0.9f)
+				{
+					continue;
+				}
+
+				float scalar = abs(PerlinNoise(x * treeSpacing, y * treeSpacing)) * 5.0f;
+
+				float rot = rand() % 360;
+
+				treesRenderer->AddInstance(glm::vec3(x * treeSpacing, height, y * treeSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) * scalar);
+			}
+		}
+	
+	}
+
+	{
+		ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.f, 0.f, 0.f));
+		auto grassRenderer = grass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
+		grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
+		grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, Repeat);
+		grassRenderer->AddTexturePass("Texture0", "GrassBlade", Texture2D, Repeat);
+		grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, ClampBorder);
+		grassRenderer->SetShadowRendering(false);
+
+		float grassSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
+		int grassGridX = 512;
+		int grassGridY = 512;
+
+		for (int x = 0; x < grassGridX; x++)
+		{
+			for (int y = 0; y < grassGridY; y++)
+			{
+				float height = terrainRenderer->SampleHeight(x, y);
+
+				if (height < 2.5 || height > 30)
+				{
+					continue;
+				}
+
+				float steepness = terrainRenderer->SampleSteepness(x, y);
+
+				if (steepness < 0.9f)
+				{
+					continue;
+				}
+
+				float randomRot = rand() % 360;
+				float randomScale = (((rand() % 100) / 100.0f) + 0.5f) / 2.0f;
+
+				grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0, randomRot, 0), glm::vec3(randomScale, randomScale, randomScale));
+			}
+		}
+	}
+
+	{
+		UIObjectInstance* uiImage = new UIObjectInstance("GenerateButton", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 1.0f));
+		auto imageRenderer = uiImage->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		imageRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		imageRenderer->AddTexturePass("Texture0", "ComputeColor", Texture2D, TilingType::Repeat);
+		uiImage->SetScreenAlignment(ScreenAlignmentX::LEFT, ScreenAlignmentY::BOTTOM);
+		uiImage->SetPosition(glm::vec3(110, 110, 0));
+		imageRenderer->SetShadowRendering(false);
+
+
+		UIObjectInstance* uiButton = new UIObjectInstance("GenerateButton", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 50.0f, 1.0f));
+		auto buttonRenderer = uiButton->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+		buttonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+		buttonRenderer->AddTexturePass("Texture0", "Button", Texture2D, TilingType::Repeat);
+		uiButton->SetScreenAlignment(ScreenAlignmentX::LEFT, ScreenAlignmentY::TOP);
+		uiButton->SetPosition(glm::vec3(110, -60, 0));
+
+		auto computeGenerator = uiButton->AddComponent<ComputeShaderTextureGenerator>("ComputeColorTiled");
+
+		auto button = uiButton->AddComponent<Button>();
+		button->AddListener([computeGenerator]()
+			{
+				computeGenerator->GenerateTexture();
+			});
+	}
+
 	//Create A Little Text UI To Show What Scene The User Is Currently Viewing
-	UIObjectInstance* SceneText = new UIObjectInstance("Scene Indicator", glm::vec3(50.f, 50.f, -1.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
+	UIObjectInstance* SceneText = new UIObjectInstance("Scene Indicator", glm::vec3(50.f, 50.f, -1.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
 	auto SceneTextRenderer = SceneText->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
 	SceneTextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 	SceneTextRenderer->SetFont("AldotheApache");
@@ -117,197 +236,12 @@ static void LoadScene1()
 	SceneTextRenderer->SetRenderType(RenderBoth);
 	SceneText->SetScreenAlignment(MIDDLE, TOP);
 	SceneText->SetPosition(glm::vec3(0, -100, 0));
-
-	{ //This Button Loads Scene To Scene 1
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("Scene 2 Button", glm::vec3(270.f, -160.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(LEFT, TOP);
-		auto button = UIObjectTest->AddComponent<Button>();
-		button->AddListener([]
-			{
-				Scene::Current().ChangeScene(2);
-
-			});
-		UIRenderer->SetBorderSize(50);
-		UIRenderer->SetTextureSize(glm::vec2(64, 64));
-
-		//Create Text To Be Parented To The Button To Give Info
-		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
-		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UITextRenderer->SetFont("AldotheApache");
-		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		UITextRenderer->SetText("Change Scene");
-		UITextRenderer->SetRenderType(RenderBoth);
-
-		UITextObject->SetParent(UIObjectTest);
-		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
-	}
-}
-
-//Creates All Objects In The Scene2
-static void LoadScene2()
-{
-	Scene::Current().ChangeScene(2);
-
-	//Set Initial Camera Position
-	Camera::Instance().SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
-	Camera::Instance().SetCameraLookDirection(glm::vec3(0.0f, 0.0f, 1.0f));
-
-	{ //Scene Text Indicator
-		UIObjectInstance* SceneText = new UIObjectInstance("Perlin Noise Scene Text", glm::vec3(0.f, -150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f));
-		SceneText->SetScreenAlignment(MIDDLE, TOP);
-		auto SceneTextRenderer = SceneText->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-		SceneTextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		SceneTextRenderer->SetFont("AldotheApache");
-		SceneTextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		SceneTextRenderer->SetText("Perlin Noise Scene");
-		SceneTextRenderer->SetRenderType(RenderBoth);
-	} 
-
-	{ //Left Most Perlin Noise UI Object, Shows Regular Perlin Noise
-		UIObjectInstance* LeftPerlinObject = new UIObjectInstance("Left Perlin Object", glm::vec3(-450.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.f, 200.f, 200.f));
-		LeftPerlinObject->SetScreenAlignment(MIDDLE, CENTER);
-		auto LeftPerlinObjectRenderer = LeftPerlinObject->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
-		LeftPerlinObjectRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		LeftPerlinObjectRenderer->SetRenderType(RenderBoth);
-		LeftPerlinObjectRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
-	}
-
-	{ //Middle Perlin Noise UI Object, Shows Gradient Perlin Noise Object
-		UIObjectInstance* MiddlePerlinObject = new UIObjectInstance("Middle Perlin Object", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.f, 200.f, 200.f));
-		MiddlePerlinObject->SetScreenAlignment(MIDDLE, CENTER);
-		auto MiddlePerlinObjectRenderer = MiddlePerlinObject->AddComponent<DefaultRenderer>("4WayGradient", ProjectionType::ScreenOrthographic);
-		MiddlePerlinObjectRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		MiddlePerlinObjectRenderer->SetRenderType(RenderBoth);
-		MiddlePerlinObjectRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
-	}
-
-	{ //Right Most Perlin Noise UI Object, Shows Animated Perlin Noise Object
-		UIObjectInstance* RightPerlinObject = new UIObjectInstance("Right Perlin Object", glm::vec3(450.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(200.f, 200.f, 200.f));
-		RightPerlinObject->SetScreenAlignment(MIDDLE, CENTER);
-		auto RightPerlinObjectRenderer = RightPerlinObject->AddComponent<DefaultRenderer>("BurnNoise", ProjectionType::ScreenOrthographic);
-		RightPerlinObjectRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		RightPerlinObjectRenderer->SetRenderType(RenderBoth);
-		RightPerlinObjectRenderer->AddTexturePass("Texture0", "Noise", Texture2D, Repeat);
-		RightPerlinObjectRenderer->SetColor(glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
-	}
-
-	//Buttons
-	{ //This Button Creates A New Heightmap And Override The Previous One In The Asset Loader
-		UIObjectInstance* NewHeightmapButton = new UIObjectInstance("New Heightmap Button", glm::vec3(-275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
-		NewHeightmapButton->SetScreenAlignment(MIDDLE, BOTTOM);
-		
-		auto NewHeightmapButtonRenderer = NewHeightmapButton->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
-		NewHeightmapButtonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		NewHeightmapButtonRenderer->SetRenderType(RenderBoth);
-		NewHeightmapButtonRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
-		NewHeightmapButtonRenderer->SetBorderSize(50);
-		NewHeightmapButtonRenderer->SetTextureSize(glm::vec2(64, 64));
-		
-		//Pass In Listener To The Button Component
-		auto button = NewHeightmapButton->AddComponent<Button>();
-		button->AddListener([] 
-		{
-			Scene::Current().ChangeScene(1);
-
-			Terrain* terrain = Scene::Current().FindObject("Terrain")->GetComponent<Terrain>();
-
-			terrain->SetSeed(rand() % 2040213);
-			terrain->CreateHeightmap();
-
-			Scene::Current().ChangeScene(2);
-
-		});
-
-		//Create The Text To be Parented To The Button To Give Info
-		ObjectInstance* NewHeightmapTextObject = new ObjectInstance("New Heightmap Text", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.8f, 0.8f, 0.8f));
-		auto UITextRenderer = NewHeightmapTextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UITextRenderer->SetFont("AldotheApache");
-		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		UITextRenderer->SetText("New Heightmap");
-		UITextRenderer->SetRenderType(RenderBoth);
-
-		//Set Parent And Reset Position
-		NewHeightmapTextObject->SetParent(NewHeightmapButton);
-		NewHeightmapTextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
-	}
-
-	{ //This Button Creates Loads The generated Heightmap To The Terrain, This Regenerates Terrain Mesh
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("UIObjectTest", glm::vec3(275.f, 150.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(MIDDLE, BOTTOM);
-		auto button = UIObjectTest->AddComponent<Button>();
-		button->AddListener([]
-			{
-				Scene::Current().ChangeScene(1);
-
-				Terrain* terrain = Scene::Current().FindObject("Terrain")->GetComponent<Terrain>();
-
-				terrain->LoadHeightmap("NoiseTextures/Noise.raw");
-				terrain->SmoothHeights(1);
-				terrain->GenerateMesh(true);
-
-				Scene::Current().ChangeScene(2);
-
-			});
-		UIRenderer->SetBorderSize(50);
-		UIRenderer->SetTextureSize(glm::vec2(64, 64));
-
-		//Create Text To Be Parented To The Button To Give Info
-		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.8f, 0.8f, 0.8f));
-		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UITextRenderer->SetFont("AldotheApache");
-		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		UITextRenderer->SetText("Apply To Terrain");
-		UITextRenderer->SetRenderType(RenderBoth);
-
-		UITextObject->SetParent(UIObjectTest);
-		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
-	}
-
-
-	{ //This Button Loads Scene To Scene 1
-		UIObjectInstance* UIObjectTest = new UIObjectInstance("Scene 1 Button", glm::vec3(270.f, -160.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 75.f, 1.f));
-		auto UIRenderer = UIObjectTest->AddComponent<DefaultRenderer>("BorderedUI", ProjectionType::ScreenOrthographic);
-		UIRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UIRenderer->SetRenderType(RenderBoth);
-		UIRenderer->AddTexturePass("Texture0", "Button", Texture2D, Repeat);
-		UIObjectTest->SetScreenAlignment(LEFT, TOP);
-		auto button = UIObjectTest->AddComponent<Button>();
-		button->AddListener([]
-			{
-				Scene::Current().ChangeScene(1);
-
-			});
-		UIRenderer->SetBorderSize(50);
-		UIRenderer->SetTextureSize(glm::vec2(64, 64));
-
-		//Create Text To Be Parented To The Button To Give Info
-		ObjectInstance* UITextObject = new ObjectInstance("UITextObjectTest", glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.0f, 1.0f, 1.0f));
-		auto UITextRenderer = UITextObject->AddComponent<TextRenderer>("DefaultText", ProjectionType::ScreenOrthographic);
-		UITextRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		UITextRenderer->SetFont("AldotheApache");
-		UITextRenderer->SetColor(glm::vec3(1.f, 1.f, 1.f));
-		UITextRenderer->SetText("Change Scene");
-		UITextRenderer->SetRenderType(RenderBoth);
-
-		UITextObject->SetParent(UIObjectTest);
-		UITextObject->SetPosition(glm::vec3(0.f, 0.f, 0.f));
-	}
 }
 
 int main()
 {
 	bool pressLock = false; //Press Lock Helps Not Load A Scene Each Frame Lol
+	int currentEffect = 0;
 
 	//Setup All Objects In Project
 	InitialSetup();
@@ -334,9 +268,20 @@ int main()
 
 	//Load Each Scene Into The Scene Manager
 	LoadScene1();
-	LoadScene2();
+
+	Scene::Current().ChangeScene(1);
+
+	//Framebuffer Screen Quad
+	ObjectInstance* screenQuad = new ObjectInstance("Screen Quad", glm::vec3(1280 / 2, 720 / 2, 0), glm::vec3(0, 0, 0), glm::vec3(1280, 720, 100), true);
+	auto renderer = screenQuad->AddComponent<ScreenQuadRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
+	renderer->AddTexturePass("Texture0", "Framebuffer", TextureType::Texture2D, TilingType::Repeat);
+	renderer->AddTexturePass("Noise", "NoiseShaderPassIn", Texture2D, TilingType::Repeat);
+	renderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+
+	RenderingPipeline::SetScreenQuadRenderer(renderer);
 
 	RenderingPipeline::InitShadowRendering();
+	RenderingPipeline::InitFrameBuffer();
 
 	//Application Loop Runs Until The Window Is Set To close
 	while (glfwWindowShouldClose(AssetLoader::Instance().currentWindow) == false)
@@ -350,30 +295,107 @@ int main()
 		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_PRESS)
 		{
 			pressLock = true;
-			Scene::Current().ChangeScene(1);
+			currentEffect = 0;
+			
 		}
 
 		//Loads Scene 2
 		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_PRESS)
 		{
 			pressLock = true;
-			Scene::Current().ChangeScene(2);
+			currentEffect = 1;
+		}
+
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_PRESS)
+		{
+			pressLock = true;
+			currentEffect = 2;
+		}
+
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_4) == GLFW_PRESS)
+		{
+			pressLock = true;
+			currentEffect = 3;
+		}
+
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_5) == GLFW_PRESS)
+		{
+			pressLock = true;
+			currentEffect = 4;
+		}
+
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_TAB) == GLFW_PRESS)
+		{
+			pressLock = true;
+			currentEffect += 1;
+
+			if (currentEffect == 5) 
+			{
+				currentEffect = 0;
+			}
+		}
+
+		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_F) == GLFW_PRESS)
+		{
+			pressLock = true;
+
+			{
+				ObjectInstance* fireworkObject = new ObjectInstance("Particle System", glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+				auto fireworkRenderer = fireworkObject->AddComponent<ParticleSystem>("Unlit", "ComputeParticles", ProjectionType::Perspective);
+				fireworkRenderer->SetShadowRendering(false);
+				fireworkRenderer->SetRandom(10.0f);
+				fireworkRenderer->SetReset(true);
+				fireworkRenderer->SetColor(glm::vec4((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, 1.0f));
+
+				fireworkObject->AddComponent<Firework>(400.0f);
+			}
 		}
 
 
 		//Reset Press Lock State
-		if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_RELEASE ||
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_RELEASE)
+		if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_RELEASE &&
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_RELEASE &&
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_RELEASE &&
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_4) == GLFW_RELEASE && 
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_5) == GLFW_RELEASE &&
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_F) == GLFW_RELEASE &&
+			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_TAB) == GLFW_RELEASE)
 		{
 			pressLock = false;
 		}
 
+		switch (currentEffect)
+		{
+		case 0:
+			RenderingPipeline::GetScreenQuadRenderer()->SetShader("DefaultUI");
+			break;
+		case 1:
+			RenderingPipeline::GetScreenQuadRenderer()->SetShader("BrokenScreen");
+			break;
+		case 2:
+			RenderingPipeline::GetScreenQuadRenderer()->SetShader("InvertColors");
+			break;
+		case 3:
+			RenderingPipeline::GetScreenQuadRenderer()->SetShader("Greyscale");
+			break;
+		case 4:
+			RenderingPipeline::GetScreenQuadRenderer()->SetShader("Raining");
+			break;
+		}
+
+
 		Scene::Current().Update();
+
+		screenQuad->Update();
 
 		glfwPollEvents();
 
 		RenderingPipeline::ShadowPass();
-		RenderingPipeline::Render();
+		RenderingPipeline::FrameBufferPass();
+
+		RenderingPipeline::RenderToScreen();
+
+		//RenderingPipeline::Render();
 	}
 
 	glfwTerminate();

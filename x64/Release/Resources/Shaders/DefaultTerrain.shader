@@ -1,50 +1,31 @@
 #ifdef COMPILING_VS
-
 	layout (location = 0) in vec3 Position;
 	layout (location = 1) in vec2 TexCoords;
 	layout (location = 2) in vec3 Normal;
-	layout (location = 3) in mat4 Model;
+    layout (location = 3) in mat4 ModelMatrix;
 
 	uniform mat4 VP;
     uniform mat4 LightVP;
-
-	uniform float Time;
 
 	out vec2 FragTexCoords;
 	out vec3 FragNormal;
 	out vec3 FragPos;
     out vec4 FragPosLightSpace;
 
-
-	float power(float inVal, int inPow) 
-	{
-		for (int i = 0; i < inPow; i++) 
-		{
-			inVal *= inVal;
-		}
-
-		return inVal;
-	}
-
 	void main() 
 	{
-		vec4 worldPos = Model * vec4(Position, 1.0);
+		FragTexCoords = Position.xz;
+		FragNormal = mat3(transpose(inverse(ModelMatrix))) * Normal;
+		FragPos = vec3(ModelMatrix * vec4(Position, 1.0f));
 
-		float swayX = (((sin(Time * 2f) + 0.5f) / 2.f) * TexCoords.y * 0.3) * (sin(worldPos.x + Time) + 1f);
-		float swayY = ((cos(Time * 2f) + 0.5f) / 2.f) * TexCoords.y * 0.1f;
-
-		worldPos.x += swayX;
-		worldPos.z += swayY;
-
-		gl_Position = VP * worldPos;
-
-		FragTexCoords = TexCoords;
-		FragNormal = normalize(mat3(transpose(inverse(Model))) * Normal);
-		FragPos = vec3(worldPos);
+        //Shadow Rendering
         FragPosLightSpace = LightVP * vec4(FragPos, 1.0);
+
+        gl_Position = VP * ModelMatrix * vec4(Position, 1.0f);
 	}
 
 #elif defined(COMPILING_FS)
+
     #define MAX_POINT_LIGHTS 4
     #define MAX_SPOT_LIGHTS 4
 
@@ -89,10 +70,16 @@
     out vec4 FinalColor;
 
     //BASIC
-    uniform sampler2D Texture0;
-    uniform vec2 Tiling;
-
+    uniform sampler2D TextureGrass;
+    uniform sampler2D TextureGrassVariant;
+    uniform sampler2D TextureGrassVariationNoise;
+    uniform sampler2D TextureSand;
+    uniform sampler2D TextureRock;
+    uniform sampler2D TextureSnow;
     uniform sampler2D ShadowMap;
+    uniform sampler2D TextureNoise;
+
+    uniform vec2 Tiling;
 
     uniform vec3 Ambient;
 
@@ -118,7 +105,7 @@
          float currentDepth = projCoords.z;  
 
 
-         //float bias = max(0.05 * (1.0 - dot(FragNormal, DirLight.Direction)), 0.005); 
+         //float bias = max(0.05f * (1.0f - dot(FragNormal, DirLight.Direction)), 0.005f); 
          float bias = 0.0001f;
          float shadow = 0.0f;  
 
@@ -128,12 +115,13 @@
          {
              for(int y = -sampleRadius; y <= sampleRadius; ++y)
              {
+                 float value = (projCoords.x > 0 && projCoords.x < 1 && projCoords.x > 0 && projCoords.y < 1) ? 1f : 0f;
+
                  float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-                 shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+                 shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0) * value;        
              }    
          }
          shadow /= pow((sampleRadius * 2) + 1, 2);
-
 
          if(projCoords.z > 1.0) 
          {
@@ -143,18 +131,17 @@
          return shadow * 0.75f;
     } 
 
-
     vec3 CalculateLightPoint(unsigned int index) 
     {
         vec3 Normal = normalize(FragNormal);
         vec3 LightDir = normalize(FragPos - PointLights[index].Position);
 
-        float DiffuseStrength = max(dot(Normal, -LightDir), 0.5f);
+        float DiffuseStrength = max(dot(Normal, -LightDir), 0.0f);
         vec3 Diffuse = DiffuseStrength * PointLights[index].Color;
 
         vec3 ReverseViewDir = normalize(CameraPos - FragPos);
         vec3 HalfwayVector = normalize(-LightDir + ReverseViewDir);
-        float SpecularReflectivity = pow(max(dot(Normal, HalfwayVector), 0.5f), Smoothness);
+        float SpecularReflectivity = pow(max(dot(Normal, HalfwayVector), 0.0f), Smoothness);
         vec3 Specular = PointLights[index].SpecularStrength * SpecularReflectivity * PointLights[index].Color;
 
 
@@ -171,15 +158,16 @@
         vec3 viewDir = normalize(CameraPos - FragPos);
 
         // Diffuse
-        float diffuseStrength = max(dot(normal, lightDir), 0.2f);
+        float diffuseStrength = max(dot(normal, lightDir), 0.0);
         vec3 diffuse = diffuseStrength * DirLight.Color;
 
         // Specular (Blinn-Phong)
         vec3 halfwayDir = normalize(lightDir + viewDir);
-        float spec = pow(max(dot(normal, halfwayDir), 0.2f), Smoothness);
+        float spec = pow(max(dot(normal, halfwayDir), 0.0), Smoothness);
         vec3 specular = spec * DirLight.SpecularStrength * DirLight.Color;
 
-        return diffuse + specular;
+        //return diffuse + Specular;
+        return diffuse;
     }
 
     vec3 CalculateSpotLight(unsigned int index) 
@@ -208,6 +196,19 @@
         return SpotLights[index].Color * intensity;
     }
 
+    float linearize_depth(float d,float zNear,float zFar)
+    {
+        float z_n = 2.0 * d - 1.0;
+        return 2.0 * zNear * zFar / (zFar + zNear - z_n * (zFar - zNear));
+    }
+
+    float smoothstep(float edge0, float edge1, float x) 
+    {
+        // Scale, and clamp x to 0 -> 1 range
+        x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+        return x * x * (3.0 - 2.0 * x);
+    }
+
     void main() 
     {
         //Calculate Total Light Amount
@@ -226,12 +227,36 @@
         TotalLight += CalculateLightDirectional();
         TotalLight += Ambient;
 
-        vec4 mainCol = vec4(TotalLight * 0.5f * (1 - ShadowCalculation(FragPosLightSpace)), 1.0f) * texture(Texture0, FragTexCoords * Tiling);
+        float noise = texture(TextureNoise, FragTexCoords * 0.1f).r * 3.0f;
+        float noise2 = texture(TextureGrassVariationNoise, FragTexCoords * 0.001f).r;
+        
+        //Sample All Textures Before Hand
+        vec4 grassCol = mix(texture(TextureGrass, FragTexCoords * Tiling), texture(TextureGrassVariant, FragTexCoords * Tiling), noise2);
+        vec4 sandCol = texture(TextureSand, FragTexCoords * Tiling);
+        vec4 rockCol = texture(TextureRock, FragTexCoords * Tiling);
+        vec4 snowCol = texture(TextureSnow, FragTexCoords * Tiling);
+
+        //Normal Direction For Using Rock Texture
+        //Calculates "Steepness"
+        float angle = dot(FragNormal, vec3(0, 1, 0));
+        angle = smoothstep(0.93f, 0.95f, angle);
+
+        //Going From Dirt To Grass
+        float height = smoothstep(1.0f + noise, 1.3f + noise, FragPos.y); //Smoothstep Using FragPos.y
+
+        //Going From Grass To Snpw
+        float heightSnow = smoothstep(30.0f + noise, 30.3f + noise, FragPos.y); //Smoothstep Using FragPos.y
+
+        vec4 combinedColor = mix(rockCol, grassCol, angle); //Rock To Grass Based On Normal
+        combinedColor = mix(sandCol, combinedColor, height); //Sand To (Rock -> Grass) Blend Based On Height
+        combinedColor = mix(combinedColor, snowCol, heightSnow); //(Rock -> Grass -> Sand) Blend To Snow Based On Snow Height
+
+        //Includes Shadow Calculations
+        vec4 mainCol = vec4(TotalLight * (1.0 - ShadowCalculation(FragPosLightSpace)), 1.0f) * combinedColor;
+        //vec4 mainCol = vec4(TotalLight, 1.0f) * texture(Texture0, FragTexCoords * Tiling);
 
         if(mainCol.a < 0.5)
-            discard;    
-
-        //mainCol.a *= 1f - clamp(0.2f / FragTexCoords.y, 0.f, 1.f);
+            discard;
 
         FinalColor = mainCol;
     }

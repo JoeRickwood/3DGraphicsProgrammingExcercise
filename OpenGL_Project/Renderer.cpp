@@ -40,6 +40,10 @@ void Renderer::BindVBOData()
 {
 }
 
+void Renderer::ComputeRender()
+{
+}
+
 
 void Renderer::InitializeRenderingInfo(GLuint program)
 {
@@ -69,6 +73,7 @@ void Renderer::InitializeRenderingInfo(GLuint program)
 	glUniform4fv(glGetUniformLocation(program, "Color"), 1, glm::value_ptr(color));
 	glUniform2fv(glGetUniformLocation(program, "TextureSize"), 1, glm::value_ptr(textureSize));
 	glUniform2fv(glGetUniformLocation(program, "WidgetSize"), 1, glm::value_ptr(parent->GetScale()));
+	glUniform2fv(glGetUniformLocation(program, "ScreenSize"), 1, glm::value_ptr(AssetLoader::Instance().windowSize));
 	glUniform1f(glGetUniformLocation(program, "BorderSize"), border);
 
 	//Pass In Point Lights

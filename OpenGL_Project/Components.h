@@ -7,3 +7,6 @@
 #include "Terrain.h"
 #include "Lights.h"
 #include "Skybox.h"
+#include "ScreenQuadRenderer.h"
+#include "ComputeShaderTextureGenerator.h"
+#include "Firework.h"

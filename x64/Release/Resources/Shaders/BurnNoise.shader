@@ -29,16 +29,29 @@
 	uniform sampler2D Texture0;
 	uniform vec4 Color          = vec4(1.0f, 1.0f, 1.0f, 1.0f);	
 
+	uniform float Time;
+
 	out vec4 FinalColor; 
+
+	float smoothstep(float edge0, float edge1, float x) 
+    {
+        // Scale, and clamp x to 0..1 range
+        x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+        return x * x * (3.0 - 2.0 * x);
+    }
 
 	void main() 
 	{
-		vec4 mainCol = texture(Texture0, FragTexCoords) * Color;
 
-		if(mainCol.a < 0.5)
-			discard;
+		float val = texture(Texture0, FragTexCoords).r;
 
-		FinalColor = mainCol;
+		float sinTime = mod(-Time / 2.0f, 1.0f);
+
+		float mult1 = smoothstep(sinTime - 0.1f, sinTime, val);
+		float mult2 = 1 - smoothstep(sinTime - 0.05f, sinTime + 0.10f, val);
+
+
+		FinalColor = Color * mult1 * mult2;
 	}
 
 #endif

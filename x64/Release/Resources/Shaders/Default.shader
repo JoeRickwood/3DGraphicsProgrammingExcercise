@@ -94,11 +94,33 @@
 
          projCoords = projCoords * 0.5 + 0.5; 
 
-         float closestDepth = texture(ShadowMap, projCoords.xy).r; 
          float currentDepth = projCoords.z;  
-         float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
 
-         return shadow;
+
+         //float bias = max(0.05f * (1.0f - dot(FragNormal, DirLight.Direction)), 0.005f); 
+         float bias = 0.0001f;
+         float shadow = 0.0f;  
+
+         int sampleRadius = 2;
+         vec2 texelSize = 1.0 / vec2(textureSize(ShadowMap, 0));
+         for(int x = -sampleRadius; x <= sampleRadius; ++x)
+         {
+             for(int y = -sampleRadius; y <= sampleRadius; ++y)
+             {
+                 float value = (projCoords.x > 0 && projCoords.x < 1 && projCoords.x > 0 && projCoords.y < 1) ? 1f : 0f;
+
+                 float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+                 shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0) * value;        
+             }    
+         }
+         shadow /= pow((sampleRadius * 2) + 1, 2);
+
+         if(projCoords.z > 1.0) 
+         {
+            shadow = 0.0;
+         }
+
+         return shadow * 0.75f;
     } 
 
     vec3 CalculateLightPoint(unsigned int index) 
@@ -196,7 +218,11 @@
         if(mainCol.a < 0.5)
             discard;
 
-        //FinalColor = vec4(vec3(linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f), 1.0f);
+
+        float col = linearize_depth(gl_FragCoord.z, 0.1f, 100.f) / 100.f;
+
+
+        //FinalColor = vec4(vec3(floor(col * 10f) / 10f), 1.0f);
         FinalColor = mainCol;
     }
 

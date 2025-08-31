@@ -152,15 +152,19 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ComputeShaderTextureGenerator.cpp" />
     <ClCompile Include="DefaultRenderer.cpp" />
+    <ClCompile Include="Firework.cpp" />
     <ClCompile Include="InstancedRenderer.cpp" />
     <ClCompile Include="Lights.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
     <ClCompile Include="RenderingPipeline.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ScreenQuadRenderer.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -172,17 +176,21 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="ComputeShaderTextureGenerator.h" />
     <ClInclude Include="DefaultRenderer.h" />
+    <ClInclude Include="Firework.h" />
     <ClInclude Include="InstancedRenderer.h" />
     <ClInclude Include="Lights.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="ObjectInstance.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="RenderingPipeline.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ScreenQuadRenderer.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextRenderer.h" />
@@ -193,7 +201,11 @@
   <ItemGroup>
     <None Include="Resources\Shaders\4WayGradient.shader" />
     <None Include="Resources\Shaders\BorderedUI.shader" />
+    <None Include="Resources\Shaders\BrokenScreen.shader" />
     <None Include="Resources\Shaders\BurnNoise.shader" />
+    <None Include="Resources\Shaders\ComputeColor.comp" />
+    <None Include="Resources\Shaders\ComputeColorTiled.comp" />
+    <None Include="Resources\Shaders\ComputeParticles.comp" />
     <None Include="Resources\Shaders\Default.shader" />
     <None Include="Resources\Shaders\DefaultGlyph.shader" />
     <None Include="Resources\Shaders\DefaultTerrain.shader" />
@@ -201,10 +213,11 @@
     <None Include="Resources\Shaders\DefaultUI.shader" />
     <None Include="Resources\Shaders\DepthDraw.shader" />
     <None Include="Resources\Shaders\Grass.shader" />
-    <None Include="Resources\Shaders\NormalDebug.shader" />
-    <None Include="Resources\Shaders\ScreenDepthDraw.shader" />
+    <None Include="Resources\Shaders\Greyscale.shader" />
+    <None Include="Resources\Shaders\InvertColors.shader" />
+    <None Include="Resources\Shaders\Raining.shader" />
     <None Include="Resources\Shaders\Skybox.shader" />
-    <None Include="Resources\Shaders\SteppedColor.shader" />
+    <None Include="Resources\Shaders\Unlit.shader" />
     <None Include="Resources\Shaders\Water.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

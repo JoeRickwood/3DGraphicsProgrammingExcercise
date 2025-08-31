@@ -36,7 +36,7 @@ protected:
 	std::vector<std::shared_ptr<Component>> components;
 
 public:
-	ObjectInstance(std::string _name, glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.f));
+	ObjectInstance(std::string _name, glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.f), bool _floatingObject = false);
 	~ObjectInstance();
 
 	//Getters And Setters For Position

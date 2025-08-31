@@ -124,6 +124,13 @@ void AssetLoader::CreateShaderProgram(const char* _filename, std::string _shader
 	AssetLoader::Instance().shaderPrograms.emplace(_shaderKey, program);
 }
 
+void AssetLoader::CreateComputeShaderProgram(const char* _filename, std::string _computeShaderKey)
+{
+	GLuint prgm = CreateComputeShader(_filename);
+
+	AssetLoader::Instance().computeShaderPrograms.emplace(_computeShaderKey, prgm);
+}
+
 GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 {
 	// Read the shader files and save the source code as strings
@@ -167,6 +174,48 @@ GLuint AssetLoader::CreateShader(GLenum shaderType, const char* shaderName)
 	}
 
 	return shaderID;
+}
+
+GLuint AssetLoader::CreateComputeShader(const char* shaderName)
+{
+	//std::cout << shaderName;
+
+	// Create the Shaders from the filepath
+	GLuint ComputeShaderID = CreateShader(GL_COMPUTE_SHADER, shaderName);
+
+	// Create the program handle, attach the shaders and link it
+	GLuint program = glCreateProgram();
+	glAttachShader(program, ComputeShaderID);
+	glLinkProgram(program);
+
+	// Check for link errors
+	int link_result = 0;
+	glGetProgramiv(program, GL_LINK_STATUS, &link_result);
+	if (link_result == GL_FALSE)
+	{
+		PrintErrorDetails(false, program, shaderName);
+		return 0;
+	}
+
+	return program;
+}
+
+GLuint AssetLoader::CreateTextureComputeOutput(int _width, int _height)
+{
+	GLuint renderTexture;
+
+	glGenTextures(1, &renderTexture);
+	glBindTexture(GL_TEXTURE_2D, renderTexture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _width, _height, 0, GL_RGBA, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	return renderTexture;
 }
 
 std::string AssetLoader::ReadShaderFile(const char* filename)
@@ -486,6 +535,11 @@ GLuint AssetLoader::GetShaderProgram(std::string _key)
 	return shaderPrograms[_key];
 }
 
+GLuint AssetLoader::GetComputeShaderProgram(std::string _key)
+{
+	return computeShaderPrograms[_key];
+}
+
 GLuint AssetLoader::GetTexture(std::string _key)
 {
 	return textures[_key];
@@ -567,13 +621,23 @@ void AssetLoader::LoadAssets(const char* folderPath)
 			}
 		}
 
-		//Check The Extension For Supported Shader Files
+		//Check The Extension For Supported Font Files
 		for (int i = 0; i < std::size(supportedFontFileExtensions); i++)
 		{
 			if (supportedFontFileExtensions[i] == extension)
 			{
 				LoadFont(std::filesystem::path(file).string(), name.string());
 				std::cout << "Created Font : " << name << "\n";
+			}
+		}
+
+		//Check The Extension For Supported Compute Shader Files
+		for (int i = 0; i < std::size(supportedComputeShaderFileExtensions); i++)
+		{
+			if (supportedComputeShaderFileExtensions[i] == extension)
+			{
+				CreateComputeShaderProgram(std::filesystem::path(file).string().c_str(), name.string());
+				std::cout << "Created Compute Shader : " << name << "\n";
 			}
 		}
 

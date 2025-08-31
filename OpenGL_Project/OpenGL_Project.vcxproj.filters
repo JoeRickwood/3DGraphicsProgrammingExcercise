@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{54f38f45-1eb9-40b7-9eb7-0c91434eba4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Post Pro">
+      <UniqueIdentifier>{248accb7-8283-44ee-b8ab-527b8756a9f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Compute Shaders">
+      <UniqueIdentifier>{e9fe5387-3233-4155-b2d7-adf06619de35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -67,6 +73,21 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObjectInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenQuadRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeShaderTextureGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Firework.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,6 +149,21 @@
     <ClInclude Include="MathFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UIObjectInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenQuadRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShaderTextureGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Firework.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader">
@@ -148,13 +184,7 @@
     <None Include="Resources\Shaders\DepthDraw.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\NormalDebug.shader">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\Shaders\DefaultText.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\SteppedColor.shader">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\Shaders\DefaultTerrain.shader">
@@ -163,7 +193,37 @@
     <None Include="Resources\Shaders\Water.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\Shaders\ScreenDepthDraw.shader">
+    <None Include="Resources\Shaders\4WayGradient.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\BorderedUI.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\BurnNoise.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\Greyscale.shader">
+      <Filter>Resource Files\Post Pro</Filter>
+    </None>
+    <None Include="Resources\Shaders\Raining.shader">
+      <Filter>Resource Files\Post Pro</Filter>
+    </None>
+    <None Include="Resources\Shaders\InvertColors.shader">
+      <Filter>Resource Files\Post Pro</Filter>
+    </None>
+    <None Include="Resources\Shaders\BrokenScreen.shader">
+      <Filter>Resource Files\Post Pro</Filter>
+    </None>
+    <None Include="Resources\Shaders\ComputeColor.comp">
+      <Filter>Resource Files\Compute Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ComputeColorTiled.comp">
+      <Filter>Resource Files\Compute Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ComputeParticles.comp">
+      <Filter>Resource Files\Compute Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Unlit.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
