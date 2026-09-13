@@ -90,140 +90,40 @@ static void LoadScene1()
 	cam->AddComponent<PlayerController>(0.003f, 100);
 
 	//Create Terrain Object
-	ObjectInstance* terrain = new ObjectInstance("Terrain", glm::vec3(0.f, 0.f, 0.f));
-	auto terrainRenderer = terrain->AddComponent<Terrain>("DefaultTerrain", ProjectionType::Perspective, 512, 512, 1.0f);
-
+	ObjectInstance* ground = new ObjectInstance("Terrain", glm::vec3(200.f, 0.f, 200.f), glm::vec3(-90, 0, 0), glm::vec3(400, 400, 400));
+	auto groundRenderer = ground->AddComponent<DefaultRenderer>("Default", ProjectionType::Perspective);
 	//Send All Used Texture Passes Into Terrain Shader For Height / Normal Blending
-	terrainRenderer->AddTexturePass("TextureGrass", "Grass", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureGrassVariant", "GrassVariant", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureGrassVariationNoise", "GrassVariationNoise", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureSand", "MuddySand", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureRock", "Rock", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureSnow", "Snow", Texture2D, TilingType::Repeat);
-	terrainRenderer->AddTexturePass("TextureNoise", "NoiseShaderPassIn", Texture2D, TilingType::Repeat);
+	groundRenderer->AddTexturePass("Texture0", "Grass", Texture2D, TilingType::Repeat);
+	groundRenderer->SetTextureTiling(glm::vec2(40, 40));
+	groundRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
+	groundRenderer->SetRenderType(RenderBoth);
 
-	//Enable Shadows On Terrain (Should Make Shadow Map Pass-In Automatic With Turned On Shadow Rendering)
-	terrainRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-	terrainRenderer->SetShadowRendering(false); //Disbaling Shadow Rendering For This Project
+	ObjectInstance* pumpjacks = new ObjectInstance("Pumpjacks", glm::vec3(0.f, 0.f, 0.f), glm::vec3(00, 0, 0), glm::vec3(1, 1, 1));
+	auto instancedPumpjacks = pumpjacks->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
+	instancedPumpjacks->SetMesh(AssetLoader::Instance().GetMesh("PumpJack"));
+	instancedPumpjacks->AddTexturePass("Texture0", "PumpJack", Texture2D, TilingType::ClampEdges);
 
-	//Seed Terrain And Generate Intial Heightmap
-	terrainRenderer->SetSeed(rand() % 100000);
-	terrainRenderer->CreateHeightmap();
-	terrainRenderer->LoadHeightmap("NoiseTextures/Noise.raw");
-	terrainRenderer->SmoothHeights(2);
-	terrainRenderer->GenerateMesh(true); 
-
+	float spacing = 8.0f;
+	for (int x = 0; x < 50; x++)
 	{
-		ObjectInstance* trees = new ObjectInstance("Trees", glm::vec3(0.0f, 0.0f, 0.0f));
-		auto treesRenderer = trees->AddComponent<InstancedRenderer>("Default", ProjectionType::Perspective);
-		treesRenderer->SetMesh(AssetLoader::Instance().GetMesh("Tree"));
-		treesRenderer->AddTexturePass("Texture0", "Tree", Texture2D, TilingType::Repeat);
-		treesRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, TilingType::ClampBorder);
-		treesRenderer->SetShadowRendering(true);
-
-		float treeSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
-		int treesGridX = 512;
-		int treesGridY = 512;
-
-		for (int x = 0; x < treesGridX; x++)
+		for (int y = 0; y < 50; y++)
 		{
-			for (int y = 0; y < treesGridY; y++)
-			{
-				bool spawnTree = (rand() % 100 > 95) && (PerlinNoise(x * treeSpacing * 15, y * treeSpacing * 15) > 0.1f);
+			glm::vec3 pos = glm::vec3(x * spacing, 0, y * spacing);
 
-				if (!spawnTree)
-				{
-					continue;
-				}
-
-				float height = terrainRenderer->SampleHeight(x, y);
-
-
-				if (height < 1)
-				{
-					continue;
-				}
-
-				float steepness = terrainRenderer->SampleSteepness(x, y);
-
-				if (steepness < 0.9f)
-				{
-					continue;
-				}
-
-				float scalar = abs(PerlinNoise(x * treeSpacing, y * treeSpacing)) * 5.0f;
-
-				float rot = rand() % 360;
-
-				treesRenderer->AddInstance(glm::vec3(x * treeSpacing, height, y * treeSpacing), glm::vec3(0.0f, rot, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) * scalar);
-			}
-		}
-	
-	}
-
-	{
-		ObjectInstance* grass = new ObjectInstance("Grass", glm::vec3(0.f, 0.f, 0.f));
-		auto grassRenderer = grass->AddComponent<InstancedRenderer>("Grass", ProjectionType::Perspective);
-		grassRenderer->SetMesh(AssetLoader::Instance().GetMesh("Grass"));
-		grassRenderer->AddTexturePass("Texture0", "Grass", Texture2D, Repeat);
-		grassRenderer->AddTexturePass("Texture0", "GrassBlade", Texture2D, Repeat);
-		grassRenderer->AddTexturePass("ShadowMap", "DepthMap", Texture2D, ClampBorder);
-		grassRenderer->SetShadowRendering(false);
-
-		float grassSpacing = terrain->GetComponent<Terrain>()->GetCellSpacing();
-		int grassGridX = 512;
-		int grassGridY = 512;
-
-		for (int x = 0; x < grassGridX; x++)
-		{
-			for (int y = 0; y < grassGridY; y++)
-			{
-				float height = terrainRenderer->SampleHeight(x, y);
-
-				if (height < 2.5 || height > 30)
-				{
-					continue;
-				}
-
-				float steepness = terrainRenderer->SampleSteepness(x, y);
-
-				if (steepness < 0.9f)
-				{
-					continue;
-				}
-
-				float randomRot = rand() % 360;
-				float randomScale = (((rand() % 100) / 100.0f) + 0.5f) / 2.0f;
-
-				grassRenderer->AddInstance(glm::vec3(x * grassSpacing, height, y * grassSpacing), glm::vec3(0, randomRot, 0), glm::vec3(randomScale, randomScale, randomScale));
-			}
+			instancedPumpjacks->AddInstance(pos, glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 		}
 	}
 
+	for (int i = 0; i < MAX_POINT_LIGHTS; i++)
 	{
-		UIObjectInstance* uiImage = new UIObjectInstance("GenerateButton", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 1.0f));
-		auto imageRenderer = uiImage->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
-		imageRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		imageRenderer->AddTexturePass("Texture0", "ComputeColor", Texture2D, TilingType::Repeat);
-		uiImage->SetScreenAlignment(ScreenAlignmentX::LEFT, ScreenAlignmentY::BOTTOM);
-		uiImage->SetPosition(glm::vec3(110, 110, 0));
-		imageRenderer->SetShadowRendering(false);
+		glm::vec3 pos = glm::vec3(rand() % 400, 2, rand() % 400);
+		glm::vec3 col = glm::vec3((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f);
 
-
-		UIObjectInstance* uiButton = new UIObjectInstance("GenerateButton", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 50.0f, 1.0f));
-		auto buttonRenderer = uiButton->AddComponent<DefaultRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
-		buttonRenderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
-		buttonRenderer->AddTexturePass("Texture0", "Button", Texture2D, TilingType::Repeat);
-		uiButton->SetScreenAlignment(ScreenAlignmentX::LEFT, ScreenAlignmentY::TOP);
-		uiButton->SetPosition(glm::vec3(110, -60, 0));
-
-		auto computeGenerator = uiButton->AddComponent<ComputeShaderTextureGenerator>("ComputeColorTiled");
-
-		auto button = uiButton->AddComponent<Button>();
-		button->AddListener([computeGenerator]()
-			{
-				computeGenerator->GenerateTexture();
-			});
+		ObjectInstance* light = new ObjectInstance("Light", pos, glm::vec3(), glm::vec3(4, 4, 4));
+		light->AddComponent<PointLight>(col, 0.5);
+		auto lightRenderer = light->AddComponent<DefaultRenderer>("LightUnlit", ProjectionType::Perspective);
+		lightRenderer->SetColor(glm::vec4(col, 1));
+		lightRenderer->SetMesh(AssetLoader::Instance().GetMesh("Sphere"));
 	}
 
 	//Create A Little Text UI To Show What Scene The User Is Currently Viewing
@@ -240,9 +140,6 @@ static void LoadScene1()
 
 int main()
 {
-	bool pressLock = false; //Press Lock Helps Not Load A Scene Each Frame Lol
-	int currentEffect = 0;
-
 	//Setup All Objects In Project
 	InitialSetup();
 
@@ -268,14 +165,15 @@ int main()
 
 	//Load Each Scene Into The Scene Manager
 	LoadScene1();
-
 	Scene::Current().ChangeScene(1);
 
 	//Framebuffer Screen Quad
 	ObjectInstance* screenQuad = new ObjectInstance("Screen Quad", glm::vec3(1280 / 2, 720 / 2, 0), glm::vec3(0, 0, 0), glm::vec3(1280, 720, 100), true);
-	auto renderer = screenQuad->AddComponent<ScreenQuadRenderer>("DefaultUI", ProjectionType::ScreenOrthographic);
-	renderer->AddTexturePass("Texture0", "Framebuffer", TextureType::Texture2D, TilingType::Repeat);
-	renderer->AddTexturePass("Noise", "NoiseShaderPassIn", Texture2D, TilingType::Repeat);
+	auto renderer = screenQuad->AddComponent<ScreenQuadRenderer>("ScreenSpaceRender", ProjectionType::ScreenOrthographic);
+	renderer->AddTexturePass("Texture_Position", "Texture_Position", TextureType::Texture2D, TilingType::ClampEdges);
+	renderer->AddTexturePass("Texture_Normal", "Texture_Normal", TextureType::Texture2D, TilingType::ClampEdges);
+	renderer->AddTexturePass("Texture_AlbedoShininess", "Texture_AlbedoShininess", TextureType::Texture2D, TilingType::ClampEdges);
+	renderer->AddTexturePass("ShadowMap", "DepthMap", TextureType::Texture2D, TilingType::ClampBorder);
 	renderer->SetMesh(AssetLoader::Instance().GetMesh("Quad"));
 
 	RenderingPipeline::SetScreenQuadRenderer(renderer);
@@ -291,99 +189,6 @@ int main()
 		Camera::CalculateProjectionMatrix();
 		Camera::CalculateViewMatrix();
 
-		//Loads Scene 1
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_PRESS)
-		{
-			pressLock = true;
-			currentEffect = 0;
-			
-		}
-
-		//Loads Scene 2
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_PRESS)
-		{
-			pressLock = true;
-			currentEffect = 1;
-		}
-
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_PRESS)
-		{
-			pressLock = true;
-			currentEffect = 2;
-		}
-
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_4) == GLFW_PRESS)
-		{
-			pressLock = true;
-			currentEffect = 3;
-		}
-
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_5) == GLFW_PRESS)
-		{
-			pressLock = true;
-			currentEffect = 4;
-		}
-
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_TAB) == GLFW_PRESS)
-		{
-			pressLock = true;
-			currentEffect += 1;
-
-			if (currentEffect == 5) 
-			{
-				currentEffect = 0;
-			}
-		}
-
-		if (pressLock == false && glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_F) == GLFW_PRESS)
-		{
-			pressLock = true;
-
-			{
-				ObjectInstance* fireworkObject = new ObjectInstance("Particle System", glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
-				auto fireworkRenderer = fireworkObject->AddComponent<ParticleSystem>("Unlit", "ComputeParticles", ProjectionType::Perspective);
-				fireworkRenderer->SetShadowRendering(false);
-				fireworkRenderer->SetRandom(10.0f);
-				fireworkRenderer->SetReset(true);
-				fireworkRenderer->SetColor(glm::vec4((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, 1.0f));
-
-				fireworkObject->AddComponent<Firework>(400.0f);
-			}
-		}
-
-
-		//Reset Press Lock State
-		if (glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_1) == GLFW_RELEASE &&
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_2) == GLFW_RELEASE &&
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_3) == GLFW_RELEASE &&
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_4) == GLFW_RELEASE && 
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_5) == GLFW_RELEASE &&
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_F) == GLFW_RELEASE &&
-			glfwGetKey(AssetLoader::Instance().currentWindow, GLFW_KEY_TAB) == GLFW_RELEASE)
-		{
-			pressLock = false;
-		}
-
-		switch (currentEffect)
-		{
-		case 0:
-			RenderingPipeline::GetScreenQuadRenderer()->SetShader("DefaultUI");
-			break;
-		case 1:
-			RenderingPipeline::GetScreenQuadRenderer()->SetShader("BrokenScreen");
-			break;
-		case 2:
-			RenderingPipeline::GetScreenQuadRenderer()->SetShader("InvertColors");
-			break;
-		case 3:
-			RenderingPipeline::GetScreenQuadRenderer()->SetShader("Greyscale");
-			break;
-		case 4:
-			RenderingPipeline::GetScreenQuadRenderer()->SetShader("Raining");
-			break;
-		}
-
-
 		Scene::Current().Update();
 
 		screenQuad->Update();
@@ -391,11 +196,13 @@ int main()
 		glfwPollEvents();
 
 		RenderingPipeline::ShadowPass();
-		RenderingPipeline::FrameBufferPass();
+
+		RenderingPipeline::GeometryPass();
+		//RenderingPipeline::FrameBufferPass();
 
 		RenderingPipeline::RenderToScreen();
 
-		//RenderingPipeline::Render();
+		RenderingPipeline::WriteDepth();
 	}
 
 	glfwTerminate();

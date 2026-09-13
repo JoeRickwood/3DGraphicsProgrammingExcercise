@@ -114,6 +114,41 @@ void RenderingPipeline::ShadowPass()
 	glUseProgram(0);
 }
 
+void RenderingPipeline::GeometryPass()
+{
+	Current().geometryBuffer->UpdateTextures();
+
+	Current().geometryBuffer->Bind();
+
+	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
+
+	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
+	{
+		if (Current().renderers[Scene::Current().GetCurrentScene()][i] == nullptr || Current().renderers[Scene::Current().GetCurrentScene()][i]->GetIsUI())
+		{
+			continue;
+		}
+
+		GLuint program = AssetLoader::Instance().GetShaderProgram("GeometryOut");
+		glUseProgram(program);
+
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->BindVBOData();
+
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->InitializeRenderingInfo(program);
+
+		Current().renderers[Scene::Current().GetCurrentScene()][i]->Render();
+
+		glUseProgram(0);
+	}
+
+	Current().geometryBuffer->Unbind();
+}
+
+void RenderingPipeline::WriteDepth() 
+{
+	Current().geometryBuffer->WriteDepth();
+}
+
 void RenderingPipeline::FrameBufferPass()
 {
 	for (int i = 0; i < Current().renderers[Scene::Current().GetCurrentScene()].size(); ++i)
@@ -154,6 +189,9 @@ void RenderingPipeline::RenderToScreen()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDrawBuffer(GL_BACK);
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
 	glViewport(0, 0, (GLsizei)AssetLoader::Instance().windowSize.x, (GLsizei)AssetLoader::Instance().windowSize.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -168,7 +206,6 @@ void RenderingPipeline::RenderToScreen()
 
 	glfwSwapBuffers(AssetLoader::Instance().currentWindow);
 }
-
 
 std::vector<glm::vec4> RenderingPipeline::GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
 {
@@ -337,6 +374,9 @@ void RenderingPipeline::InitFrameBuffer()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	AssetLoader::Instance().AddTexture(Current().framebufferTexture, "Framebuffer");
+
+
+	Current().geometryBuffer = new GeometryBuffer();
 }
 
 GLuint RenderingPipeline::GetFramebufferTexture()

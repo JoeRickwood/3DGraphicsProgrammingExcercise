@@ -2,8 +2,8 @@
 #include "UIObjectInstance.h"
 #include "Components.h"
 
-#define MAX_POINT_LIGHTS 4
-#define MAX_SPOT_LIGHTS 4
+#define MAX_POINT_LIGHTS 50
+#define MAX_SPOT_LIGHTS 25
 
 class Scene
 {

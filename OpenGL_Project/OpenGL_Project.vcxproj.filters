@@ -90,6 +90,9 @@
     <ClCompile Include="Firework.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h">
@@ -164,6 +167,9 @@
     <ClInclude Include="Firework.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="GeometryBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Default.shader">
@@ -224,6 +230,15 @@
       <Filter>Resource Files\Compute Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\Unlit.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\GeometryOut.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\ScreenSpaceRender.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\LightUnlit.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

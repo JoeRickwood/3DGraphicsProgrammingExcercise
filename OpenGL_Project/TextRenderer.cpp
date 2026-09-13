@@ -65,6 +65,8 @@ TextRenderer::TextRenderer(std::string _shaderKey, ProjectionType _projectionTyp
 	color = glm::vec3(1.f, 1.f, 1.f);
 
     renderShadows = false;
+
+    isUI = true;
 }
 
 TextRenderer::~TextRenderer()

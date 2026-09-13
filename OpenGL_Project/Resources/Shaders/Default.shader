@@ -27,7 +27,6 @@
     #define MAX_POINT_LIGHTS 4
     #define MAX_SPOT_LIGHTS 4
 
-
     //STRUCTURES USED
     struct PointLight 
     {

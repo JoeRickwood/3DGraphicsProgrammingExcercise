@@ -18,8 +18,6 @@ DefaultRenderer::~DefaultRenderer()
 void DefaultRenderer::Init() 
 {
 	RenderingPipeline::AddRenderer(this);
-
-	//InitVBO();
 }
 
 void DefaultRenderer::InitVBO() 

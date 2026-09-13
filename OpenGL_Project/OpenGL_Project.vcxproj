@@ -155,6 +155,7 @@
     <ClCompile Include="ComputeShaderTextureGenerator.cpp" />
     <ClCompile Include="DefaultRenderer.cpp" />
     <ClCompile Include="Firework.cpp" />
+    <ClCompile Include="GeometryBuffer.cpp" />
     <ClCompile Include="InstancedRenderer.cpp" />
     <ClCompile Include="Lights.cpp" />
     <ClCompile Include="ObjectInstance.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="ComputeShaderTextureGenerator.h" />
     <ClInclude Include="DefaultRenderer.h" />
     <ClInclude Include="Firework.h" />
+    <ClInclude Include="GeometryBuffer.h" />
     <ClInclude Include="InstancedRenderer.h" />
     <ClInclude Include="Lights.h" />
     <ClInclude Include="MathFunctions.h" />
@@ -212,10 +214,13 @@
     <None Include="Resources\Shaders\DefaultText.shader" />
     <None Include="Resources\Shaders\DefaultUI.shader" />
     <None Include="Resources\Shaders\DepthDraw.shader" />
+    <None Include="Resources\Shaders\GeometryOut.shader" />
     <None Include="Resources\Shaders\Grass.shader" />
     <None Include="Resources\Shaders\Greyscale.shader" />
     <None Include="Resources\Shaders\InvertColors.shader" />
+    <None Include="Resources\Shaders\LightUnlit.shader" />
     <None Include="Resources\Shaders\Raining.shader" />
+    <None Include="Resources\Shaders\ScreenSpaceRender.shader" />
     <None Include="Resources\Shaders\Skybox.shader" />
     <None Include="Resources\Shaders\Unlit.shader" />
     <None Include="Resources\Shaders\Water.shader" />

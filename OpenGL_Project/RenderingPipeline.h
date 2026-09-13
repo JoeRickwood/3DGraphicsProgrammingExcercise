@@ -1,5 +1,5 @@
 #pragma once
-#include "Components.h"
+#include "GeometryBuffer.h"
 
 class RenderingPipeline 
 {
@@ -7,6 +7,7 @@ protected:
 	std::map<int, std::vector<Renderer*>> renderers;
 
 	Renderer* screenQuad;
+	GeometryBuffer* geometryBuffer;
 
 	RenderingPipeline();
 	~RenderingPipeline();
@@ -32,8 +33,11 @@ public:
 	static void Render(std::string shaderKeyOverride);
 
 	static void ShadowPass();
+	static void GeometryPass();
 	static void FrameBufferPass();
 	static void RenderToScreen();
+
+	static void WriteDepth();
 
 	std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view);
 	static glm::mat4 GetLightVPMatrix();

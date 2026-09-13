@@ -222,6 +222,11 @@ void Renderer::SetDrawToDepthBuffer(bool _on)
 	drawToDepthBuffer = _on;
 }
 
+bool Renderer::GetIsUI()
+{
+	return isUI;
+}
+
 void Renderer::SetColor(glm::vec4 _color) 
 {
 	color = _color;

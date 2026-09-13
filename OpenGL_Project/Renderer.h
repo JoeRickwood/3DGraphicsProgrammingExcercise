@@ -63,6 +63,8 @@ protected:
 	float border;
 	glm::vec2 textureSize;
 
+	bool isUI = false;
+
 
 	GLuint VBO;
 
@@ -90,6 +92,8 @@ public:
 	void SetRenderType(RenderType _type);
 	void SetShadowRendering(bool _on);
 	void SetDrawToDepthBuffer(bool _on);
+
+	bool GetIsUI();
 
 	glm::vec4 GetColor() const;
 	void SetColor(glm::vec4 _color);

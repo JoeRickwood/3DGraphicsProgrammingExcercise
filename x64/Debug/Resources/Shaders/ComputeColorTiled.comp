@@ -1,0 +1,23 @@
+#version 460 core
+
+#define WORK_GROUP_SIZE_X 64
+#define WORK_GROUP_SIZE_Y 16
+
+
+layout (local_size_x = WORK_GROUP_SIZE_X,
+		local_size_y = WORK_GROUP_SIZE_Y,
+		local_size_z = 1) in;
+
+
+layout (rgba32f, binding = 0) uniform image2D TextureOutput;
+
+void main() 
+{
+	vec4 Color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	ivec2 TexelLocation = ivec2(gl_GlobalInvocationID.xy);
+
+	Color.x = float(gl_LocalInvocationID.x) / float(gl_WorkGroupSize.x);
+	Color.z = float(gl_LocalInvocationID.y) / float(gl_WorkGroupSize.y);
+
+	imageStore(TextureOutput, TexelLocation, Color);
+}
